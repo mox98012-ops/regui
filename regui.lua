@@ -1,4 +1,3 @@
-
 if (getgenv().nil_solutions) then
     return;
 end;
@@ -7,7 +6,7 @@ getgenv().nil_solutions = true;
 if (not game:IsLoaded()) then game.Loaded:Wait(); end;
 
 if (game.GameId ~= 1390601379) then
-    return; 
+    return;
 end;
 
 local userinputservice = cloneref(game:GetService("UserInputService"));
@@ -18,6 +17,7 @@ local tweenservice = game:GetService("TweenService");
 local httpservice = game:GetService("HttpService");
 local runservice = game:GetService("RunService");
 local workspace = game:GetService("Workspace");
+local lighting = game:GetService("Lighting");
 local players = game:GetService("Players");
 
 local localplayer = players.LocalPlayer or players:GetPropertyChangedSignal("LocalPlayer"):Wait() and players.LocalPlayer;
@@ -28,6 +28,7 @@ local humanoid = character:WaitForChild("Humanoid");
 local camera = workspace.CurrentCamera;
 
 local vector3_new = Vector3.new;
+local nx = next;
 local cframe_new = CFrame.new;
 local cframe_angles = CFrame.Angles;
 local drawing_new = Drawing.new;
@@ -37,6 +38,8 @@ local math_cos = math.cos;
 local math_floor = math.floor;
 local vector2_new = Vector2.new;
 local task_spawn = task.spawn;
+
+local cenv = getfenv();
 
 localplayer:WaitForChild("DataLoaded");
 repstorage:WaitForChild("ClientInitFinished");
@@ -69,128 +72,170 @@ if (not LPH_OBFUSCATED) then
 end;
 
 local Data = Data;
-if not Data then Data = {InviteToDiscord = false, Intro = true, KillSayStuff = {Normal = {"bro, respawn faster, I need more %XP% XP", "can someone hvh me?? im guessing nobody can 🤣", "你的WiFi是土豆吗, %Died%?", "你打游戏好像老奶奶一样", "Atleast u died to SERENIUM, %Died%", "你是NPC吗, %Died%?", "你的技能和样老", "fix ur aim %Died%", "damn is 😂", "听说你用Internet Explorer在玩游戏", "お前の反応はカタツムリより遅いぞ", "你在玩手机上吗, %Died%?", "你刚才是睡着了吗?", "🤖 你是一台机器人吗, %Died%?", "Internet says 'how to dodge in combat warriors'", "turn off 'get beaten by skids' in cw settings", "左, 右, 晚安 :skull:", "お前はもう死んでいる", "ты был удалён с сервера", "איפה הכבוד שלך, %Died%?", "あなたはゲームをやめるべきです", "your kd is negative btw %Died%", "你的存活率比0%还低", "parrying 💔💔", "Internet says 'how to recover from public humiliation'", "get this script at /SERENIUM !", "tired of cheaters? become one yourself and combat them! /SERENIUM", "Outplayed by SERENIUM.", }, Assist = {"你没死于我, 是死于团队合作", "split my %XP% XP and %Credits% credits with a random, ty for the donation %Died%", "お前は味方にやられた", "ты просто статистика", "你被团队协作打败了", "didnt need an assist to kill u %Died%", "谁帮我补刀的? 这次算你赚到", "yo %Died%, we both know I didn't need the assist", }, Finish = {"你的账号已被暂停, %Died%", "bro got sent to the shadow realm by a %Weapon%", "%Died%, should've dodged, oh wait… too late 💀", "yo %Died%, your Roblox career ended faster than a limited item stock", "Ты уничтожен", "ur name should be 'free kill', %Died%", "%Died% died so fast that Roblox lagged 💀", "お前の敗北は確定していた", "お前の人生はチェックメイト", "fatality.", "bro went out like a YouTube tutorial dummy", "bro got cooked, fried, and served", "bro's internet provider officially disowned him", "Mustache Man once said: 'The greatest defeat comes when one refuses to accept their fate.'", "Napoleon once declared: 'The war is won in the mind before the battlefield.'", "Sun Tzu once wrote: 'The battlefield is not just a place, it is a state of mind.'", "Genghis Khan once proclaimed: 'A warrior's life ends when they fail to adapt to the changing tides.'", "Einstein once said: 'In the end, only the smart survive.'", }, Glory = { "你的死亡动画很美, %Died%", "someone clip that dawg, %Died% just got packed", "%Died%, wanna see my recoil script? (it's called skill)", "yo %Died%, ur gameplay lookin like a speedrun to the death screen", "bro's last words: 'I got this' 💀", "удар был смертельным", "ur name should be 'free kill', %Died%", "%Died% died so fast that Roblox lagged 💀", "お前の存在が消えた", "я сохранил этот момент", "bro thought he was the protagonist, I made sure he wasn't", "Google says 'how to recover from a humiliation kill'", "%Died%, that was a fatality, not a kill", "bro got deleted so hard, he's gonna respawn in another server", "I'm screenshotting this kill for my collection %Died%", "你只是我今天的另一个XP点数 ", "お前は何だったの？", "left right goodnight :skull:", "clip that, I need it for my mixtape", "bro got an express ticket to spectate mode", "100% uninstall speedrun, new record %Died%", "bro thought he had a chance, but the script said no", "Mustache Man once said: 'Victory is a sweet taste for those who dare to fight without hesitation.'", "Sun Tzu once wrote: 'The only true defeat is one suffered without a fight.'", "Einstein once said: 'It's not about how fast you run, but how you use your momentum.'", "Genghis Khan once declared: 'A battle is not won by strength alone, but by will and intellect.'", "Napoleon said: 'The best way to predict the future is to make it.'", }, }, }; end;
-local modules, framework;
-
-do
-    setstackhidden(1, true);
-
-    local hooked_functions = {};
-    local detected_field, kill_environment, adonis_event;
-
-    local function is_adonis(obj)
-        if (obj:IsA("RemoteEvent") and string.match(obj.Name, "^%w%w%w%w%w%w%w%w%-%w%w%w%w%-%w%w%w%w%-%w%w%w%w%-%w%w%w%w%w%w%w%w%w%w%w%w$")) then
-            local remote_function = obj:FindFirstChild("__FUNCTION");
-            if (remote_function and remote_function:IsA("RemoteFunction")) then
-                return true;
-            end
-        end
-        return false;
-    end;
-
-    for _, obj in ipairs(repstorage:GetChildren()) do
-        if (is_adonis(obj)) then
-            adonis_event = obj;
-            break;
-        end;
-    end;
-
-    local blacklisted_names = {"createBodyMover", "getIsAcDisabled"};
-
-    local function is_spooky(str)
-        if (type(str) ~= "string" or #str < 4) then
-            return false;
-        end;
-        if (str:sub(-17) == ".AntiCheatHandler") then
-            return false;
-        end;
-        return str:lower():find("anti") ~= nil;
-    end;
-
-    setthreadidentity(2);
-    for _, obj in getgc(true) do
-        if (typeof(obj) == "table") then
-            local detected_env = rawget(obj, "Detected");
-            if (typeof(detected_env) == "function" and not detected_field) then
-                detected_field = detected_env;
-                local function_info = newcclosure(function()
-                    return debug.getinfo(detected_field, "u");
-                end)();
-                if (function_info and function_info.nups) then
-                    for i = 1, function_info.nups do
-                        local s, v = newcclosure(pcall(function()
-                            return true, debug.getupvalue(detected_field, i);
-                        end))();
-                        if (s and (typeof(v) == "userdata" or typeof(v) == "Instance")) then
-                            pcall(newcclosure(function()
-                                debug.setupvalue(detected_field, i, nil);
-                            end));
-                        end;
-                    end;
-                end;
-                table.insert(hooked_functions, detected_field);
-            end;
-        end;
-    end;
-    setthreadidentity(7);
-
-    for _, obj in pairs(getreg()) do
-        if (type(obj) == "thread") then
-            local success, source = pcall(debug.info, obj, 1, "s");
-            if (success and is_spooky(source)) then task.cancel(obj); end;
-        end;
-    end;
-
-    for _, obj in pairs(getgc(true)) do
-        if (type(obj) == "function") then
-            local success, source = pcall(debug.info, obj, "s");
-            if (success) then
-                if (is_spooky(source)) then
-                elseif (source:find(".AntiCheatHandler")) then
-                    local success2, uv = pcall(debug.getupvalues, obj);
-                    if (success2 and #uv ~= 2) then end;
-                end;
-            end;
-        elseif (type(obj) == "table") then
-            local success, val = pcall(rawget, obj, "getIsBodyMoverCreatedByGame");
-            if (success and val) then
-                for k, v in pairs(obj) do
-                    if (type(v) == "function" and not table.find(blacklisted_names, k)) then end;
-                end;
-            end;
-        end;
-    end;
+if not Data then
+    Data = {
+        InviteToDiscord = false,
+        Intro = true,
+        KillSayStuff = {
+            Normal = {
+                "bro, respawn faster, I need more %XP% XP";
+                "can someone hvh me?? im guessing nobody can 🤣";
+                "你的WiFi是土豆吗, %Died%?";
+                "你打游戏好像老奶奶一样";
+                "Atleast u died to SERENIUM, %Died%";
+                "你是NPC吗, %Died%?";
+                "你的技能和样老";
+                "fix ur aim %Died%";
+                "damn is 😂";
+                "听说你用Internet Explorer在玩游戏";
+                "お前の反応はカタツムリより遅いぞ";
+                "你在玩手机上吗, %Died%?";
+                "你刚才是睡着了吗?";
+                "🤖 你是一台机器人吗, %Died%?";
+                "Internet says 'how to dodge in combat warriors'";
+                "turn off 'get beaten by skids' in cw settings";
+                "左, 右, 晚安 :skull:";
+                "お前はもう死んでいる";
+                "ты был удалён с сервера";
+                "איפה הכבוד שלך, %Died%?";
+                "あなたはゲームをやめるべきです";
+                "your kd is negative btw %Died%";
+                "你的存活率比0%还低";
+                "parrying 💔💔";
+                "Internet says 'how to recover from public humiliation'";
+                "get this script at /SERENIUM !";
+                "tired of cheaters? become one yourself and combat them! /SERENIUM";
+                "Outplayed by SERENIUM.";
+            };
+            Assist = {
+                "你没死于我, 是死于团队合作";
+                "split my %XP% XP and %Credits% credits with a random,ty for the donation %Died%";
+                "お前は味方にやられた";
+                "ты просто статистика";
+                "你被团队协作打败了";
+                "didnt need an assist to kill u %Died%";
+                "谁帮我补刀的? 这次算你赚到";
+                "yo %Died%, we both know I didn't need the assist";
+            };
+            Finish = {
+                "你的账号已被暂停, %Died%";
+                "bro got sent to the shadow realm by a %Weapon%";
+                "%Died%, should've dodged, oh wait… too late 💀";
+                "yo %Died%, your Roblox career ended faster than a limited item stock";
+                "Ты уничтожен";
+                "ur name should be 'free kill', %Died%";
+                "%Died% died so fast that Roblox lagged 💀";
+                "お前の敗北は確定していた";
+                "お前の人生はチェックメイト";
+                "fatality.";
+                "bro went out like a YouTube tutorial dummy";
+                "bro got cooked, fried, and served";
+                "bro's internet provider officially disowned him";
+                "Mustache Man once said: 'The greatest defeat comes when one refuses to accept their fate.'";
+                "Napoleon once declared: 'The war is won in the mind before the battlefield.'";
+                "Sun Tzu once wrote: 'The battlefield is not just a place, it is a state of mind.'";
+                "Genghis Khan once proclaimed: 'A warrior's life ends when they fail to adapt to the changing tides.'";
+                "Einstein once said: 'In the end, only the smart survive.'";
+            };
+            Glory = {
+                "你的死亡动画很美, %Died%";
+                "someone clip that dawg, %Died% just got packed";
+                "%Died%, wanna see my recoil script? (it's called skill)";
+                "yo %Died%, ur gameplay lookin like a speedrun to the death screen";
+                "bro's last words: 'I got this' 💀";
+                "удар был смертельным"; "ur name should be 'free kill', %Died%";
+                "%Died% died so fast that Roblox lagged 💀";
+                "お前の存在が消えた";
+                "я сохранил этот момент";
+                "bro thought he was the protagonist, I made sure he wasn't";
+                "Google says 'how to recover from a humiliation kill'";
+                "%Died%, that was a fatality, not a kill";
+                "bro got deleted so hard, he's gonna respawn in another server";
+                "I'm screenshotting this kill for my collection %Died%";
+                "你只是我今天的另一个XP点数 ";
+                "お前は何だったの？";
+                "left right goodnight :skull:";
+                "clip that, I need it for my mixtape";
+                "bro got an express ticket to spectate mode";
+                "100% uninstall speedrun, new record %Died%";
+                "bro thought he had a chance, but the script said no";
+                "Mustache Man once said: 'Victory is a sweet taste for those who dare to fight without hesitation.'";
+                "Sun Tzu once wrote: 'The only true defeat is one suffered without a fight.'";
+                "Einstein once said: 'It's not about how fast you run, but how you use your momentum.'";
+                "Genghis Khan once declared: 'A battle is not won by strength alone, but by will and intellect.'";
+                "Napoleon said: 'The best way to predict the future is to make it.'";
+            };
+        };
+    };
 end;
 
 local library = loadstring(game:HttpGet("https://raw.githubusercontent.com/xectray1/linoria-fork/refs/heads/main/linoria.lua"))();
 local savemanager = loadstring(game:HttpGet("https://raw.githubusercontent.com/xectray1/savemanager/refs/heads/main/linoria.lua"))();
 local thememanager = loadstring(game:HttpGet("https://raw.githubusercontent.com/violin-suzutsuki/LinoriaLib/refs/heads/main/addons/ThemeManager.lua"))();
+
 setthreadidentity(8);
-local window = library:CreateWindow({Title = "                                                    nil.solutions - discord.gg/serenium     					<font color=\"#ff0000\">combat warriors</font>", Center = true, AutoShow = true, TabPadding = 8, MenuFadeTime = 0});
+
+local window = library:CreateWindow({
+    Title = "                                                    nil.solutions - discord.gg/serenium     					<font color=\"#ff0000\">combat warriors</font>",
+    Center = true;
+    AutoShow = true;
+    TabPadding = 8;
+    MenuFadeTime = 0;
+});
+
 setthreadidentity(7);
-local tabs = {main = window:AddTab('main'), ranged = window:AddTab("ranged"); charactertab = window:AddTab("character"), misc = window:AddTab("misc"), visuals = window:AddTab("visuals"), settings = window:AddTab("settings")};
+
+local tabs = {
+    main = window:AddTab('main');
+    ranged = window:AddTab("ranged");
+    charactertab = window:AddTab("character");
+    misc = window:AddTab("misc");
+    world = window:AddTab("world");
+    visuals = window:AddTab("visuals");
+    settings = window:AddTab("settings")
+};
 
 main = tabs.main:AddLeftGroupbox("main");
 strafe_tab = tabs.main:AddLeftGroupbox("strafe");
 parrysection2 = tabs.main:AddRightGroupbox("auto parry")
 parrysection = tabs.main:AddRightGroupbox("modifications")
+
 mmisc = tabs.misc:AddLeftGroupbox("main");
 miscauto = tabs.misc:AddLeftGroupbox("auto");
 misc = tabs.misc:AddLeftGroupbox("cosmetic");
 crates = tabs.misc:AddLeftGroupbox("crates");
 misc_tab = tabs.misc:AddRightTabbox();
 auto = tabs.misc:AddRightGroupbox("others")
+
 charactertab = tabs.charactertab:AddLeftGroupbox("character");
 othertabs = tabs.charactertab:AddLeftGroupbox("others");
 exploit = tabs.charactertab:AddRightGroupbox("exploits");
 exploit1 = tabs.charactertab:AddRightGroupbox("character exploits");
-settings_tab = tabs.settings:AddLeftGroupbox("settings");
+
 gunmods = tabs.ranged:AddLeftGroupbox("gun mods");
-espsection = tabs.visuals:AddLeftGroupbox("esp");
+
+visualizer_tabbox = tabs.visuals:AddRightTabbox();
+self_tab = visualizer_tabbox:AddTab("self visualizer");
+tool_tab = visualizer_tabbox:AddTab("tool visualizer");
+desync_visualizer = tabs.visuals:AddRightGroupbox("desync visualizer");
+crosshairsection = tabs.visuals:AddRightGroupbox("crosshair");
+tracer_tab = tabs.visuals:AddRightGroupbox("tracer");
+bullet_tracers_section = tabs.visuals:AddRightGroupbox("bullet tracers");
+override_sound_section = tabs.visuals:AddRightGroupbox("override shoot sound");
+esp_section = tabs.visuals:AddLeftGroupbox("esp");
+utility_section = tabs.visuals:AddLeftGroupbox("utility");
+camera_section = tabs.visuals:AddLeftGroupbox("camera");
+
+atmosphere_tab = tabs.world:AddLeftGroupbox("atmosphere");
+sky_tab = tabs.world:AddLeftGroupbox("sky");
+fog_section = tabs.world:AddLeftGroupbox("fog");
+lighting_section = tabs.world:AddRightGroupbox("lighting");
+
+settings_tab = tabs.settings:AddLeftGroupbox("settings");
 
 local fly_cframe = nil;
 local whitelist = {};
-local viewing;
+local viewing = nil;
 
 local function player_characters() 
     return workspace:FindFirstChild("PlayerCharacters") or workspace:FindFirstChild("Characters") or workspace; 
@@ -227,17 +272,6 @@ local settings = {
     antiswim = false;
     spinenabled = false;
     jumppower = 50;
-    godmode = false;
-    dmgmultiplier = false;
-    mulamount = 1;
-    onehit = false;
-    anticc = false;
-    instanthits = false;
-    nocooldown = false;
-    parryduration = false;
-    resizer = 1;
-    safezonebypass = false;
-    gkacbypass = false;
     walkspeed = 16;
     flyspeed = 16;
     killaura = false;
@@ -254,10 +288,10 @@ local settings = {
     stompshoverange = 10;
     glorydelay = 1;
     gloryrange = 10;
-    silentAimTarget = nil;
     voidonparry = false;
     nnt = false;
     nut = false;
+    include_goop = false;
     nps = false;
     nps2 = false;
     noflash = false;
@@ -271,8 +305,6 @@ local settings = {
     desync = false;
     fastrespawn = false;
     loopspawn = false;
-    loopkillall = false;
-    loopkilltarget = false;
     stick = false;
     tpenemy = false;
     ar = false;
@@ -299,41 +331,99 @@ local settings = {
     avoid_walls = false;
 };
 
+local ff;
+
+local function update_ff()
+    if ff then
+        pcall(function()
+            ff:Destroy();
+        end);
+        ff = nil;
+    end;
+
+    if not settings.nut then
+        return;
+    end;
+
+    local char = localplayer.Character;
+    if not char then
+        return;
+    end;
+
+    ff = Instance.new("ForceField");
+    ff.Visible = false;
+
+    ff:GetPropertyChangedSignal("Visible"):Connect(function()
+        ff.Visible = false;
+    end);
+
+    ff.Parent = char;
+end;
+
 local teleport = function(CFrame) 
     game:GetService("TweenService"):Create(humanoidrootpart,TweenInfo.new(0),{CFrame = CFrame }):Play(); 
 end;
 
 local function should_skip_by_whitelist(player, skip_type)
-    if not player then return false; end;
-    if not Toggles.check_whitelist_global or not Toggles.check_whitelist_global.Value then return false; end;
+    if not player then
+        return false;
+    end;
+
+    if not Toggles.check_whitelist_global or not Toggles.check_whitelist_global.Value then
+        return false;
+    end;
     
     local types_raw = Options.global_whitelist_type and Options.global_whitelist_type.Value;
-    if not types_raw then return false; end;
+    if not types_raw then
+        return false;
+    end;
     
     local types = {};
-    if type(types_raw) == "table" then types = types_raw; elseif type(types_raw) == "string" then types = {[types_raw] = true}; end;
+
+    if type(types_raw) == "table" then
+        types = types_raw;
+    elseif type(types_raw) == "string" then
+        types = {
+            [types_raw] = true
+        };
+    end;
     
-    if skip_type and not types[skip_type] then return false; end;
+    if skip_type and not types[skip_type] then
+        return false;
+    end;
 
     local raw = Options.global_whitelist_mode and Options.global_whitelist_mode.Value;
-    if not raw then return false; end;
+    if not raw then
+        return false;
+    end;
     
     local modes = {};
-    if type(raw) == "table" then modes = raw; elseif type(raw) == "string" then modes = {[raw] = true}; end;
+
+    if type(raw) == "table" then
+        modes = raw;
+    elseif type(raw) == "string" then
+        modes = {
+            [raw] = true
+        };
+    end;
 
     if modes["whitelist"] and table.find(whitelist, player.Name) then
         return true;
     end;
+
     if modes["friend"] and localplayer:IsFriendsWith(player.UserId) then
         return true;
     end;
+
     if modes["team"] and localplayer.Team and player.Team == localplayer.Team then
         return true;
     end;
+
     if modes["clan"] then
         local ok, clan_data = pcall(function()
             return framework:get_clan_data();
         end);
+
         if ok and clan_data and clan_data.members then
             local my_member = clan_data.members[tostring(localplayer.UserId)];
             if my_member and clan_data.members[tostring(player.UserId)] then
@@ -354,39 +444,47 @@ local function whitelisted(player)
 end;
 
 do
-    local frame_spoofed = false;
 	local typeofcache = typeof;
 	local tickcache = tick;
 	local renderstepped = runservice.RenderStepped;
 	local connection, currentlooptype, cframecallback, currentactive;
 	local stopspoofing, executing = false, false;
 	local activespoofs, registeredspoofs, persistentloops = {}, {}, {};
+
 	local function oncharacter(char)
 		character = char;
 		humanoid = char:WaitForChild("Humanoid");
 		humanoidrootpart = char:WaitForChild("HumanoidRootPart");
 		primarypart = humanoidrootpart;
 		clientcframe = primarypart.CFrame;
+        update_ff();
 	end;
+
 	if localplayer.Character then
 		oncharacter(localplayer.Character);
 	end;
+
 	localplayer.CharacterAdded:Connect(oncharacter);
+
 	local mt = getrawmetatable(game);
 	local originalindex = mt.__index;
 	setreadonly(mt, false);
-	mt.__index = LPH_JIT_MAX(newcclosure(function(self, property)
+
+	mt.__index = newcclosure(function(self, property)
 		if (not checkcaller() and self == primarypart and property == "CFrame" and isspoofing) then
 			return clientcframe;
 		end;
 		return originalindex(self, property);
-	end));
+	end);
+
 	setreadonly(mt, true);
+
 	local looptypes = {
 		heartbeat = runservice.Heartbeat,
 		renderstepped = runservice.RenderStepped,
 		stepped = runservice.Stepped
 	};
+
 	local function evaluatecurrent()
 		local best;
 		for _, v in ipairs(activespoofs) do
@@ -402,6 +500,7 @@ do
 		end;
 		currentactive = best;
 	end;
+
 	local function refreshconnection()
 		if not currentactive then
 			if connection then
@@ -411,28 +510,33 @@ do
 			end;
 			return;
 		end;
+		
 		local looptype = currentactive.looptype;
 		if connection and currentlooptype == looptype then
 			return;
 		end;
+
 		if connection then
 			connection:Disconnect();
 			connection = nil;
 		end;
+
 		currentlooptype = looptype;
 		local event = looptypes[looptype] or runservice.Heartbeat;
+
 		connection = event:Connect(function()
 			if stopspoofing or executing then return; end;
 			if not (primarypart and primarypart.Parent) then return; end;
 			local spoof = currentactive;
 			if not spoof then return; end;
 			executing = true;
+
 			clientcframe = primarypart.CFrame;
 			local success, result = pcall(spoof.callback, clientcframe);
 			if success and result and typeofcache(result) == "CFrame" then
-                frame_spoofed = true;
 				isspoofing = true;
 				local target = result;
+
 				for _, v in ipairs(activespoofs) do
 					if v ~= spoof and v.ignore_priority then
 						local ok, res = pcall(v.callback, clientcframe);
@@ -441,46 +545,59 @@ do
 						end;
 					end;
 				end;
-				if spoof.direction then
-					local _, _, _, r00, r01, r02, r10, r11, r12, r20, r21, r22 = target:GetComponents();
-					local pos = clientcframe.Position + target.Position;
-					target = cframe_new(pos.X, pos.Y, pos.Z, r00, r01, r02, r10, r11, r12, r20, r21, r22);
-				end;
+
+                if spoof.direction then
+                    local pos = clientcframe.Position + target.Position;
+                    target = CFrame.fromMatrix(pos, result.RightVector, result.UpVector, result.LookVector);
+                end;
+
 				primarypart.CFrame = target;
 				renderstepped:Wait();
 				primarypart.CFrame = clientcframe;
 				isspoofing = false;
+
 				if cframecallback then
                     cframecallback(target);
                 end;
-                frame_spoofed = false;
-			elseif not success then
+
+			elseif success then
+				if cframecallback then
+					cframecallback(clientcframe);
+				end;
+			else
 				warn("callback error . .. spoof.name .. : " .. tostring(result));
 			end;
+
 			executing = false;
 		end);
 	end;
+
 	serverposition = function(looptype, logicname, targetlogic, priority, direction, ignore_priority)
 		if typeofcache(logicname) ~= "string" then
 			warn("invalid logic name");
 			return;
 		end;
+		
 		if registeredspoofs[logicname] then
 			warn("logic already registered: " .. logicname);
 			return;
 		end;
+		
 		if typeofcache(targetlogic) ~= "function" then
 			warn("invalid callback for: " .. logicname);
 			return;
 		end;
+		
 		if priority ~= nil and typeofcache(priority) ~= "number" then
 			warn("invalid priority for: " .. logicname);
 			return;
 		end;
+		
 		if typeofcache(looptype) ~= "string" then
 			warn("invalid looptype for: " .. logicname);
 			return;
 		end;
+
 		local lt = looptype:lower();
 		registeredspoofs[logicname] = {
 			priority = priority or 0,
@@ -492,56 +609,68 @@ do
 			ignore_priority = (direction == true) and (ignore_priority == true),
 		};
 	end;
+
 	setrunning = function(logicname, booleanref, persistent)
 		local spoofdata = registeredspoofs[logicname];
-		if not spoofdata then
+		
+        if not spoofdata then
 			warn("invalid name: " .. tostring(logicname));
 			return;
 		end;
+
 		local function applystatus(s)
 			local status = s;
 			if typeofcache(s) == "function" then
 				status = s();
 			end;
-			if status == true then
+			
+            if status == true then
 				for _, v in ipairs(activespoofs) do
 					if v.name == logicname then
 						return;
 					end;
 				end;
-				table.insert(activespoofs, spoofdata);
-				if not currentactive then
+				
+                table.insert(activespoofs, spoofdata);
+				
+                if not currentactive then
 					currentactive = spoofdata;
 				else
 					if spoofdata.priority > currentactive.priority or (spoofdata.priority == currentactive.priority and spoofdata.timestamp < currentactive.timestamp) then
 						currentactive = spoofdata;
 					end;
 				end;
-				refreshconnection();
+				
+                refreshconnection();
 			else
 				local removedcurrent = false;
-				for i, v in ipairs(activespoofs) do
+				
+                for i, v in ipairs(activespoofs) do
 					if v.name == logicname then
 						if v == currentactive then
-                            removedcurrent = true;
-                        end;
+							removedcurrent = true;
+						end;
 						table.remove(activespoofs, i);
 						break;
 					end;
 				end;
-				if removedcurrent then
-                    evaluatecurrent();
-                end;
-				refreshconnection();
+				
+                if removedcurrent then
+					evaluatecurrent();
+				end;
+				
+                refreshconnection();
 			end;
 		end;
+
 		applystatus(booleanref);
-		if persistent then
-			persistentloops[logicname] = persistentloops[logicname] or {};
+		
+        if persistent then
+			persistentloops[logicname] = persistentloops[logicname];
 			persistentloops[logicname].paused = false;
 			persistentloops[logicname].getter = booleanref;
 			if not persistentloops[logicname].connection then
-				persistentloops[logicname].connection = runservice.Heartbeat:Connect(LPH_JIT(function()
+				persistentloops[logicname].connection = runservice.Heartbeat:Connect(LPH_NO_VIRTUALIZE(function()
 					local loop = persistentloops[logicname];
 					if not loop.paused then
 						local desired;
@@ -558,24 +687,29 @@ do
 			end;
 		end;
 	end;
+
 	getrunning = function(logicname)
 		if not registeredspoofs[logicname] then
 			return false;
 		end;
-		for _, v in ipairs(activespoofs) do
+		
+        for _, v in ipairs(activespoofs) do
 			if v.name == logicname then
 				return true;
 			end;
 		end;
 		return false;
 	end;
+
 	resetcframe = function()
 		stopspoofing = true;
 		isspoofing = false;
 		executing = false;
+        
 		if primarypart and clientcframe then
 			primarypart.CFrame = clientcframe;
 		end;
+
 		for name, _ in pairs(registeredspoofs) do
 			for _, v in ipairs(activespoofs) do
 				if v.name == name then
@@ -583,11 +717,14 @@ do
 					break;
 				end;
 			end;
-			if persistentloops[name] then
+			
+            if persistentloops[name] then
 				persistentloops[name].paused = true;
 			end;
 		end;
+
 		currentactive = nil;
+
 		if connection then
 			connection:Disconnect();
 			connection = nil;
@@ -595,12 +732,14 @@ do
 		end;
 		stopspoofing = false;
 	end;
+
 	clearspoofs = function()
 		for _, v in pairs(persistentloops) do
 			if v.connection then
 				v.connection:Disconnect();
 			end;
 		end;
+
 		activespoofs = {};
 		registeredspoofs = {};
 		persistentloops = {};
@@ -611,206 +750,46 @@ do
 			currentlooptype = nil;
 		end;
 	end;
+
 	retrieve_position = function(callback)
 		if typeof(callback) ~= "function" then
 			warn("invalid callback for retrieve_position");
 			return;
 		end;
 		cframecallback = LPH_JIT_MAX(function(cf)
-			local is_spoofing = frame_spoofed and currentactive and currentactive.name ~= "exclude";
+			local is_spoofing = cf ~= clientcframe and currentactive and currentactive.name ~= "exclude";
 			callback(cf, is_spoofing);
 		end);
 	end;
 end;
 
 do
-    local space_down = false;
-	local c_down = false;
-    local spinrad = math.rad(spinspeed);
+    local activeloops = {};
+    local loopsetters = {};
 
-    serverposition("heartbeat", "exclude", LPH_JIT(function(cf)
-        return cf;
-    end), -9999999);
-    setrunning("exclude", true);
-
-    local function target_cframe(cf)
-        if settings.tpenemy and settings.follow_strafe_target and current_target and is_teleport_valid(current_target) then
-            local target_character = current_target.Character;
-            local target_root = target_character and target_character:FindFirstChild("HumanoidRootPart");
-            if target_root then
-                local targetpos = target_root.Position;
-                local x = targetpos.X + math_random(-5, 5);
-                local y = math_random(-1000, 0);
-                local z = targetpos.Z + math_random(-5, 5);
-                return cframe_new(x, y, z);
-            end;
+    compare_state = function(togglename, keyname, setter)
+        loopsetters[togglename] = { keyname = keyname, setter = setter };
+        if (activeloops[togglename]) then
+            activeloops[togglename]:Disconnect();
+            activeloops[togglename] = nil;
         end;
-        local basepos = cf.Position;
-        local x = basepos.X;
-        local y = math_random(-1000, 0);
-        local z = basepos.Z;
-        return cframe_new(x, y, z);
-    end;
-
-    serverposition("heartbeat", "voidhidelogic", LPH_JIT(function(cf)
-        return target_cframe(cf);
-    end), 3);
-
-	userinputservice.InputBegan:Connect(function(input, gpe)
-		if gpe then return; end;
-		if input.KeyCode == Enum.KeyCode.Space then
-            space_down = true;
-        end;
-		if input.KeyCode == Enum.KeyCode.C then
-            c_down = true;
-        end;
-	end);
-
-	userinputservice.InputEnded:Connect(function(input, gpe)
-		if input.KeyCode == Enum.KeyCode.Space then
-            space_down = false;
-        end;
-		if input.KeyCode == Enum.KeyCode.C then
-            c_down = false;
-        end;
-	end);
-
-    runservice.Heartbeat:Connect(LPH_JIT(function(delta_time)
-        local strafe_active = settings.tpenemy;
-        local extra = settings.strafe_extra or {};
-        local forg = (os.clock() - (settings.last_parry_tick or 0) < 3);
-        local is_baiting = extra["bait parry"];
-
-        if settings.voidenabled or (strafe_active and (settings.strafe_void_spam or (is_baiting and not forg))) then
-            local hum = localplayer.Character and localplayer.Character:FindFirstChild("Humanoid");
-            if hum then
-                hum:ChangeState(Enum.HumanoidStateType.Freefall);
-            end;
-        end;
-
-        if not humanoidrootpart then return; end;
-
-        if settings.flyenabled then
-            fly_cframe = fly_cframe or humanoidrootpart.CFrame;
-            humanoidrootpart.Velocity = Vector3.zero;
-            humanoidrootpart.RotVelocity = Vector3.zero;
-            local camera_cframe = workspace.CurrentCamera.CFrame;
-            local move_direction = humanoid.MoveDirection
-            local vertical = (space_down and 1 or 0) - (c_down and 1 or 0);
-            local move = (move_direction.Magnitude > 0 or vertical ~= 0) and ((camera_cframe.LookVector * move_direction:Dot(vector3_new(camera_cframe.LookVector.X, 0, camera_cframe.LookVector.Z).Unit) + camera_cframe.RightVector * move_direction:Dot(vector3_new(camera_cframe.RightVector.X, 0, camera_cframe.RightVector.Z).Unit) + vector3_new(0, 1, 0) * vertical)).Unit or Vector3.zero;
-            local next_pos = (fly_cframe + move * settings.flyspeed * delta_time).Position;
-            fly_cframe = cframe_new(next_pos, next_pos + camera_cframe.LookVector)
-            humanoidrootpart.CFrame = fly_cframe
-        else
-            fly_cframe = nil;
-        end;
-
-        if not settings.flyenabled and settings.velocityenabled and settings.velocityspeed then
-            local vy = humanoidrootpart.AssemblyLinearVelocity.Y;
-            local move_direction = humanoid.MoveDirection;
-            if move_direction.Magnitude > 0 then
-                local horizontal = vector3_new(move_direction.X, 0, move_direction.Z).Unit;
-                local spd = settings.velocityspeed;
-                humanoidrootpart.AssemblyLinearVelocity = vector3_new(horizontal.X * spd, vy, horizontal.Z * spd);
-            else
-                humanoidrootpart.AssemblyLinearVelocity = vector3_new(0, vy, 0);
-            end;
-        end;
-    end));
-
-    if settings.spinenabled and humanoidrootpart then
-        local angle = (spinrad * dt * 60) % TAU;
-        if settings.flyenabled then
-            fly_cframe = fly_cframe * cframe_angles(0, angle, 0);
-        else
-            humanoidrootpart.CFrame = humanoidrootpart.CFrame * cframe_angles(0, angle, 0);
-        end;
-    end;
-    
-    serverposition("heartbeat", "body_direction", LPH_JIT(function(cf)
-        local x = Options.desync_x and math.rad(Options.desync_x.Value) or 0;
-        local y = Options.desync_y and math.rad(Options.desync_y.Value) or 0;
-        local z = Options.desync_z and math.rad(Options.desync_z.Value) or 0;
         
-        local ox = Options.desync_off_x and Options.desync_off_x.Value or 0;
-        local oy = Options.desync_off_y and Options.desync_off_y.Value or 0;
-        local oz = Options.desync_off_z and Options.desync_off_z.Value or 0;
-
-        local off_speed = 30;
-        if off_speed > 0 then
-            local t = os.clock() * (off_speed * 1.5);
-            ox = math_sin(t * 0.7) * ox;
-            oy = math_cos(t * 0.9) * oy;
-            oz = math_sin(t * 1.2) * oz;
-        end;
-        if Toggles.desync_random_rotation and Toggles.desync_random_rotation.Value then
-            local speed = Options.desync_random_speed and Options.desync_random_speed.Value or 5;
-            local t = os.clock() * (speed * 0.5);
-            
-            x = (t * 1.3) + math_sin(t * 0.5);
-            y = (-t * 1.7) + math_cos(t * 0.8);
-            z = (t * 2.1) + math_sin(t * 1.1);
-        end;
-
-        if (Toggles.desync_look and Toggles.desync_look.Value) then
-            local _, real_y, _ = cf:ToEulerAnglesYXZ();
-            y = real_y;
-        end;
-        if Toggles.desync_avoid_walls and Toggles.desync_avoid_walls.Value then
-            local ray_origin = cf.Position;
-            local ray_direction = vector3_new(ox, oy, oz);
-            if ray_direction.Magnitude > 0.01 then
-                local ray_params = RaycastParams.new();
-                ray_params.FilterType = Enum.RaycastFilterType.Exclude;
-                ray_params.FilterDescendantsInstances = {character, camera};
-                local ray_result = workspace:Raycast(ray_origin, ray_direction, ray_params);
-                if ray_result then
-                    local hit_pos = ray_result.Position;
-                    local new_pos = hit_pos + ray_result.Normal * 0.5;
-                    local new_offset = new_pos - ray_origin;
-                    ox, oy, oz = new_offset.X, new_offset.Y, new_offset.Z;
-                end;
-            end;
-        end;
-
-        return cframe_new(ox, oy, oz) * cframe_angles(x, y, z);
-    end), 0, true, true);
-
-    local noclip_parts = {};
-    local function noclip(char)
-        noclip_parts = {};
-        if not char then return end;
-        for _, v in ipairs(char:GetDescendants()) do 
-            if v:IsA("BasePart") then 
-                table.insert(noclip_parts, v); 
-            end; 
-        end;
-        char.DescendantAdded:Connect(function(v) 
-            if v:IsA("BasePart") then 
-                table.insert(noclip_parts, v); 
-            end; 
-        end);
+        activeloops[togglename] = runservice.Heartbeat:Connect(LPH_NO_VIRTUALIZE(function()
+            local toggleon = Toggles[togglename] and Toggles[togglename].Value;
+            local option = Options[keyname];
+            setter(toggleon and (option and option:GetState() or false));
+        end));
     end;
-    noclip(character);
-    localplayer.CharacterAdded:Connect(noclip);
-    
-    local noclip_tick = 0;
-    runservice.Stepped:Connect(LPH_JIT(function()
-        if not settings.noclipenabled then return; end;
-        local now = tick();
-        if now - noclip_tick < 0.05 then return; end;
-        noclip_tick = now;
-        local i = #noclip_parts;
-        while i > 0 do
-            local v = noclip_parts[i];
-            if not v or not v.Parent then
-                table.remove(noclip_parts, i);
-            else
-                v.CanCollide = false;
-            end;
-            i = i - 1;
+
+    cleanup_loops = function()
+        for name, connection in pairs(activeloops) do
+            connection:Disconnect();
+            activeloops[name] = nil;
         end;
-    end));
+        for togglename, data in pairs(loopsetters) do
+            compare_state(togglename, data.keyname, data.setter);
+        end;
+    end;
 end;
 
 local hitdetection_impl = {
@@ -840,6 +819,7 @@ hitdetection_impl.create_log = function(text)
     local nil_color = Color3.fromRGB(148, 131, 255);
     local text_size = 19;
     local text_font = 2;
+    
     local nil_label = drawing_new("Text");
     nil_label.Text = prefix_nil;
     nil_label.Size = text_size;
@@ -849,6 +829,7 @@ hitdetection_impl.create_log = function(text)
     nil_label.Visible = true;
     nil_label.Transparency = 0;
     nil_label.ZIndex = 15;
+    
     local label_dot = drawing_new("Text");
     label_dot.Text = prefix_dot;
     label_dot.Size = text_size;
@@ -858,6 +839,7 @@ hitdetection_impl.create_log = function(text)
     label_dot.Visible = true;
     label_dot.Transparency = 0;
     label_dot.ZIndex = 15;
+    
     local label_solutions = drawing_new("Text");
     label_solutions.Text = prefix_solutions;
     label_solutions.Size = text_size;
@@ -867,6 +849,7 @@ hitdetection_impl.create_log = function(text)
     label_solutions.Visible = true;
     label_solutions.Transparency = 0;
     label_solutions.ZIndex = 15;
+    
     local label_rest = drawing_new("Text");
     label_rest.Text = rest_of_text;
     label_rest.Size = text_size;
@@ -876,19 +859,30 @@ hitdetection_impl.create_log = function(text)
     label_rest.Visible = true;
     label_rest.Transparency = 0;
     label_rest.ZIndex = 15;
+    
     local target_x = screen.X / 2;
     local target_y = screen.Y - 180 - hitdetection_impl.yo_offset;
     local width = nil_label.TextBounds.X + label_dot.TextBounds.X + label_solutions.TextBounds.X + label_rest.TextBounds.X;
     local center_offset = width / 2;
+    
     local function set_position(current_x_axis)
         nil_label.Position = vector2_new(current_x_axis - center_offset, target_y);
         label_dot.Position = vector2_new(nil_label.Position.X + nil_label.TextBounds.X, target_y);
         label_solutions.Position = vector2_new(label_dot.Position.X + label_dot.TextBounds.X, target_y);
         label_rest.Position = vector2_new(label_solutions.Position.X + label_solutions.TextBounds.X, target_y);
     end;
+
     set_position(target_x - 30);
-    table.insert(hitdetection_impl.Labels, {nil_label, label_dot, label_solutions, label_rest});
+
+    table.insert(hitdetection_impl.Labels, {
+        nil_label,
+        label_dot,
+        label_solutions,
+        label_rest
+    });
+
     hitdetection_impl.yo_offset = hitdetection_impl.yo_offset + 22;
+
     task_spawn(LPH_JIT(function()
         local slide_steps = 10;
         for i = 1, slide_steps do
@@ -901,7 +895,9 @@ hitdetection_impl.create_log = function(text)
             set_position(current_x_axis);
             task.wait(0.015);
         end;
-        task.wait(1.6)
+
+        task.wait(1.6);
+
         for i = 1, 10 do
             local trans = 1 - (i / 10);
             nil_label.Transparency = trans;
@@ -910,6 +906,7 @@ hitdetection_impl.create_log = function(text)
             label_rest.Transparency = trans;
             task.wait(0.04);
         end;
+
         nil_label.Visible = false;
         label_dot.Visible = false;
         label_solutions.Visible = false;
@@ -918,15 +915,18 @@ hitdetection_impl.create_log = function(text)
         label_dot:Remove();
         label_solutions:Remove();
         label_rest:Remove();
+
         for i, v in ipairs(hitdetection_impl.Labels) do
             if v[1] == nil_label then
                 table.remove(hitdetection_impl.Labels, i);
                 break;
             end;
         end;
+
         if #hitdetection_impl.Labels == 0 then 
             hitdetection_impl.yo_offset = 0;
         end;
+
         if hitdetection_impl.yo_offset > 300 then 
             hitdetection_impl.yo_offset = 0;
         end;
@@ -957,14 +957,19 @@ hitdetection_impl.CreateEffect = LPH_JIT(function(effect_type, part, color, dama
         local clone = target_character:Clone();
         clone.Name = "clone";
         local clone_humanoid = clone:FindFirstChildOfClass("Humanoid");
+        
         if clone_humanoid then 
             clone_humanoid:Destroy();
         end;
+        
         local hrp = clone:FindFirstChild("HumanoidRootPart");
+        
         if hrp then 
             hrp:Destroy();
         end;
+        
         local is_neon = effect_type == "Clone (Neon)";
+        
         local function property_collision(v)
             if v:IsA("BasePart") then
                 v.CanCollide = false;
@@ -981,6 +986,7 @@ hitdetection_impl.CreateEffect = LPH_JIT(function(effect_type, part, color, dama
                 end;
             end;
         end;
+        
         for _, v in pairs(clone:GetDescendants()) do
             if v:IsA("BasePart") then
                 property_collision(v);
@@ -1004,6 +1010,7 @@ hitdetection_impl.CreateEffect = LPH_JIT(function(effect_type, part, color, dama
                 v:Destroy(); 
             end;
         end;
+        
         for _, v in pairs(target_character:GetDescendants()) do
             if v:IsA("BasePart") then
                 local clone_part = clone:FindFirstChild(v.Name, true);
@@ -1012,14 +1019,17 @@ hitdetection_impl.CreateEffect = LPH_JIT(function(effect_type, part, color, dama
                 end;
             end;
         end;
+        
         local lp_character = localplayer.Character;
         if lp_character and lp_character:FindFirstChild("HumanoidRootPart") then
             local root = lp_character.HumanoidRootPart;
             clone:PivotTo(target_character:GetPivot() + vector3_new(root.CFrame.LookVector.X * 1.5, 0, root.CFrame.LookVector.Z * 1.5));
         end;
+        
         clone.DescendantAdded:Connect(function(v) 
             property_collision(v); 
         end);
+
         clone.Parent = workspace.Terrain;
         target_character.Archivable = false;
         game:GetService("Debris"):AddItem(clone, 2);
@@ -1027,6 +1037,7 @@ hitdetection_impl.CreateEffect = LPH_JIT(function(effect_type, part, color, dama
         local attachment = Instance.new("Attachment");
         attachment.Parent = part;
         attachment.WorldPosition = part.Position;
+        
         local function create_emitter(name, orientation)
             local p = Instance.new("ParticleEmitter");
             p.Name = name;
@@ -1050,6 +1061,7 @@ hitdetection_impl.CreateEffect = LPH_JIT(function(effect_type, part, color, dama
             p.Parent = attachment;
             return p;
         end;
+        
         local p1 = create_emitter("Particle1", Enum.ParticleOrientation.VelocityPerpendicular);
         local p2 = create_emitter("Particle2", Enum.ParticleOrientation.FacingCamera);
         p1:Emit(1);
@@ -1082,8 +1094,10 @@ hitdetection_impl.CreateEffect = LPH_JIT(function(effect_type, part, color, dama
         if target_part.Name == "hitbox" then 
             target_part = target_part.Parent:FindFirstChild("Head") or target_part.Parent:FindFirstChild("Torso") or target_part.Parent:FindFirstChild("HumanoidRootPart") or target_part; 
         end;
+        
         local world_pivot = target_part.Position + vector3_new(math_random(-10, 10) / 10, 2, math_random(-10, 10) / 10);
         local float_offset = vector3_new(math_random(-5, 5) / 10, 3, 0);
+        
         local function create_label()
             local l = drawing_new("Text");
             l.Text = damage_text;
@@ -1096,16 +1110,21 @@ hitdetection_impl.CreateEffect = LPH_JIT(function(effect_type, part, color, dama
             l.Transparency = 1;
             l.ZIndex = 20;
             return l;
+        
         end;
+        
         local label1 = create_label()
         local label2 = create_label()
+        
         task_spawn(LPH_JIT(function()
             local start_time = tick();
             local duration = 0.8;
+            
             while tick() - start_time < duration do
                 local elapsed = tick() - start_time;
                 local current_pivot = world_pivot + (float_offset * math_sin((elapsed / duration) * (math.pi / 2)));
                 local screen_position, on_screen = camera:WorldToViewportPoint(current_pivot);
+                
                 if on_screen then
                     label1.Visible = true;
                     label2.Visible = true;
@@ -1133,6 +1152,7 @@ hitdetection_impl.CreateEffect = LPH_JIT(function(effect_type, part, color, dama
                 end;
                 runservice.RenderStepped:Wait();
             end;
+
             label1.Visible = false;
             label2.Visible = false;
             label1:Remove();
@@ -1142,23 +1162,27 @@ hitdetection_impl.CreateEffect = LPH_JIT(function(effect_type, part, color, dama
 end);
 
 local last_hits = {};
+
 local OnHit = LPH_JIT(function(target_player, hit_part, damage, hit_type)
     if not target_player then return; end;
     if not Toggles or not Toggles.HitDetectionEnabled or not Toggles.HitDetectionEnabled.Value then return; end;
-    local selected_type = Options.HitDetectionType and Options.HitDetectionType.Value or "Both";
-    if selected_type ~= "Both" and hit_type and selected_type ~= hit_type then return; end;
+    
     if hit_part and hit_part.Name == "hitbox" and hit_part.Parent then 
         hit_part = hit_part.Parent:FindFirstChild("Head") or hit_part.Parent:FindFirstChild("Torso");
     end;
+
     local now = tick();
+
     local hitId = tostring(target_player.UserId);
     if last_hits[hitId] and now - last_hits[hitId] < 0.12 then return; end;
     last_hits[hitId] = now;
+
     local function trigger_effects()
         if Options.HitSound and Options.HitSound.Value ~= "None" then
             local volume = Options.HitSoundVolume and Options.HitSoundVolume.Value or 1;
             hitdetection_impl.play_sound(Options.HitSound.Value, volume);
         end;
+
         if Options.HitEffects and Options.HitEffects.Value and hit_part then
             local color = Options.HitEffectColor and Options.HitEffectColor.Value or Color3.new(1,1,1);
             for effect_type, enabled in pairs(Options.HitEffects.Value) do
@@ -1171,18 +1195,19 @@ local OnHit = LPH_JIT(function(target_player, hit_part, damage, hit_type)
                 end;
             end;
         end;
+
         if Toggles.HitLogs and Toggles.HitLogs.Value then
             local part_name = hit_part and hit_part.Name or "Unknown";
             local headshot = part_name == "Head";
             local display_damage = damage or 0;
             local damage_text = string.format("%.0f", display_damage);
-            hitdetection_impl.create_log( "nil.solutions | hit " .. target_player.Name .. " for " .. damage_text .. " damage (" .. (headshot and "head" or part_name) .. ")" );
+            hitdetection_impl.create_log("nil.solutions | hit " .. target_player.Name .. " for " .. damage_text .. " damage (" .. (headshot and "head" or part_name) .. ")" );
         end;
     end;
     trigger_effects();
 end);
 
-modules = {Name = {}, Id = {} };
+local modules = {Name = {}, Id = {} };
 local utilityids = {};
 local weaponids = {};
 
@@ -1199,7 +1224,8 @@ local critical_modules = {
     "ItemAttachmentHandlerClient", "WaterHandler", "InstancePropsHandler",
     "ClaymoreTrapPartClient", "OpenBearTrapPartClient", "RangedHitVisuals",
     "VFXClient", "ToastNotificationActionsClient", "CaseMetadata",
-    "ClanRanksConfigs",
+    "ClanRanksConfigs", "GoopSlowHandlerClient", "GoopPoolHitboxPartClient",
+    "GoopConstants",
 };
 
 local criticalset = {};
@@ -1209,6 +1235,7 @@ for i = 1, #critical_modules do
 end;
 
 setthreadidentity(2);
+
 for _, child in pairs(repstorage:GetDescendants()) do
     if child:IsA("ModuleScript") and criticalset[child.Name] then
         local success, module = pcall(require, child);
@@ -1217,36 +1244,65 @@ for _, child in pairs(repstorage:GetDescendants()) do
         end;
     end;
 end;
+
 setthreadidentity(8);
 
-for i, v in modules.Name["UtilityIds"] do 
+for i, v in pairs(modules.Name["UtilityIds"]) do 
     utilityids[i:lower()] = v;
 end;
 
-for i, v in modules.Name["WeaponIds"] do 
+for i, v in pairs(modules.Name["WeaponIds"]) do 
     weaponids[i:lower()] = v;
 end;
 
 local network = modules.Name["Network"];
-local eventhandler;
-local remotes;
 
-if eventhandler then 
-    remotes = getupvalue(eventhandler, 1);
+local cache = {};
+for _, v in pairs(getgc()) do
+    if type(v) == "function" then
+        local name = debug.info(v, "n");
+        if (name == "FireServer" or name == "InvokeServerWithTimeout" or name == "BindEvents") then
+            local source = debug.info(v, "s");
+            if source and source:find(".Vendor.Network") then
+                cache[name] = v;
+            end;
+        end;
+    end;
 end;
 
-framework = {};
-local hooks = {};
+if (not cache.FireServer or not cache.InvokeServerWithTimeout) then
+    warn("game updated (1)");
+end;
+
+local fire_server = function(...)
+    if (cache.FireServer) then
+        return cache.FireServer(network, ...);
+    end;
+    return network:FireServer(...);
+end;
+
+local invoke_server = function(...)
+    if (cache.InvokeServerWithTimeout) then
+        return cache.InvokeServerWithTimeout(network, nil, ...);
+    end;
+    return network:InvokeServerWithTimeout(nil, ...);
+end;
+
+local bind_events = function(events, ...)
+    if (cache.BindEvents) then
+        return cache.BindEvents(network, events, ...);
+    end;
+    return network:BindEvents(events, ...);
+end;
+
+local framework = {};
 local modify = {};
-local signal = modules.Name["Signal"];
-local onfireserver = network.FireServer;
+local hooks = {};
 local old_fireserver;
-local hooks = {};
-local modify = {};
 
 local function handle(self, Name, ...)
 	local Args = { ... };
-
+    
 	if modify[Name] then
 		local can_hook = modify[Name].Check(Name, unpack(Args));
 		if can_hook then
@@ -1270,38 +1326,29 @@ local function handle(self, Name, ...)
 		return hook(old_fireserver, self, Name, unpack(Args));
 	end;
 
-	return old_fireserver(self, Name, unpack(Args));
+	return (cache.FireServer or old_fireserver)(self, Name, unpack(Args));
 end;
 
-old_fireserver = hookfunction(network.FireServer, newcclosure(function(self, Name, ...)
-	return handle(self, Name, ...);
-end));
+if network and network.FireServer then
+    old_fireserver = hookfunction(network.FireServer, newcclosure(function(self, Name, ...)
+        return handle(self, Name, ...);
+    end));
+end;
 
-local cache = { };
-for _, v in getgc() do
-    if (type(v) ~= "function") then
-        continue;
+local signal = modules.Name["Signal"];
+
+local function update_goop()
+    local gc = modules.Name["GoopConstants"];
+    if gc then
+        local old_readonly = isreadonly(gc);
+        setreadonly(gc, false);
+        if settings.nut and settings.include_goop then
+            gc.SLOW_MULTIPLIER = 1;
+        else
+            gc.SLOW_MULTIPLIER = 0.35;
+        end;
+        setreadonly(gc, old_readonly);
     end;
-    local name = debug.info(v, "n");
-    if (name ~= "FireServer" and name ~= "InvokeServerWithTimeout") then
-        continue;
-    end;
-    local source = debug.info(v, "s");
-    if (source and source:find(".Vendor.Network")) then
-        cache[name] = v;
-    end;
-end;
-
-if (not cache.FireServer or not cache.InvokeServerWithTimeout) then
-    return warn("game updated (1)");
-end;
-
-local fire_server = function(...)
-    cache.FireServer(network, ...);
-end;
-
-local invoke_server = function(...)
-    return cache.InvokeServerWithTimeout(network, nil, ...);
 end;
 
 function framework:addhook(Name, Function) 
@@ -1317,7 +1364,7 @@ function framework:removehook(Name)
 end;
 
 function framework:removeargmodifier(Name, ToModify) 
-    table.remove(Modify, table.find(Modify, Name));
+    table.remove(modify, table.find(modify, Name));
 end;
 
 function framework:hookclient(Table, Name, new_function)
@@ -1350,7 +1397,7 @@ function framework:get_weapon(Player)
 	if not Player then return; end;
 	local Character = Player.Character or Player.CharacterAdded:Wait();
 	if not Character then return; end;
-	for i, v in Character:GetChildren() do
+	for i, v in pairs(Character:GetChildren()) do
 		if not v:IsA("Tool") then continue; end;
 		if v:GetAttribute("ItemType") == "weapon" and modules.Name["WeaponMetadata"][v:GetAttribute("ItemId")] and modules.Name["WeaponMetadata"][v:GetAttribute("ItemId")].class:lower():match("melee") then return
             v, modules.Name["MeleeWeaponClient"].getObj(v);
@@ -1364,7 +1411,7 @@ function framework:get_ranged(Player)
 	if not Player then return; end;
 	local Character = Player.Character or Player.CharacterAdded:Wait();
 	if not Character then return; end;
-	for i, v in Character:GetChildren() do
+	for i, v in pairs(Character:GetChildren()) do
 		if not v:IsA("Tool") then continue; end;
 		if v:GetAttribute("ItemType") == "weapon" and modules.Name["WeaponMetadata"][v:GetAttribute("ItemId")] and modules.Name["WeaponMetadata"][v:GetAttribute("ItemId")].class:lower():match("ranged") then
             return v, modules.Name["RangedWeaponClient"].getObj(v);
@@ -1386,7 +1433,9 @@ function framework:in_menu(Player)
 	if not Player.Character then
         return is_menu;
     end;
-	for i, v in Player.Character:GetChildren() do 
+	local char_children = Player.Character:GetChildren();
+	for i = 1, #char_children do
+        local v = char_children[i]; 
         if v:GetAttribute("ParryShieldId") then 
             is_menu = false; 
         end; 
@@ -1395,6 +1444,7 @@ function framework:in_menu(Player)
 end;
 
 local cachedplayers = {};
+
 local function update_cached()
     local lp = localplayer;
     local cache = cachedplayers;
@@ -1414,9 +1464,9 @@ local function update_cached()
     end;
 end
 
-players.PlayerAdded:Connect(update_cached)
-players.PlayerRemoving:Connect(update_cached)
-update_cached()
+players.PlayerAdded:Connect(update_cached);
+players.PlayerRemoving:Connect(update_cached);
+update_cached();
 
 function framework:get_closest(Distance, Priority, check_function)
     local n = function(Player)
@@ -1567,6 +1617,9 @@ end;
 
 function framework:closest_characters_origin(Origin, Dist)
 	local folder = player_characters();
+    local target = nil;
+    local dis = Dist or 19;
+
 	for i, v in pairs(folder:GetChildren()) do
 		local Player = players:GetPlayerFromCharacter(v);
 		if not Player then continue; end;
@@ -1579,7 +1632,7 @@ function framework:closest_characters_origin(Origin, Dist)
 		local humanoid = v:FindFirstChildOfClass("Humanoid");
 		if not hrp or not head or not humanoid or humanoid.Health <= 0 then continue; end;
 		local magnitude = (hrp.Position - Origin).Magnitude;
-		if magnitude < Dist then
+		if magnitude < dis then
 			dis = magnitude;
 			target = v;
 		end;
@@ -1727,7 +1780,9 @@ function framework:in_menu(Player)
 	if not Player.Character then
         return is_menu;
     end;
-	for i, v in pairs(Player.Character:GetChildren()) do
+	local char_children = Player.Character:GetChildren();
+	for i = 1, #char_children do
+        local v = char_children[i];
         if v:GetAttribute("ParryShieldId") then
             is_menu = false;
         end;
@@ -1775,6 +1830,7 @@ function framework:check(self, Character)
     end;
 	return result;
 end;
+
 
 local clan_store = nil;
 local clan_ranks = modules.Name["ClanRanksConfigs"];
@@ -1885,29 +1941,232 @@ function revertranged(name)
 end;
 
 do
+    local space_down = false;
+	local c_down = false;
+    local spinrad = math.rad(spinspeed);
+    
+    serverposition("heartbeat", "exclude", LPH_JIT(function(cf)
+        return cf;
+    end), -9999999);
+    setrunning("exclude", true);
+
+    local function target_cframe(cf)
+        if settings.tpenemy and settings.follow_strafe_target and current_target and is_teleport_valid(current_target) then
+            local target_character = current_target.Character;
+            local target_root = target_character and target_character:FindFirstChild("HumanoidRootPart");
+            if target_root then
+                local targetpos = target_root.Position;
+                local x = targetpos.X + math_random(-5, 5);
+                local y = math_random(-1000, 0);
+                local z = targetpos.Z + math_random(-5, 5);
+                return cframe_new(x, y, z);
+            end;
+        end;
+        local basepos = cf.Position;
+        local x = basepos.X;
+        local y = math_random(-1000, 0);
+        local z = basepos.Z;
+        return cframe_new(x, y, z);
+    end;
+
+    serverposition("heartbeat", "voidhidelogic", LPH_JIT(function(cf)
+        return target_cframe(cf);
+    end), 3);
+
+	userinputservice.InputBegan:Connect(function(input, gpe)
+		if gpe then return; end;
+		if input.KeyCode == Enum.KeyCode.Space then
+            space_down = true;
+        end;
+		if input.KeyCode == Enum.KeyCode.C then
+            c_down = true;
+        end;
+	end);
+
+	userinputservice.InputEnded:Connect(function(input, gpe)
+		if input.KeyCode == Enum.KeyCode.Space then
+            space_down = false;
+        end;
+		if input.KeyCode == Enum.KeyCode.C then
+            c_down = false;
+        end;
+	end);
+
+    runservice.Heartbeat:Connect(LPH_NO_VIRTUALIZE(function(delta_time)
+        local strafe_active = settings.tpenemy;
+        local extra = settings.strafe_extra;
+        local forg = (os.clock() - (settings.last_parry_tick or 0) < 3);
+        local is_baiting = extra["bait parry"];
+        local self_parried = framework:GetSessionData(localplayer):getState().parry.isParried;
+
+        if settings.voidenabled or (strafe_active and (settings.strafe_void_spam or (is_baiting and not forg))) then
+            local hum = localplayer.Character and localplayer.Character:FindFirstChild("Humanoid");
+            if hum then
+                hum:ChangeState(Enum.HumanoidStateType.Freefall);
+            end;
+        end;
+        
+        if (self_parried and settings.voidonparry) then
+            setrunning("voidhidelogic", true);
+        elseif (not settings.voidenabled and not self_parried) then
+            setrunning("voidhidelogic", false);
+        end;
+
+        if not humanoidrootpart then return; end;
+
+        if settings.flyenabled then
+            fly_cframe = fly_cframe or humanoidrootpart.CFrame;
+            humanoidrootpart.Velocity = Vector3.zero;
+            humanoidrootpart.RotVelocity = Vector3.zero;
+            local camera_cframe = workspace.CurrentCamera.CFrame;
+            local move_direction = humanoid.MoveDirection;
+            local vertical = (space_down and 1 or 0) - (c_down and 1 or 0);
+            local move = (move_direction.Magnitude > 0 or vertical ~= 0) and ((camera_cframe.LookVector * move_direction:Dot(vector3_new(camera_cframe.LookVector.X, 0, camera_cframe.LookVector.Z).Unit) + camera_cframe.RightVector * move_direction:Dot(vector3_new(camera_cframe.RightVector.X, 0, camera_cframe.RightVector.Z).Unit) + vector3_new(0, 1, 0) * vertical)).Unit or Vector3.zero;
+            local next_pos = (fly_cframe + move * settings.flyspeed * delta_time).Position;
+            fly_cframe = cframe_new(next_pos, next_pos + camera_cframe.LookVector);
+            humanoidrootpart.CFrame = fly_cframe;
+        else
+            fly_cframe = nil;
+        end;
+
+        if not settings.flyenabled and settings.velocityenabled and settings.velocityspeed then
+            local vy = humanoidrootpart.AssemblyLinearVelocity.Y;
+            local move_direction = humanoid.MoveDirection;
+            if move_direction.Magnitude > 0 then
+                local horizontal = vector3_new(move_direction.X, 0, move_direction.Z).Unit;
+                local spd = settings.velocityspeed;
+                humanoidrootpart.AssemblyLinearVelocity = vector3_new(horizontal.X * spd, vy, horizontal.Z * spd);
+            else
+                humanoidrootpart.AssemblyLinearVelocity = vector3_new(0, vy, 0);
+            end;
+        end;
+    end));
+
+    if settings.spinenabled and humanoidrootpart then
+        local angle = (spinrad * dt * 60) % TAU;
+        if settings.flyenabled then
+            fly_cframe = fly_cframe * cframe_angles(0, angle, 0);
+        else
+            humanoidrootpart.CFrame = humanoidrootpart.CFrame * cframe_angles(0, angle, 0);
+        end;
+    end;
+    
+    serverposition("heartbeat", "body_direction", LPH_JIT(function(cf)
+        local x = Options.desync_x and math.rad(Options.desync_x.Value) or 0;
+        local y = Options.desync_y and math.rad(Options.desync_y.Value) or 0;
+        local z = Options.desync_z and math.rad(Options.desync_z.Value) or 0;
+        
+        local ox = Options.desync_off_x and Options.desync_off_x.Value or 0;
+        local oy = Options.desync_off_y and Options.desync_off_y.Value or 0;
+        local oz = Options.desync_off_z and Options.desync_off_z.Value or 0;
+
+        local off_speed = 30;
+        if off_speed > 0 then
+            local t = os.clock() * (off_speed * 1.5);
+            ox = math_sin(t * 0.7) * ox;
+            oy = math_cos(t * 0.9) * oy;
+            oz = math_sin(t * 1.2) * oz;
+        end;
+
+        if Toggles.desync_random_rotation and Toggles.desync_random_rotation.Value then
+            local speed = Options.desync_random_speed and Options.desync_random_speed.Value or 5;
+            local t = os.clock() * speed;
+
+            x = math.noise(t * 0.3, 0) * math.pi * 2;
+            y = math.noise(t * 0.3, 100) * math.pi * 2;
+            z = math.noise(t * 0.3, 200) * math.pi * 2;
+        end;
+
+        if (Toggles.desync_look and Toggles.desync_look.Value) then
+            local look = cf.LookVector;
+            y = math.atan2(look.X, look.Z);
+        end;
+
+        if Toggles.desync_avoid_walls and Toggles.desync_avoid_walls.Value then
+            local ray_origin = cf.Position;
+            local ray_direction = vector3_new(ox, oy, oz);
+            if ray_direction.Magnitude > 0.01 then
+                local ray_params = RaycastParams.new();
+                ray_params.FilterType = Enum.RaycastFilterType.Exclude;
+                ray_params.FilterDescendantsInstances = {character, camera};
+                local ray_result = workspace:Raycast(ray_origin, ray_direction, ray_params);
+                if ray_result then
+                    local hit_pos = ray_result.Position;
+                    local new_pos = hit_pos + ray_result.Normal * 0.5;
+                    local new_offset = new_pos - ray_origin;
+                    ox, oy, oz = new_offset.X, new_offset.Y, new_offset.Z;
+                end;
+            end;
+        end;
+
+        return cframe_new(ox, oy, oz) * cframe_angles(x, y, z);
+    end), 0, true, true);
+
+    local noclip_parts = {};
+    local function noclip(char)
+        noclip_parts = {};
+        if not char then return end;
+        for _, v in ipairs(char:GetDescendants()) do 
+            if v:IsA("BasePart") then 
+                table.insert(noclip_parts, v); 
+            end; 
+        end;
+        char.DescendantAdded:Connect(function(v) 
+            if v:IsA("BasePart") then 
+                table.insert(noclip_parts, v); 
+            end; 
+        end);
+    end;
+    noclip(character);
+    localplayer.CharacterAdded:Connect(noclip);
+    
+    local noclip_tick = 0;
+    runservice.Stepped:Connect(LPH_NO_VIRTUALIZE(function()
+        if not settings.noclipenabled then return; end;
+        local now = tick();
+        if now - noclip_tick < 0.05 then return; end;
+        noclip_tick = now;
+        local i = #noclip_parts;
+        while i > 0 do
+            local v = noclip_parts[i];
+            if not v or not v.Parent then
+                table.remove(noclip_parts, i);
+            else
+                v.CanCollide = false;
+            end;
+            i = i - 1;
+        end;
+    end));
+end;
+
+do
     local applied = false;
     local appliedmultiplier = nil;
     local originalregen = nil;
     local originaldelay = nil;
     local stamina = nil;
     local keepalive_connection = nil;
+    
     local ok, s = pcall(function()
         return modules.Name["DefaultStaminaHandlerClient"].getDefaultStamina();
     end);
+
     if ok and s then
         stamina = s;
         originalregen = stamina.gainPerSecond;
         originaldelay = stamina.gainDelay;
     end;
+
     local function stop_keepalive()
         if keepalive_connection then
             keepalive_connection:Disconnect();
             keepalive_connection = nil;
         end;
     end;
+    
     local function start_keepalive()
         stop_keepalive();
-        keepalive_connection = runservice.Heartbeat:Connect(LPH_JIT(function()
+        keepalive_connection = runservice.Heartbeat:Connect(LPH_NO_VIRTUALIZE(function()
             if stamina and settings.infstamina and stamenabled then
                 stamina:setStamina(stamina:getMaxStamina());
             else
@@ -1915,6 +2174,7 @@ do
             end;
         end));
     end;
+    
     local function apply_multiplier()
         if applied or not stamina then return; end;
         local multiplier = 1e6 / stamina._baseMaxStamina;
@@ -1923,6 +2183,7 @@ do
         applied = true;
         start_keepalive();
     end;
+    
     local function remove_multiplier()
         if not applied or not stamina then return; end;
         stamina:removeMaxStaminaMultiplier(appliedmultiplier);
@@ -1931,6 +2192,7 @@ do
         appliedmultiplier = nil;
         stop_keepalive();
     end;
+    
     local function apply_regen()
         if not stamina then return; end;
         local wantedregen = stamregentoggle and (stamregenrate or originalregen) or originalregen;
@@ -1942,6 +2204,7 @@ do
             stamina.gainDelay = wanteddelay;
         end;
     end;
+    
     local function restore_regen()
         if not stamina then return; end;
         if stamina.gainPerSecond ~= originalregen then
@@ -1951,6 +2214,7 @@ do
             stamina.gainDelay = originaldelay;
         end;
     end;
+    
     stamina_sett_changed = function()
         if not stamina then return; end;
         if not stamenabled then
@@ -2002,10 +2266,16 @@ local function update_hitbox(v, wanted_trans, hitbox_color, hbe_size, expand)
             v.Weld.Part0 = to_expand;
         end;
     end;
-    if v.Transparency ~= wanted_trans then v.Transparency = wanted_trans; end;
-    if v.Color ~= hitbox_color then v.Color = hitbox_color; end;
+    if v.Transparency ~= wanted_trans then
+        v.Transparency = wanted_trans;
+    end;
+    if v.Color ~= hitbox_color then
+        v.Color = hitbox_color;
+    end;
     local effective_size = expand and hbe_size or vector3_new(0, 0, 0);
-    if v.Size ~= effective_size then v.Size = effective_size; end;
+    if v.Size ~= effective_size then
+        v.Size = effective_size;
+    end;
     v:SetAttribute("IsCharacterHitbox", expand);
     if not expand then
         if not v:HasTag("RANGED_CASTER_IGNORE_LIST") then
@@ -2073,8 +2343,7 @@ local function apply_all_hitboxes()
 end;
 
 task_spawn(LPH_JIT(function()
-    task.wait(0.3);
-    for _, v in PlayerCharacters:GetChildren() do
+    for _, v in pairs(PlayerCharacters:GetChildren()) do
         if v ~= localplayer.Character then
             apply_hitbox(v);
         end;
@@ -2097,16 +2366,16 @@ if modules.Name["RangedHitVisuals"] and modules.Name["RangedHitVisuals"].default
     local old = modules.Name["RangedHitVisuals"].defaultHit;
     modules.Name["RangedHitVisuals"].defaultHit = LPH_JIT_MAX(function(player, tool, cfg, hitpart, hit_cframe, normal, material, cosmetic)
         local new_hit_cframe = hit_cframe;
-        if (Config.HitboxExpand and hitpart and hitpart.Name == "hitbox") then
-            local part = hitpart.Parent:FindFirstChild(Config.HBEPart == "Random" and R6BodyParts[math_random(1, #R6BodyParts)] or Config.HBEPart ) or hitpart.Parent:FindFirstChild("Torso");
-            if part then
-                local metadata = framework:getmetadata(tool.Name);
-                if metadata and metadata.speed then
-                    task.wait((hit_cframe.Position - part.Position).Magnitude / metadata.speed);
-                end;
-                new_hit_cframe = part.CFrame * cosmetic.CFrame.Rotation * cframe_new( math_random(-1,1) * (part.Size.X / 2), math_random(-1,1) * (part.Size.Y / 2), math_random(-1,1) * (part.Size.Z / 2) );
+    if Config.HitboxExpand and hitpart and hitpart.Name == "hitbox" then
+        local realPart = hitpart.Parent:FindFirstChild(Config.HBEPart == "Random" and R6BodyParts[math_random(1, #R6BodyParts)] or Config.HBEPart) or hitpart.Parent:FindFirstChild("Torso")
+        if realPart then
+            local metadata = framework:getmetadata(tool.Name);
+            if metadata and metadata.speed then
+                task.wait((hit_cframe.Position - realPart.Position).Magnitude / metadata.speed);
             end;
+            new_hit_cframe = realPart.CFrame * cosmetic.CFrame.Rotation * cframe_new( (math_random() * math_random(-1, 1)) * (realPart.Size.X / 2), (math_random() * math_random(-1, 1)) * (realPart.Size.Y / 2), (math_random() * math_random(-1, 1)) * (realPart.Size.Z / 2) );
         end;
+    end;
         return old(player, tool, cfg, hitpart, new_hit_cframe, normal, material, cosmetic);
     end);
 end;
@@ -2118,9 +2387,11 @@ if modules.Name["RangedWeaponClient"] and modules.Name["RangedWeaponClient"].upd
         local character = ranged_data._character
         local tagged = collectionservice:GetTagged("RANGED_CASTER_IGNORE_LIST");
         table.insert(tagged, character);
-        if Config.Wallbang and Map then
-            table.insert(tagged, Map);
-            table.insert(tagged, Workspace.Terrain);
+        if not Config.HitboxExpand then
+            if Map then
+                table.insert(tagged, Map);
+                table.insert(tagged, Workspace.Terrain);
+            end;
         end;
         ranged_data._ignoreList = tagged;
         return tagged;
@@ -2209,8 +2480,8 @@ do
     end));
 
     framework:argmodify("MeleeFinish", {}, LPH_JIT_MAX(function(n,...)
-        local args = {...}
-        if Config.HitboxExpand and args[2].Name == "hitbox" then
+        local args = {...};
+        if Config.HitboxExpand and args[2] and args[2].Name == "hitbox" then
             local part = args[2].Parent:FindFirstChild(Config.HBEPart == "Random" and R6BodyParts[math_random(1, #R6BodyParts)] or Config.HBEPart) or args[2].Parent:FindFirstChild("Torso")
             if part then
                 return {[2] = part};
@@ -2220,13 +2491,13 @@ do
     end));
 
     framework:argmodify("RangedHit",{}, LPH_JIT_MAX(function(n,...)
-        local args = {...}
-        if Config.HitboxExpand and args[2].Name == "hitbox" then
-            local part = args[2].Parent:FindFirstChild(Config.HBEPart == "Random" and R6BodyParts[math_random(1, #R6BodyParts)] or Config.HBEPart) or args[2].Parent:FindFirstChild("Torso");
+        local args = {...};
+        if Config.HitboxExpand and args[2] and args[2].Name == "hitbox" then
+            local part = args[2].Parent:FindFirstChild(Config.HBEPart == "Random" and R6BodyParts[math_random(1, #R6BodyParts)] or Config.HBEPart) or args[2].Parent:FindFirstChild("Torso")
             if part then
                 return {
-                    [2] = part;
-                    [4] = part.Position;
+                    [2] = part,
+                    [4] = part.Position,
                     [5] = cframe_angles(args[5]:ToEulerAnglesYXZ()) * cframe_new( (math_random() * math_random(-1, 1)) * (part.Size.X / 2), (math_random() * math_random(-1, 1)) * (part.Size.Y / 2), (math_random() * math_random(-1, 1)) * (part.Size.Z / 2))
                 };
             end;
@@ -2239,7 +2510,7 @@ do
 
     framework:argmodify("RangedExplode",{}, LPH_JIT_MAX(function(n,...)
         local args = {...}
-        if Config.HitboxExpand and args[2].Name == "hitbox" then
+        if Config.HitboxExpand and args[2] and args[2].Name == "hitbox" then
             local part = args[2].Parent:FindFirstChild(Config.HBEPart == "Random" and R6BodyParts[math_random(1, #R6BodyParts)] or Config.HBEPart) or args[2].Parent:FindFirstChild("Torso")
             if part then
                 return {
@@ -2284,6 +2555,29 @@ do
         end;
 		return oldfunc(...);
 	end));
+
+	local function hook_goop(modulename)
+		local mod = modules.Name[modulename];
+		if not mod then return; end;
+		if type(mod) == "table" and mod.new then
+			local old_new; old_new = hookfunction(mod.new, LPH_JIT_MAX(function(...)
+				if settings.nut and settings.include_goop then
+					return nil;
+				end;
+				return old_new(...);
+			end));
+		elseif type(mod) == "function" then
+			local old_func; old_func = hookfunction(mod, LPH_JIT_MAX(function(...)
+				if settings.nut and settings.include_goop then
+					return nil;
+				end;
+				return old_func(...);
+			end));
+		end;
+	end;
+
+	hook_goop("GoopSlowHandlerClient");
+	hook_goop("GoopPoolHitboxPartClient");
 
 	hook("HealthHandler", "getRealHealth", function(oldfunc, ...)
 		if settings.nhe then
@@ -2386,29 +2680,7 @@ do
 		if typeof(sigma) == "table" then
 			if sigma.type == "PARRY_IS_PARRIED_CHANGE" or sigma.type == "PARRY_IS_KNEELED_CHANGE" then
 				parrystununtil = tick() + 0.35;
-				if settings.voidonparry and (tick() - (last_void_parry or 0) > 3) then
-					last_void_parry = tick();
-					task_spawn(LPH_JIT(function()
-						pcall(function()
-							if Toggles.voidenabled.Value and Options.voidenabledkey:GetState() then
-								setrunning("voidhidelogic", true);
-							else
-								void_lock = true;
-								setrunning("voidhidelogic", true);
-								task_spawn(LPH_JIT(function()
-									while void_lock do
-										setrunning("voidhidelogic", true);
-										task.wait();
-									end;
-								end));
-								task.delay(2, function()
-									void_lock = false;
-                                    setrunning("voidhidelogic", voidenabled);
-								end);
-							end;
-						end);
-					end));
-				end;
+
 				if settings.nps then
 					local JumpPower = modules.Name["JumpHandlerClient"];
 					local Walkspeed = modules.Name["WalkSpeedHandlerClient"];
@@ -2459,6 +2731,7 @@ local function connect(char)
     humanoid = char:WaitForChild("Humanoid");
     humanoidrootpart = char:WaitForChild("HumanoidRootPart");
     task.wait();
+    cleanup_loops();
 end;
 
 localplayer.CharacterAdded:Connect(connect);
@@ -2466,7 +2739,7 @@ if localplayer.Character then
     connect(localplayer.Character);
 end;
 
-network:BindEvents({
+bind_events({
     CreateAntiCheatNotification = function(data)
         if data.punishType == "rectified" and settings.fno and humanoidrootpart then
             repeat
@@ -2483,19 +2756,6 @@ network:BindEvents({
     end;
 });
 
-local activeloops = {};
-local function updatefeature(togglename, keyname, setter)
-    if activeloops[togglename] then return; end;
-    activeloops[togglename] = true;
-    task_spawn(LPH_JIT(function()
-        while task.wait() do
-            local toggleon = Toggles[togglename].Value;
-            local keyon = Options[keyname]:GetState();
-            setter(toggleon and keyon);
-        end;
-    end));
-end;
-
 do
     local camera = workspace.CurrentCamera;
     local character = localplayer.Character or localplayer.CharacterAdded:Wait();
@@ -2504,7 +2764,7 @@ do
     local main_ranged = tabs.ranged:AddRightTabbox();
     local silent_tab = main_ranged:AddTab("silent aim");
     local aimbot_tab = main_ranged:AddTab("aimbot");
-    local ragebotsection = tabs.ranged:AddRightGroupbox("ragebot");
+    local ragebotsection = tabs.ranged:AddLeftGroupbox("ragebot");
     setthreadidentity(7);
 
     players.PlayerRemoving:Connect(function(player)
@@ -2516,6 +2776,7 @@ do
 
     aimbot_tab:AddToggle("aimbot_toggle", {
         Text = "aimbot";
+        Default = true;
         Callback = function(value)
             if value then
                 aimbot_enabled = true;
@@ -2526,7 +2787,7 @@ do
                         local key_pressed = Options.AimbotKeybind:GetState();
                         if key_pressed then
                             local mouse = localplayer:GetMouse();
-                            local fov_radius = Options.FOVCircleSize.Value or 500;
+                            local fov_radius = Options.FOVSize.Value or 500;
                             local hitpart_name = Options.AimbotHitPart.Value or "Head";
                             local needs_new_target = not locked_target or not locked_target.Character or not locked_target.Character:FindFirstChild("Humanoid") or locked_target.Character.Humanoid.Health <= 0;
                             local keybind_just_pressed = key_pressed and not keybind_state;
@@ -2673,35 +2934,35 @@ do
         Default = false;
     });
 
-    silent_children:AddToggle("avoidprojectiles", {
+    silent_children:AddToggle("avoid_projectiles", {
         Text = "avoid projectiles";
         Default = false;
     });
 
-    silent_children:AddDropdown("ClosestType", {
+    silent_children:AddDropdown("closest_type", {
         Text = "check type";
         Default = "Closest To Mouse";
         Values = {"Closest To Mouse", "Closest To Arrow", "Only Redirect To Target"};
     });
 
-    silent_children:AddDropdown("SilentHitPart", {
+    silent_children:AddDropdown("silent_hitpart", {
         Text = "hit part";
         Default = "Head";
         Values = {"Head", "Torso", "Random"};
     });
 
-    silent_children:AddSlider("SilentAimRange", {
+    silent_children:AddSlider("silentaim_velocity", {
         Text = "velocity";
         Default = 1;
         Min = 1;
-        Max = 40;
+        Max = 25;
         Rounding = 0;
         Compact = true;
         Suffix = " studs";
         Tooltip = "lower for more accuracy, higher for faster projectiles";
     });
 
-    silent_children:AddSlider("HitChance", {
+    silent_children:AddSlider("hit_chance", {
         Text = "hit chance";
         Default = 100;
         Min = 1;
@@ -2719,7 +2980,7 @@ do
         Text = "ragebot";
         Default = false;
         Callback = function()
-            updatefeature("Ragebot", "ragebotkey", function(state)
+            compare_state("Ragebot", "ragebotkey", function(state)
                 settings.ragebot = state;
             end);
         end;
@@ -2727,7 +2988,7 @@ do
         Text = "ragebot";
         Default = "H";
         Callback = function()
-            updatefeature("Ragebot", "ragebotkey", function(state)
+            compare_state("Ragebot", "ragebotkey", function(state)
                 settings.ragebot = state;
             end);
         end;
@@ -2736,8 +2997,8 @@ do
     local ragebot_children = ragebotsection:AddDependencyBox();
 
     ragebot_children:AddToggle("ShowRageBotTarget", {
-    Text = "show ragebot target";
-    Default = false;
+        Text = "show ragebot target";
+        Default = false;
         Callback = function(value)
             if not value then
                 if ragebot_highlight then
@@ -2763,7 +3024,8 @@ do
         Rounding = 1;
         Compact = true;
         Tooltip = "adds on to the cooldown";
-    })
+    });
+
     ragebot_children:AddSlider("RagebotDist", {
         Text = "ragebot distance";
         Default = 19;
@@ -2825,7 +3087,7 @@ do
         Text = "kill aura";
         Default = false;
         Callback = function()
-            updatefeature("KillAura", "killaurabind", function(state)
+            compare_state("KillAura", "killaurabind", function(state)
                 settings.killaura = state;
             end);
         end;
@@ -2834,7 +3096,7 @@ do
         Default = "B";
         NoUi = true;
         Callback = function()
-            updatefeature("KillAura", "killaurabind", function(state)
+            compare_state("KillAura", "killaurabind", function(state)
                 settings.killaura = state;
             end);
         end;
@@ -2865,7 +3127,7 @@ do
         Text = "strafe enemy";
         Default = false;
         Callback = function()
-            updatefeature("tpenemy", "tpenemybind", function(state)
+            compare_state("tpenemy", "tpenemybind", function(state)
                 settings.tpenemy = state;
             end);
         end;
@@ -2874,7 +3136,7 @@ do
         Default = "T";
         NoUi = true;
         Callback = function()
-            updatefeature("tpenemy", "tpenemybind", function(state)
+            compare_state("tpenemy", "tpenemybind", function(state)
                 settings.tpenemy = state;
             end);
         end;
@@ -2982,7 +3244,7 @@ do
     });
 
     strafe_dep:AddDropdown("strafe_extra", {
-        Values = {"bait parry", "avoid walls"};
+        Values = {"bait parry", "avoid walls", "use prediction and weld", "fall if floating"};
         Default = 0;
         Multi = true;
         Text = "settings";
@@ -3035,7 +3297,7 @@ main:AddToggle("spectateneemy", {
     Text = "spectate enemy";
 	Default = false;
 	Callback = function()
-		updatefeature("spectateneemy", "spectateneemybind", function(state)
+		compare_state("spectateneemy", "spectateneemybind", function(state)
             spectateneemy = state;
         end);
 	end;
@@ -3044,7 +3306,7 @@ main:AddToggle("spectateneemy", {
 	Default = "N";
 	NoUi = true;
 	Callback = function()
-		updatefeature("spectateneemy", "spectateneemybind", function(state)
+		compare_state("spectateneemy", "spectateneemybind", function(state)
             spectateneemy = state;
         end);
 	end;
@@ -3098,12 +3360,12 @@ do
     safe_add(effectsjunk:FindFirstChild("utility5Proxy"));
     safe_add(effectsjunk:FindFirstChild("utility7Proxy"));
     safe_add(effectsjunk:FindFirstChild("utility10Proxy"));
-    local pars_cache = effectsjunk:FindFirstChild("PartCache");
+    local parts_cache = effectsjunk:FindFirstChild("PartCache");
 
-    if pars_cache then
-        safe_add(pars_cache:FindFirstChild("Kunai"));
-        safe_add(pars_cache:FindFirstChild("Arrow"));
-        safe_add(pars_cache:FindFirstChild("Shuriken"));
+    if parts_cache then
+        safe_add(parts_cache:FindFirstChild("Kunai"));
+        safe_add(parts_cache:FindFirstChild("Arrow"));
+        safe_add(parts_cache:FindFirstChild("Shuriken"));
     end;
 
     if map then
@@ -3114,8 +3376,14 @@ do
         if part:GetAttribute("DamagePerSecond") then
             return true;
         end;
+        if part.Name == "GoopPool" or string.find(string.lower(part.Name), "goop") then
+            return "goop";
+        end;
         for root in pairs(targets) do 
             if root and part:IsDescendantOf(root) then
+                if root.Name == "GoopPool" or string.find(string.lower(root.Name), "goop") then
+                    return "goop";
+                end;
                 return true;
             end;
         end;
@@ -3129,8 +3397,12 @@ do
             processed[part] = true;
             return;
         end;
+
+        local disable_type = should_disable(part);
+        if not disable_type then return; end;
+        if disable_type == "goop" and not settings.include_goop then return; end;
+
         processed[part] = true;
-        if not should_disable(part) then return; end;
         part.CanCollide = false;
         part.CanTouch = false;
         part.CanQuery = false;
@@ -3281,7 +3553,9 @@ do
 		local success, result;
 		local retries = 0;
 		repeat
-			success, result = pcall(function() return metadata.meleeHitboxes; end)
+			success, result = pcall(function()
+                return metadata.meleeHitboxes;
+            end)
 			if not success or result == nil then
 				task.wait(0.05);
 				retries = retries + 1;
@@ -3296,7 +3570,7 @@ do
 	local cachedkametadata = nil;
 	local kaweapontick = 0;
 
-	framework:BindToRenderStep(LPH_JIT(function()
+	framework:BindToRenderStep(LPH_NO_VIRTUALIZE(function()
 		if not settings.killaura or KADebounce then return; end;
 		if not check_ping_status() then return; end;
 		local mychar = localplayer.Character;
@@ -3326,7 +3600,7 @@ do
 		if (now - last_slash) < (cooldown - buffer) then return; end;
 		local karange = Classes.KillAuraRange.Value;
 		local closest = framework:get_closest_ka(karange, true);
-		if not closest or not next(closest) then return; end;
+		if not closest or not nx(closest) then return; end;
 		KADebounce = true;
 		if not Classes.PlayAnimation.Value then
 			local hitboxes = meleehitboxes(metadata);
@@ -3338,7 +3612,7 @@ do
 			fire_server("MeleeSwing", weapon, slash_index);
 			metadata._lastSlashTick = now;
 			local issingle = Classes.KillAuraType.Value == "single person";
-			task.defer(LPH_JIT(function()
+			task.defer(function()
 				local ok, err = pcall(function()
 					for i, hitbox in pairs(hitboxes) do
 						for player, data in pairs(closest) do
@@ -3366,7 +3640,7 @@ do
 					end;
 				end)
 				KADebounce = false;
-			end));
+			end);
         else
 			if metadata:getShouldSlash() then
 				metadata._activateSignal:Fire();
@@ -3375,7 +3649,7 @@ do
                     return yield_timeout(anim:GetMarkerReachedSignal("startHitDetection"), 2);
                 end);
 				if success and response ~= "Timed out" and response ~= "Wait failed" and response ~= "Signal creation failed" then
-					for i, v in metadata.meleeHitboxes do
+					for i, v in pairs(metadata.meleeHitboxes) do
 						v.HitboxStopTime = 1;
 						for target_player, data in pairs(closest) do
 							if not target_player or not target_player.Character or not target_player.Character:FindFirstChild("Head") or data.Health == 0 or not framework:Check(target_player.Character) then continue; end;
@@ -3406,7 +3680,7 @@ do
 	end));
 end;
 
-framework:BindToRenderStep(LPH_JIT(function()
+framework:BindToRenderStep(LPH_NO_VIRTUALIZE(function()
 	if not settings.autoequip and not settings.BeartrapEnemy and not settings.AutoAttachC4 and not settings.AutoDetonateC4 then return; end;
 	if not weapon and settings.autoequip then
 		local Character = localplayer.Character;
@@ -3423,8 +3697,8 @@ framework:BindToRenderStep(LPH_JIT(function()
 		if not HumanoidRootPart then return end;
 		local Closest = framework:get_closest(15, true);
 		local CurrentTool = Character:FindFirstChildOfClass("Tool");
-		if next(Closest) then
-			local TargetPlayer = players:FindFirstChild(next(Closest));
+		if nx(Closest) then
+			local TargetPlayer = players:FindFirstChild(nx(Closest));
 			if TargetPlayer and TargetPlayer.Character and TargetPlayer.Character:FindFirstChild("HumanoidRootPart") then
 				if settings.BeartrapEnemy and CurrentTool and CurrentTool.Name == "Bear Trap" then
                     local target_root = TargetPlayer.Character:FindFirstChild("HumanoidRootPart")
@@ -3482,13 +3756,18 @@ do
                 do_loopspawn();
             end;
         end);
-        for _, child in ipairs(char:GetChildren()) do
+
+        local char_children = char:GetChildren();
+
+        for _ = 1, #char_children do
+            local child = char_children[_];
             child:GetAttributeChangedSignal("ParryShieldId"):Connect(function()
                 if child:GetAttribute("ParryShieldId") == nil then
                     do_loopspawn();
                 end;
             end);
         end;
+
         if framework:in_menu(localplayer) then
             do_loopspawn();
         end;
@@ -3501,6 +3780,7 @@ do
 			revive_conn:disconnect();
 			revive_conn = nil;
 		end;
+
 		revive_conn = store.changed:connect(function(newState)
 			if not settings.ar then return; end;
 			if newState.down and newState.down.isDowned then
@@ -3532,6 +3812,7 @@ do
             end;
         end);
     end;
+
     localplayer.CharacterAdded:Connect(function(char)
         humanoid = char:WaitForChild("Humanoid");
         bind_fastrespawn(char);
@@ -3549,15 +3830,16 @@ do
 
     local stompthrottle = 0;
     local glorythrottle = 0;
+    local glory_debounce = {};
     local cachedstomptool = nil;
     local cachedstompmeta = nil;
     local stomptoolttick = 0;
     local cachedglorytool = nil;
     local glorytoolttick = 0;
 
-    framework:BindToRenderStep(LPH_JIT(function()
+    framework:BindToRenderStep(LPH_NO_VIRTUALIZE(function()
         local s = settings;
-        if not s.autostompshove and not s.autoglory and s.loopkillall then return; end;
+        if not s.autostompshove and not s.autoglory then return; end;
         local now = tick();
         if s.autostompshove and now - stompthrottle >= 0.05 then
             stompthrottle = now;
@@ -3571,13 +3853,13 @@ do
                 local metadata = cachedstompmeta;
                 if metadata and metadata._cooldownProgressTimer:getValue() > 0.75 then
                     local closest = framework:get_closest(s.stompshoverange, true);
-                    if closest and next(closest) then
+                    if closest and nx(closest) then
                         local slashdata = metadata._itemConfig.slashMetadata[metadata._currSlashCount];
                         local hitbox = slashdata.getHitboxInfo(metadata.tool);
                         local hitboxes = metadata:getHitboxesToUseFromHitboxParts(hitbox.hitboxPartsToUse);
-                        for i, v in hitboxes do
+                        for i, v in pairs(hitboxes) do
                             if not v.HitboxPendingRemoval then
-                                for playername, health in closest do
+                                for playername, health in pairs(closest) do
                                     local targetplayer = players:FindFirstChild(playername);
                                     if not targetplayer or not targetplayer.Character then continue; end;
                                     local tchar = targetplayer.Character;
@@ -3608,16 +3890,24 @@ do
             end;
         end;
 
-        if s.autoglory and now - glorythrottle >= math.max(0.05, s.glorydelay or 0) then
+        if (s.autoglory and now - glorythrottle >= (s.glorydelay or 0.1)) then
             glorythrottle = now;
             local closest = framework:get_closest(s.gloryrange, true);
             local tool = framework:get_weapon();
-            if tool and closest and next(closest) then
-                local targetplayer = players:FindFirstChild(next(closest));
+            if tool and closest and nx(closest) then
+                local targetplayer = players:FindFirstChild(nx(closest));
                 if targetplayer and targetplayer.Character then
                     local thum = targetplayer.Character:FindFirstChild("Humanoid");
-                    if thum and thum.Health <= 20 then
-                        fire_server("StartGloryKill", tool, targetplayer.Character, cframe_new(), vector3_new());
+                    if thum then
+                        if thum.Health <= 20 and not glory_debounce[targetplayer.Name] then
+                            glory_debounce[targetplayer.Name] = true;
+                            task.delay(s.autodelay, function()
+                                if glory_debounce then
+                                    glory_debounce[targetplayer.Name] = nil;
+                                end;
+                            end);
+                            fire_server("StartGloryKill", tool, targetplayer.Character, targetplayer.Character:GetPivot(), localplayer.Character:GetPivot());
+                        end;
                     end;
                 end;
             end;
@@ -3628,7 +3918,7 @@ end;
 do
     local angle = 0;
     local random_t = 0;
-    local StickTarget;
+    local stick_target;
     current_target = nil;
 
     serverposition("heartbeat", "combat_teleport", LPH_JIT(function(real_cframe)
@@ -3644,7 +3934,7 @@ do
         if not target_root then return; end;
         if not settings.tpenemy then return; end;
 
-        local extra = settings.strafe_extra or {};
+        local extra = settings.strafe_extra;
         local is_baiting = extra["bait parry"];
         local avoid_walls = extra["avoid walls"];
 
@@ -3653,6 +3943,28 @@ do
         end;
 
         local in_forgiveness = (os.clock() - (settings.last_parry_tick or 0) < 3);
+
+        if is_baiting then
+            local target_parried = false;
+            local t_session_ok, t_session = pcall(function()
+                return framework:GetSessionData(target);
+            end);
+            if t_session_ok and t_session then
+                local t_state_ok, t_parried = pcall(function()
+                    return t_session:getState().parry.isParried;
+                end);
+                if t_state_ok and t_parried then
+                    target_parried = true;
+                end;
+            end;
+
+            local target_ragdolled = target_character:GetAttribute("IsRagdolled");
+
+            if target_parried or target_ragdolled then
+                in_forgiveness = true;
+            end;
+        end;
+        
         if settings.strafe_void_spam or (is_baiting and not in_forgiveness) then
             local now = os.clock();
             local vin = settings.strafe_void_in or 0;
@@ -3662,8 +3974,12 @@ do
                 vin = settings.bait_random_vin or 0.25;
                 vout = settings.bait_random_vout or 0.25;
             else
-            if vin == 0 then vin = 0.01; end;
-            if vout == 0 then vout = 0.01; end;
+                if vin == 0 then
+                    vin = 0.01;
+                end;
+                if vout == 0 then
+                    vout = 0.01;
+                end;
             end;
             if settings.is_voiding then
                 if now - (settings.last_void_tick or 0) >= vout then
@@ -3686,22 +4002,30 @@ do
                 return cframe_new(target_root.Position.X + math_random(-5, 5), math_random(-1000, 0), target_root.Position.Z + math_random(-5, 5));
             end;
         end;
+
 		local predicted_cframe = target_root.CFrame;
+
 		if (Toggles.strafe_prediction and Toggles.strafe_prediction.Value) then
 			local vel = target_root.AssemblyLinearVelocity;
 			local base = Options.strafe_pred_base and Options.strafe_pred_base.Value or 0;
 			local mult = Options.strafe_pred_mult and Options.strafe_pred_mult.Value or 1;
 			predicted_cframe = predicted_cframe + vector3_new(vel.X * mult, vel.Y * base, vel.Z * mult);
+			if extra["use prediction and weld"] then
+				sethiddenproperty(hrp, "PhysicsRepRootPart", target_root);
+			end;
 		else
 			sethiddenproperty(hrp, "PhysicsRepRootPart", target_root);
 		end;
+
 		local function apply_look(pos)
 			if Toggles.strafe_look and Toggles.strafe_look.Value then
 				return cframe_new(pos, predicted_cframe.Position);
 			end;
 			return cframe_new(pos, pos + predicted_cframe.LookVector);
 		end;
+
         local pos;
+
 		if (Toggles.strafe_random_toggle and Toggles.strafe_random_toggle.Value) then
 			local range = Options.random_range and Options.random_range.Value or 5;
 			local nx = math.noise(random_t, 1.7) * range * 2;
@@ -3725,6 +4049,20 @@ do
             end;
         end;
 
+        if extra["fall if floating"] then
+            local hum = Character:FindFirstChildOfClass("Humanoid");
+            if hum then
+                local ray_params = RaycastParams.new();
+                ray_params.FilterType = Enum.RaycastFilterType.Exclude;
+                ray_params.FilterDescendantsInstances = {PlayerCharacters, Character, workspace:FindFirstChild("Ignore"), workspace:FindFirstChild("EffectsJunk")};
+                local origin = pos;
+                local result = workspace:Raycast(origin, vector3_new(0, -4, 0), ray_params);
+                if not result then
+                    hum:ChangeState(Enum.HumanoidStateType.Freefall);
+                end;
+            end;
+        end;
+
         return apply_look(pos);
     end), 1);
 
@@ -3741,7 +4079,7 @@ do
         return true;
     end;
 
-    runservice.Heartbeat:Connect(LPH_JIT(function(dt)
+    runservice.Heartbeat:Connect(LPH_NO_VIRTUALIZE(function(dt)
 		if Active then
 			local speed_value = (Options.strafe_speed and Options.strafe_speed.Value) or tpspeed or 10;
 			angle = (angle + dt * speed_value) % (2 * math.pi);
@@ -3762,14 +4100,14 @@ do
         end;
         local s = settings;
         if not s.stick and not targeting_player then
-            StickTarget = nil;
+            stick_target = nil;
             stick_target = nil;
         end;
         local closestplayer = nil;
         local needstarget = s.tpenemy or s.stick or targeting_player or spectateneemy;
         if needstarget then
-            if (s.stick or targeting_player) and StickTarget then
-                closestplayer = StickTarget;
+            if (s.stick or targeting_player) and stick_target then
+                closestplayer = stick_target;
             elseif targeting_player then
                 closestplayer = SelectedPlayer;
             else
@@ -3792,7 +4130,7 @@ do
                         end;
                     end;
                 end;
-                if s.stick and closestplayer then StickTarget = closestplayer; stick_target = closestplayer; end;
+                if s.stick and closestplayer then stick_target = closestplayer; stick_target = closestplayer; end;
             end;
         end;
         current_target = closestplayer;
@@ -3884,7 +4222,6 @@ do
     local slashes = {};
     local parries = {};
     task_spawn(LPH_JIT(function()
-        task.wait(0.5);
         for _, obj in pairs(getgc(true)) do
             if type(obj) == "table" and rawget(obj, "slashMetadata") and rawget(obj, "parryMetadata") ~= nil then
                 if obj.slashMetadata then
@@ -4102,7 +4439,9 @@ do
         if gp then return; end;
         if settings.swingsound and (i.KeyCode == Options.swingsoundkey.Value or i.UserInputType == Options.swingsoundkey.Value) then
             local weapon = framework:get_weapon();
-            if weapon then fire_server("MeleeSwing", weapon, math_random(1, 3)); end;
+            if weapon then
+                fire_server("MeleeSwing", weapon, math_random(1, 3));
+            end;
         end;
     end);
 
@@ -4287,10 +4626,63 @@ do
                     end;
                 end);
             end;
+            if Toggles.OverrideShootSound and Toggles.OverrideShootSound.Value and typeof(sound) == "table" then
+                local did_override = false;
+                pcall(function()
+                    local override_name = Options.ShootSoundOverride and Options.ShootSoundOverride.Value or "None";
+                    if override_name ~= "None" and hitdetection_impl.Sounds[override_name] then
+                        local s_obj = sound.soundObject;
+                        local s_name = s_obj and s_obj.Name or "";
+                        local is_shoot = s_name:match("Shoot") or s_name:match("Fire") or s_name:match("Shot") or s_name:match("Launch") or s_name:match("Throw") or s_name:match("Release");
+                        if is_shoot then
+                            local scope = Options.ShootSoundScope and Options.ShootSoundScope.Value or "local";
+                            local allow = false;
+                            if scope == "all" then
+                                allow = true;
+                            else
+                                local my_char = localplayer.Character;
+                                if my_char then
+                                    local s_parent = sound.parent;
+                                    if s_parent and typeof(s_parent) == "Instance" then
+                                        allow = s_parent:IsDescendantOf(my_char) or s_parent == my_char;
+                                        if not allow then
+                                            local tool = my_char:FindFirstChildOfClass("Tool");
+                                            if tool then
+                                                allow = s_parent:IsDescendantOf(tool) or s_parent == tool;
+                                            end;
+                                        end;
+                                    end;
+                                    if not allow and s_obj and typeof(s_obj) == "Instance" then
+                                        allow = s_obj:IsDescendantOf(my_char);
+                                        if not allow then
+                                            local tool = my_char:FindFirstChildOfClass("Tool");
+                                            if tool then
+                                                allow = s_obj:IsDescendantOf(tool);
+                                            end;
+                                        end;
+                                    end;
+                                end;
+                            end;
+                            if allow then
+                                s_obj.Volume = 0;
+                                local vol = Options.ShootSoundVolume and Options.ShootSoundVolume.Value or 1;
+                                local new_sound = Instance.new("Sound");
+                                new_sound.SoundId = hitdetection_impl.Sounds[override_name];
+                                new_sound.Volume = vol;
+                                new_sound.PlaybackSpeed = 1;
+                                new_sound.Parent = s_obj.Parent or workspace;
+                                new_sound:Play();
+                                game:GetService("Debris"):AddItem(new_sound, new_sound.TimeLength + 1);
+                                did_override = true;
+                            end;
+                        end;
+                    end;
+                end);
+            end;
             return play_sound_old(...);
         end;
     end;
-    framework:BindToRenderStep(LPH_JIT(function()
+    framework:BindToRenderStep(LPH_NO_VIRTUALIZE(function()
         if not Classes.AutoParry.Value then return; end;
         if Classes.APCheck.Value ~= "animations" then return; end;
         local character = localplayer.Character;
@@ -4413,7 +4805,7 @@ charactertab:AddToggle("fly", {
     Text = "fly";
     Default = false;
     Callback = function()
-        updatefeature("fly", "flybind", function(state)
+        compare_state("fly", "flybind", function(state)
             settings.flyenabled = state;
         end);
     end;
@@ -4422,7 +4814,7 @@ charactertab:AddToggle("fly", {
     Default = "X";
     Mode = "Toggle";
     Callback = function()
-        updatefeature("fly", "flybind", function(state)
+        compare_state("fly", "flybind", function(state)
             settings.flyenabled = state;
         end);
     end;
@@ -4432,7 +4824,7 @@ charactertab:AddToggle("velocity", {
     Text = "velocity";
     Default = false;
     Callback = function()
-        updatefeature("velocity", "velocitybind", function(state)
+        compare_state("velocity", "velocitybind", function(state)
             settings.velocityenabled = state;
         end);
     end;
@@ -4441,7 +4833,7 @@ charactertab:AddToggle("velocity", {
     Default = "C";
     Mode = "Toggle";
     Callback = function()
-        updatefeature("velocity", "velocitybind", function(state)
+        compare_state("velocity", "velocitybind", function(state)
             settings.velocityenabled = state;
         end);
     end;
@@ -4517,10 +4909,12 @@ do
 
     local noanim_connection = nil;
     local charanim_connection = nil;
+
     local function apply_no_anims(char)
         if noanim_connection then
 			noanim_connection:Disconnect();
 		end;
+
         local hum = char:WaitForChild("Humanoid");
         local animator = hum:FindFirstChildOfClass("Animator");
         if not animator then return; end;
@@ -4529,6 +4923,7 @@ do
                 track:Stop();
             end;
         end;
+
         noanim_connection = animator.AnimationPlayed:Connect(function(track)
             if track.Animation ~= spin_animation then
                 track:Stop();
@@ -4671,7 +5066,7 @@ do
         Text = "void";
         Default = false;
         Callback = function()
-            updatefeature("voidenabled", "voidenabledkey", function(state)
+            compare_state("voidenabled", "voidenabledkey", function(state)
                 settings.voidenabled = state;
                 if not settings.void_spam then
                     setrunning("voidhidelogic", state);
@@ -4687,7 +5082,7 @@ do
         Default = "Y";
         Mode = "Toggle";
         Callback = function()
-            updatefeature("voidenabled", "voidenabledkey", function(state)
+            compare_state("voidenabled", "voidenabledkey", function(state)
                 settings.voidenabled = state;
                 if not settings.void_spam then
                     setrunning("voidhidelogic", state);
@@ -4757,13 +5152,13 @@ do
         Rounding = 1;
         Compact = true;
         Callback = function(Value)
-            settings.void_out = Value
+            settings.void_out = Value;
         end;
     });
 
-    task_spawn(LPH_JIT(function()
+    task_spawn(LPH_NO_VIRTUALIZE(function()
         while true do
-            task.wait()
+            task.wait();
             if settings.void_spam and settings.voidenabled then
                 local vin = settings.void_in or 0;
                 local vout = settings.void_out or 0;
@@ -4921,7 +5316,7 @@ exploit:AddToggle("nodashcd", {
     end;
 });
 
-framework:BindToRenderStep(LPH_JIT(function()
+framework:BindToRenderStep(LPH_NO_VIRTUALIZE(function()
 	framework:spinning();
     if not settings.ndcd then return; end;
     local sessionsdata = framework:GetSessionData();
@@ -4958,6 +5353,23 @@ exploit:AddToggle("nut", {
     Default = false;
     Callback = function(Value)
         settings.nut = Value;
+        update_goop();
+        update_ff();
+    end;
+});
+
+local nut_dep = exploit:AddDependencyBox();
+
+nut_dep:SetupDependencies({
+    {Toggles.nut, true};
+});
+
+nut_dep:AddToggle("include_goop", {
+    Text = "include goop";
+    Default = false;
+    Callback = function(Value)
+        settings.include_goop = Value;
+        update_goop();
     end;
 });
 
@@ -4966,7 +5378,7 @@ exploit:AddToggle("itu", {
     Default = false;
     Callback = function(Value)
         if Value then
-            for i, v in modules.Name["UtilityMetadata"] do
+            for i, v in pairs(modules.Name["UtilityMetadata"]) do
                 if v.displayName ~= "Medkit" then
                     v.cacheDur = v.preThrowDuration or 0.001;
                     v.cacheTime = v.useTime or 0;
@@ -4975,7 +5387,7 @@ exploit:AddToggle("itu", {
                 end;
             end;
         else
-            for i, v in modules.Name["UtilityMetadata"] do
+            for i, v in pairs(modules.Name["UtilityMetadata"]) do
                 if v.displayName ~= "Medkit" then
                     v.preThrowDuration = v.cacheDur or v.preThrowDuration;
                     v.useTime = v.cacheTime or v.useTime;
@@ -4992,57 +5404,6 @@ exploit:AddToggle("nkb", {
         settings.nkb = Toggles.nkb.Value;
     end;
 });
-
-do
-    local antifling_connections = {};
-    local collision_cache = {};
-    local function watch_hrp(player, hrp)
-        if antifling_connections[hrp] then return; end;
-        collision_cache[hrp] = hrp.CanCollide;
-        hrp.CanCollide = false;
-        antifling_connections[hrp] = hrp:GetPropertyChangedSignal("CanCollide"):Connect(function()
-            if settings.antifling and not hrp:FindFirstChildWhichIsA("WeldConstraint", true) then
-                hrp.CanCollide = false;
-            end;
-        end);
-    end;
-    local function watch_player(player)
-        if player == localplayer then return; end;
-        local function on_char(char)
-            local hrp = char:WaitForChild("HumanoidRootPart");
-            if not hrp:FindFirstChildWhichIsA("WeldConstraint", true) then
-                watch_hrp(player, hrp);
-            end;
-        end;
-        if player.Character then on_char(player.Character) end
-        antifling_connections[player] = player.CharacterAdded:Connect(on_char);
-    end;
-    local function stop_antifling()
-        for key, conn in antifling_connections do
-            conn:Disconnect();
-        end;
-        table.clear(antifling_connections);
-        for hrp, original in collision_cache do
-            if hrp and hrp.Parent then
-                hrp.CanCollide = original;
-            end;
-        end;
-        table.clear(collision_cache);
-    end;
-    exploit:AddToggle("antifling", {
-        Text = "anti fling";
-        Default = false;
-        Callback = function(Value)
-            settings.antifling = Value;
-            stop_antifling();
-            if Value then
-                for player in pairs(cachedplayers) do
-                    watch_player(player);
-                end;
-            end;
-        end;
-    });
-end;
 
 exploit:AddToggle("antiswim", {
     Text = "anti swim";
@@ -5129,7 +5490,7 @@ do
     local anim_connections = {};
     local charcon = nil;
     local function cleanup_anim()
-        for _, c in anim_connections do 
+        for _, c in pairs(anim_connections) do 
             c:Disconnect();
         end;
         table.clear(anim_connections);
@@ -5191,7 +5552,7 @@ desync_gb:AddToggle("desync", {
 	Text = "desync";
     Default = false;
     Callback = function()
-		updatefeature("desync", "desyncbind", function(state)
+		compare_state("desync", "desyncbind", function(state)
 			setrunning("body_direction", state);
 		end);
 	end; 
@@ -5200,7 +5561,7 @@ desync_gb:AddToggle("desync", {
     Default = "F1";
     Mode = "Toggle";
 	Callback = function()
-		updatefeature("desync", "desyncbind", function(state)
+		compare_state("desync", "desyncbind", function(state)
 			setrunning("body_direction", state);
 		end);
     end;
@@ -5305,7 +5666,7 @@ exploit1:AddToggle("noclip", {
     Text = "noclip";
     Default = false;
     Callback = function()
-        updatefeature("noclip", "noclipbind", function(state)
+        compare_state("noclip", "noclipbind", function(state)
             settings.noclipenabled = state;
         end);
     end;
@@ -5314,7 +5675,7 @@ exploit1:AddToggle("noclip", {
     Default = "Z";
     Mode = "Toggle";
     Callback = function()
-        updatefeature("noclip", "noclipbind", function(state)
+        compare_state("noclip", "noclipbind", function(state)
             settings.noclipenabled = state;
         end);
     end;
@@ -5324,7 +5685,7 @@ exploit1:AddToggle("fakeposition", {
     Text = "fake position";
     Default = false;
     Callback = function()
-        updatefeature("fakeposition", "fakeposkey", function(state)
+        compare_state("fakeposition", "fakeposkey", function(state)
             setfflag("NextGenReplicatorEnabledWrite4", tostring(state));
         end);
     end;
@@ -5333,7 +5694,7 @@ exploit1:AddToggle("fakeposition", {
     Default = "M";
     Mode = "Toggle";
     Callback = function()
-        updatefeature("fakeposition", "fakeposkey", function(state)
+        compare_state("fakeposition", "fakeposkey", function(state)
             setfflag("NextGenReplicatorEnabledWrite4", tostring(state));
         end);
     end;
@@ -5468,8 +5829,8 @@ do
         is_player_mod(player);
     end);
     mmisc:AddToggle("anti_mod", {
-    Text = "anti mod";
-    Default = false;
+        Text = "anti mod";
+        Default = false;
         Callback = function(v)
             settings.anti_mod = v;
             if v then
@@ -5487,7 +5848,7 @@ end);
 
 misc:AddButton("unlock emotes", function()
 	local rodux = framework:GetState()
-	for i, v in modules.Name["EmotesInOrder"] do
+	for i, v in pairs(modules.Name["EmotesInOrder"]) do
         if typeof(v) == "table" then 
             rodux.OwnedEmotes[v.id] = 1
         end;
@@ -5508,12 +5869,14 @@ misc:AddToggle("include_position", {
 	Default = false;
 	Callback = function(v)
 		local maxhistory = 10
+
 		local function connect(Character)
 			ignorerespawn = true;
 			poshistory = {};
 			notowner = true;
 			hasteleported = false;
 			toolonloss = nil;
+
 			if humanoid then
 				if deathconn then
                     deathconn:Disconnect();
@@ -5522,18 +5885,24 @@ misc:AddToggle("include_position", {
                     ignorerespawn = true; 
                 end);
 			end;
+
 			task.delay(0.25, function()
                 ignorerespawn = false;
             end);
 		end;
+
 		if v and settings.fno then
 			if deathconnection then return; end;
 			deathconnection = localplayer.CharacterAdded:Connect(connect);
 			if character then
                 connect(character);
             end;
-			if positionconnection then positionconnection:Disconnect(); end;
-			positionconnection = runservice.Heartbeat:Connect(LPH_JIT(function()
+
+			if positionconnection then
+                positionconnection:Disconnect();
+            end;
+
+			positionconnection = runservice.Heartbeat:Connect(LPH_NO_VIRTUALIZE(function()
 				if ignorerespawn then return; end;
 				if not character then return; end;
 				if not humanoidrootpart or not humanoidrootpart:IsDescendantOf(workspace) then return; end;
@@ -5640,7 +6009,7 @@ crates:AddButton({
 			local success, response = invoke_server("PurchaseCase", caseid, selectedamount);
 			if success then
 				setthreadidentity(2);
-				modules.Name["ToastNotificationActionsClient"].add( "success", `Opened {tostring(selectedamount)} case(s) of {SelectedCrateName}`, 2 )(modules.Name["RoduxStore"].store);
+				modules.Name["ToastNotificationActionsClient"].add( "success", "Opened " .. tostring(selectedamount) .. " case(s) of " .. tostring(SelectedCrateName), 2 )(modules.Name["RoduxStore"].store);
 				modules.Name["SoundHandler"].playSound({soundObject = repstorage.Shared.Assets.Sounds.Success, parent = Workspace.Sounds, });
 				setthreadidentity(7);
 			else
@@ -5923,7 +6292,7 @@ do
         return Enum.ContextActionResult.Sink;
     end;
     local function has_parry_shield(character)
-        for _, v in character:GetChildren() do
+        for _, v in pairs(character:GetChildren()) do
             if v:GetAttribute("ParryShieldId") then 
                 return true;
             end;
@@ -5945,7 +6314,7 @@ do
 	end;
     local child_connections = {};
     local function watch_character(character)
-        for _, c in child_connections do 
+        for _, c in pairs(child_connections) do 
             c:Disconnect();
         end;
         table.clear(child_connections);
@@ -5963,7 +6332,7 @@ do
         watch_character(character);
     end);
     localplayer.CharacterRemoving:Connect(function()
-        for _, c in child_connections do 
+        for _, c in pairs(child_connections) do 
             c:Disconnect();
         end;
         table.clear(child_connections);
@@ -5974,7 +6343,7 @@ do
     end;
 end;
 
-network:BindEvents({
+bind_events({
     KilledPlayer = function(statData)
 		local KillSayStuff = Data.KillSayStuff;
 		local MockHandler = modules.Name["MockPlayerHandler"];
@@ -6040,7 +6409,9 @@ network:BindEvents({
 		end;
 	end;
 });
+
 setthreadidentity(8);
+
 local CachedPlayers = {};
 local function UpdateCachedPlayers()
     CachedPlayers = {};
@@ -6051,10 +6422,13 @@ local function UpdateCachedPlayers()
         end;
     end;
 end;
+
 UpdateCachedPlayers();
+
 players.PlayerAdded:Connect(function()
     UpdateCachedPlayers();
 end);
+
 players.PlayerRemoving:Connect(function()
     UpdateCachedPlayers();
 end);
@@ -6135,6 +6509,7 @@ auto:AddToggle('spam_bio_repair', {
                     child:Destroy();
                 end;
             end);
+
             task_spawn(LPH_JIT(function()
                 local stomp = {Torso = workspace; };
                 while Toggles.spam_bio_repair.Value do
@@ -6260,8 +6635,158 @@ server_gb:AddButton({
     end;
 });
 
-local visuals = tabs.visuals;
-local crosshairsection = visuals:AddRightGroupbox("crosshair");
+local Skyboxes = {
+    None = {};
+    ["stormy"] = {
+        SkyboxUp = "http://www.roblox.com/asset/?id=18703232671";
+        SkyboxBk = "http://www.roblox.com/asset/?id=18703245834";
+        SkyboxLf = "http://www.roblox.com/asset/?id=18703237556";
+        SkyboxDn = "http://www.roblox.com/asset/?id=18703243349";
+        SkyboxFt = "http://www.roblox.com/asset/?id=18703240532";
+        SkyboxRt = "http://www.roblox.com/asset/?id=18703235430";
+    };
+    ["blue space"] = {
+        SkyboxLf = "rbxassetid://15536114370";
+        SkyboxUp = "rbxassetid://15536117282";
+        SkyboxRt = "rbxassetid://15536118762";
+        SkyboxFt = "rbxassetid://15536116141";
+        SkyboxDn = "rbxassetid://15536112543";
+        SkyboxBk = "rbxassetid://15536110634";
+    };
+    ["pink"] = {
+        SkyboxUp = "rbxassetid://12216108877";
+        SkyboxLf = "rbxassetid://12216110170";
+        SkyboxRt = "rbxassetid://12216110471";
+        SkyboxFt = "rbxassetid://12216109489";
+        SkyboxBk = "rbxassetid://12216109205";
+        SkyboxDn = "rbxassetid://12216109875";
+    };
+    ["black storm"] = {
+        SkyboxLf = "rbxassetid://15502507918";
+        SkyboxUp = "rbxassetid://15502511911";
+        SkyboxRt = "rbxassetid://15502509398";
+        SkyboxFt = "rbxassetid://15502510289";
+        SkyboxDn = "rbxassetid://15502508460";
+        SkyboxBk = "rbxassetid://15502511288";
+    };
+    ["realistic"] = {
+        SkyboxUp = "rbxassetid://653719321";
+        SkyboxDn = "rbxassetid://653718790";
+        SkyboxLf = "rbxassetid://653719190";
+        SkyboxFt = "rbxassetid://653719067";
+        SkyboxRt = "rbxassetid://653718931";
+        SkyboxBk = "rbxassetid://653719502";
+    };
+};
+
+local default_skybox = {};
+do
+    local sky = lighting:FindFirstChildOfClass("Sky");
+    if sky then
+        for prop, _ in pairs(Skyboxes.stormy) do
+            default_skybox[prop] = sky[prop];
+        end;
+    end;
+end;
+
+local WeatherPresets = {
+    ["rain"] = {
+        Speed = NumberRange.new(60, 60);
+        LockedToPart = true;
+        Rate = 600;
+        Texture = "rbxassetid://1822883048";
+        EmissionDirection = Enum.NormalId.Bottom;
+        Transparency = NumberSequence.new({
+            NumberSequenceKeypoint.new(0, 1),
+            NumberSequenceKeypoint.new(0.25, 0.78),
+            NumberSequenceKeypoint.new(0.75, 0.78),
+            NumberSequenceKeypoint.new(1, 1)
+        });
+        Lifetime = NumberRange.new(0.8, 0.8);
+        LightEmission = 0.05;
+        LightInfluence = 0.9;
+        Orientation = Enum.ParticleOrientation.FacingCameraWorldUp;
+        Size = NumberSequence.new({
+            NumberSequenceKeypoint.new(0, 10),
+            NumberSequenceKeypoint.new(1, 10)
+        });
+    };
+    ["snow"] = {
+        Transparency = NumberSequence.new({
+            NumberSequenceKeypoint.new(0, 0.74),
+            NumberSequenceKeypoint.new(0.97, 0.77),
+            NumberSequenceKeypoint.new(1, 1)
+        });
+        Texture = "http://www.roblox.com/asset/?id=99851851";
+        SpreadAngle = Vector2.new(50, 50);
+        Speed = NumberRange.new(30, 30);
+        LightEmission = 0.5;
+        Rate = 1000;
+        EmissionDirection = Enum.NormalId.Bottom;
+        Size = NumberSequence.new({
+            NumberSequenceKeypoint.new(0, 0.33),
+            NumberSequenceKeypoint.new(0.55, 0.40),
+            NumberSequenceKeypoint.new(1, 0.33)
+        });
+    };
+    ["light rain"] = {
+        LockedToPart = true;
+        Rate = 500;
+        LightInfluence = 0.3;
+        Transparency = NumberSequence.new({
+            NumberSequenceKeypoint.new(0, 0),
+            NumberSequenceKeypoint.new(0.44, 0),
+            NumberSequenceKeypoint.new(1, 0)
+        });
+        Texture = "rbxasset://textures/particles/sparkles_main.dds";
+        Speed = NumberRange.new(30, 50);
+        Lifetime = NumberRange.new(9, 9);
+        LightEmission = 0.5;
+        Brightness = 2;
+        EmissionDirection = Enum.NormalId.Bottom;
+        Orientation = Enum.ParticleOrientation.FacingCameraWorldUp;
+        Size = NumberSequence.new({
+            NumberSequenceKeypoint.new(0, 0.2),
+            NumberSequenceKeypoint.new(1, 0.2)
+        });
+    };
+};
+
+local weather_part, weather_emitter;
+
+local function destroy_weather()
+    if weather_part then
+        weather_part:Destroy();
+        weather_part = nil;
+        weather_emitter = nil;
+    end;
+end;
+
+local function create_weather(weather_type)
+    destroy_weather();
+    
+    local preset = WeatherPresets[weather_type];
+    if not preset then return; end;
+
+    weather_part = Instance.new("Part");
+    weather_part.Size = Vector3.new(40, 40, 85);
+    weather_part.CanCollide = false;
+    weather_part.Massless = true;
+    weather_part.CastShadow = false;
+    weather_part.Transparency = 1;
+    weather_part.Anchored = true;
+    weather_part.Name = "weather_part";
+    weather_part.Parent = workspace;
+
+    weather_emitter = Instance.new("ParticleEmitter");
+    for prop, val in pairs(preset) do
+        weather_emitter[prop] = val;
+    end;
+
+    local color = Classes.WeatherColor and Classes.WeatherColor.Value or Color3.new(1, 1, 1);
+    weather_emitter.Color = ColorSequence.new(color);
+    weather_emitter.Parent = weather_part;
+end;
 
 crosshairsection:AddToggle("CrosshairEnabled", {
     Text = "crosshair enabled";
@@ -6325,13 +6850,13 @@ crosshairsection:AddSlider("CrosshairSpinSpeed", {
     Rounding = 0;
     Compact = true;
 });
+
 local on_tool_equipped;
 local clean_weapon_chams;
 local apply_weapon_chams;
-local weaponchamssection = visuals:AddRightGroupbox("weapon chams");
 
-weaponchamssection:AddToggle("WeaponChamsEnabled", {
-    Text = "weapon chams enabled";
+tool_tab:AddToggle("weapon_chams_enabled", {
+    Text = "weapon chams";
     Default = false;
     Callback = function(value)
         if not value then
@@ -6340,14 +6865,16 @@ weaponchamssection:AddToggle("WeaponChamsEnabled", {
             clean_weapon_chams();
         else
             local existing = character and character:FindFirstChildOfClass("Tool");
-            if existing then on_tool_equipped(existing); end;
+            if existing then
+                on_tool_equipped(existing);
+            end;
         end;
     end;
-}):AddColorPicker("WeaponChamsColor", {
+}):AddColorPicker("weapon_chams_color", {
     Default = Color3.new(1, 0, 0);
     Title = "chams color";
     Callback = function()
-        if not (Classes.WeaponChamsEnabled and Classes.WeaponChamsEnabled.Value) then return; end;
+        if not (Classes.weapon_chams_enabled and Classes.weapon_chams_enabled.Value) then return; end;
         local tool = character and character:FindFirstChildOfClass("Tool");
         if tool then
             clean_weapon_chams();
@@ -6356,22 +6883,22 @@ weaponchamssection:AddToggle("WeaponChamsEnabled", {
     end;
 });
 
-weaponchamssection:AddToggle("WeaponChamsHighlight", {
-    Text = "enable highlight";
+tool_tab:AddToggle("weapon_chams_highlight", {
+    Text = "highlight";
     Default = false;
     Callback = function(value)
-        if not (Classes.WeaponChamsEnabled and Classes.WeaponChamsEnabled.Value) then return; end;
+        if not (Classes.weapon_chams_enabled and Classes.weapon_chams_enabled.Value) then return; end;
         local tool = character and character:FindFirstChildOfClass("Tool");
         if tool then
             clean_weapon_chams();
             apply_weapon_chams(tool);
         end;
     end;
-}):AddColorPicker("WeaponChamsHighlightColor", {
+}):AddColorPicker("weaponchams_highlight_color", {
     Default = Color3.new(1, 0, 0);
     Title = "highlight color";
     Callback = function()
-        if not (Classes.WeaponChamsEnabled and Classes.WeaponChamsEnabled.Value) then return; end;
+        if not (Classes.weapon_chams_enabled and Classes.weapon_chams_enabled.Value) then return; end;
         local tool = character and character:FindFirstChildOfClass("Tool");
         if tool then
             clean_weapon_chams();
@@ -6380,12 +6907,12 @@ weaponchamssection:AddToggle("WeaponChamsHighlight", {
     end;
 });
 
-weaponchamssection:AddDropdown("WeaponChamsMaterial", {
+tool_tab:AddDropdown("weapon_chams_material", {
     Text = "material";
     Default = "Plastic";
     Values = {"ForceField", "Neon", "Glass", "Plastic"};
     Callback = function()
-        if not (Classes.WeaponChamsEnabled and Classes.WeaponChamsEnabled.Value) then return; end;
+        if not (Classes.weapon_chams_enabled and Classes.weapon_chams_enabled.Value) then return; end;
         local tool = character and character:FindFirstChildOfClass("Tool");
         if tool then
             clean_weapon_chams();
@@ -6394,113 +6921,145 @@ weaponchamssection:AddDropdown("WeaponChamsMaterial", {
     end;
 });
 
-local lightingsection = visuals:AddRightGroupbox("lightning");
-local lightingsection1 = visuals:AddRightGroupbox("fog")
-local Lighting = game:GetService("Lighting");
 local Map = workspace:FindFirstChild("Map");
 
-local atmosphere = Lighting:FindFirstChildOfClass("Atmosphere")
+local atmosphere = lighting:FindFirstChildOfClass("Atmosphere");
+
 if not atmosphere then
-    atmosphere = Instance.new("Atmosphere", Lighting)
-end
-atmosphere.Name = "atmosphere"
+    atmosphere = Instance.new("Atmosphere", lighting);
+end;
+
+atmosphere.Name = "atmosphere";
 
 local original_atmosphere = {
-    Density = Lighting.atmosphere.Density;
-    Decay = Lighting.atmosphere.Decay;
-    Color = Lighting.atmosphere.Color;
-    Offset = Lighting.atmosphere.Offset;
-    Glare = Lighting.atmosphere.Glare;
-    Haze = Lighting.atmosphere.Haze;
+    Density = lighting.atmosphere.Density;
+    Decay = lighting.atmosphere.Decay;
+    Color = lighting.atmosphere.Color;
+    Offset = lighting.atmosphere.Offset;
+    Glare = lighting.atmosphere.Glare;
+    Haze = lighting.atmosphere.Haze;
 };
 
-local Skyboxes = {
-    None = {};
-    Nebula = {
-        SkyboxBk = "rbxassetid://159454299";
-        SkyboxDn = "rbxassetid://159454296";
-        SkyboxFt = "rbxassetid://159454293";
-        SkyboxLf = "rbxassetid://159454286";
-        SkyboxRt = "rbxassetid://159454300";
-        SkyboxUp = "rbxassetid://159454288";
-    };
-    Vaporwave = {
-        SkyboxBk = "rbxassetid://1417494030",
-        SkyboxDn = "rbxassetid://1417494146",
-        SkyboxFt = "rbxassetid://1417494253";
-        SkyboxLf = "rbxassetid://1417494402";
-        SkyboxRt = "rbxassetid://1417494499";
-        SkyboxUp = "rbxassetid://1417494643";
-    };
-    Clouds = {
-        SkyboxBk = "rbxassetid://570557514";
-        SkyboxDn = "rbxassetid://570557775";
-        SkyboxFt = "rbxassetid://570558157";
-        SkyboxLf = "rbxassetid://570551248";
-        SkyboxRt = "rbxassetid://570557727";
-        SkyboxUp = "rbxassetid://570558036";
-    };
-    Twilight = {
-        SkyboxBk = "rbxassetid://2649648296";
-        SkyboxDn = "rbxassetid://2649648296";
-        SkyboxFt = "rbxassetid://2649648296";
-        SkyboxLf = "rbxassetid://2649648296";
-        SkyboxRt = "rbxassetid://2649648296";
-        SkyboxUp = "rbxassetid://2649648296";
-    };
-};
-
-lightingsection:AddToggle("Ambience", {
-    Text = "world ambience";
+lighting_section:AddToggle("Ambient", {
+    Text = "ambient";
 	Default = false;
-	Tooltip = "Changes ambience";
-}):AddColorPicker("AmbienceColor", {
+}):AddColorPicker("AmbientColor", {
     Default = Color3.new(1, 1, 1);
-	Title = "Ambience Color";
+	Title = "Ambient Color";
 	Transparency = 0;
 });
 
-lightingsection:AddToggle("ColorCorrection", {
+fog_section:AddToggle("ColorShift_Bottom", {
+    Text = "colorshift bottom";
+    Default = false;
+}):AddColorPicker("ColorShift_BottomColor", {
+    Default = Color3.new(1, 1, 1);
+    Title = "colorshift bottom color";
+});
+
+fog_section:AddToggle("ColorShift_Top", {
+    Text = "colorshift top";
+    Default = false;
+}):AddColorPicker("ColorShift_TopColor", {
+    Default = Color3.new(1, 1, 1);
+    Title = "colorshift top color";
+});
+
+fog_section:AddToggle("FogColor", {
+    Text = "fog color";
+    Default = false;
+}):AddColorPicker("FogColorValue", {
+    Default = Color3.new(1, 1, 1);
+    Title = "fog color";
+});
+
+fog_section:AddToggle("FogEnd", {
+    Text = "fog end";
+    Default = false;
+});
+
+fog_section:AddSlider("FogEndValue", {
+    Text = "FogEnd";
+    Default = 100;
+    Min = 0;
+    Max = 1000;
+    Rounding = 0;
+    Compact = true;
+    Suffix = "studs";
+});
+
+fog_section:AddToggle("FogStart", {
+    Text = "fog start";
+    Default = false;
+});
+
+fog_section:AddSlider("FogStartValue", {
+    Text = "FogStart";
+    Default = 0;
+    Min = 0;
+    Max = 1000;
+    Rounding = 0;
+    Compact = true;
+    Suffix = "studs";
+});
+
+lighting_section:AddToggle("ColorCorrection", {
     Text = "color correction";
 	Default = false;
-	Tooltip = "Changes Color Correction";
 }):AddColorPicker("ColorCorrectionColor", {
     Default = Color3.new(1, 1, 1);
 	Title = "Color Correction Color";
 	Transparency = 0;
 });
 
-local hitdetectionsection = visuals:AddRightGroupbox("hit detection");
+bullet_tracers_section:AddToggle("BulletTracers", {
+    Text = "bullet tracers";
+    Default = false;
+}):AddColorPicker("BulletTracerColor", {
+    Default = Color3.fromRGB(170, 85, 255);
+    Title = "tracer color";
+});
 
-hitdetectionsection:AddToggle("HitDetectionEnabled", {
-    Text = "enabled";
+bullet_tracers_section:AddSlider("TracerLerp", {
+    Text = "lerp";
+    Default = 3;
+    Min = 0.5;
+    Max = 5;
+    Rounding = 1;
+    Compact = true;
+});
+
+bullet_tracers_section:AddSlider("TracerLifetime", {
+    Text = "lifetime";
+    Default = 1;
+    Min = 0.1;
+    Max = 5;
+    Rounding = 1;
+    Compact = true;
+});
+
+bullet_tracers_section:AddToggle("HitDetectionEnabled", {
+    Text = "hit sounds";
     Default = false;
 }):AddColorPicker("HitEffectColor", {
     Default = Color3.new(1, 1, 1);
     Title = "effect color";
 });
 
-hitdetectionsection:AddDropdown("HitDetectionType", {
-    Text = "detection type";
-	Default = "Ranged";
-	Values = {"Both", "Melee", "Ranged"};
-	Tooltip = "melee works only for killaura";
-});
-
-hitdetectionsection:AddDropdown("HitSound", {
+bullet_tracers_section:AddDropdown("HitSound", {
     Text = "hit sound";
     Default = "None";
     Values = {"None", "OSU", "Neverlose", "Bameware", "skeet", "Rust", "Lazer Beam", "Bow Hit", "TF2 Hitsound", "TF2 Critical"};
 });
 
-hitdetectionsection:AddDropdown("HitEffects", {
+bullet_tracers_section:AddDropdown("HitEffects", {
     Multi = true;
     Text = "hit effects";
     Default = {};
 	Values = {"Clone (Forcefield)", "Clone (Neon)", "Impact", "Pulse", "Fortnite"};
 });
 
-hitdetectionsection:AddToggle("HitLogs", {
+bullet_tracers_section:AddToggle("HitLogs", {
     Text = "hitlogs";
     Default = false;
 }):AddColorPicker("HvhColor", {
@@ -6508,7 +7067,7 @@ hitdetectionsection:AddToggle("HitLogs", {
     Title = ".hvh color";
 });
 
-hitdetectionsection:AddSlider("HitSoundVolume", {
+bullet_tracers_section:AddSlider("HitSoundVolume", {
     Text = "hit sound volume";
 	Default = 1;
 	Min = 0.1;
@@ -6517,32 +7076,71 @@ hitdetectionsection:AddSlider("HitSoundVolume", {
 	Compact = true;
 });
 
-lightingsection:AddDropdown("Skybox", {
+-- override shoot sound groupbox
+override_sound_section:AddToggle("OverrideShootSound", {
+    Text = "override shoot sound";
+    Default = false;
+});
+
+override_sound_section:AddDropdown("ShootSoundScope", {
+    Text = "scope";
+    Default = "local";
+    Values = {"local", "all"};
+});
+
+override_sound_section:AddDropdown("ShootSoundOverride", {
+    Text = "sound";
+    Default = "None";
+    Values = {"None", "OSU", "Neverlose", "Bameware", "skeet", "Rust", "Lazer Beam", "Bow Hit", "TF2 Hitsound", "TF2 Critical"};
+});
+
+override_sound_section:AddSlider("ShootSoundVolume", {
+    Text = "volume";
+    Default = 1;
+    Min = 0.1;
+    Max = 10;
+    Rounding = 1;
+    Compact = true;
+});
+
+sky_tab:AddDropdown("Skybox", {
     Text = "skybox";
-	Default = "None";
-	Values = {"None", "Nebula", "Vaporwave", "Clouds", "Twilight"};
+	Default = "stormy";
+    AllowNull = true;
+	Values = {"stormy", "blue space", "pink", "black storm", "realistic"};
 	Tooltip = "Changes Skybox";
 });
 
-lightingsection:AddToggle("ClockTime", {
+lighting_section:AddDropdown("LightingMode", {
+    Text = "lighting mode";
+    Default = "Future";
+    Values = {"Compatibility", "ShadowMap", "Voxel", "Future"};
+    Callback = function(value)
+        pcall(function()
+            lighting.Technology = Enum.Technology[value];
+        end);
+    end;
+});
+
+lighting_section:AddToggle("ClockTime", {
     Text = "clock time";
 	Default = false;
 	Tooltip = "Changes Clock Time";
 });
 
-lightingsection:AddToggle("MaxZoom", {
+camera_section:AddToggle("MaxZoom", {
     Text = "max zoom";
 	Default = false;
 	Tooltip = "Changes Max Zoom";
 });
 
-lightingsection:AddToggle("FieldOfView", {
+camera_section:AddToggle("FieldOfView", {
     Text = "field of view";
 	Default = false;
 	Tooltip = "Changes FOV";
 });
 
-lightingsection:AddToggle("clip_camera", {
+camera_section:AddToggle("clip_camera", {
     Text = "noclip cam";
 	Default = false;
 	Callback = function(Value)
@@ -6557,12 +7155,15 @@ lightingsection:AddToggle("clip_camera", {
 		local modified = false;
 		for _, v in pairs(getgc()) do
 			if type(v) == "function" and getfenv(v).script == popper then
-				for i, v1 in pairs(gc(v)) do
-					if tonumber(v1) == target_value_noclip or tonumber(v1) == target_val_camoff then
-						if tonumber(v1) ~= value_to_set then
-							sc(v, i, value_to_set);
-							modified = true;
-							break;
+				local rv = gc(v);
+				if type(rv) == "table" then
+					for i, v1 in pairs(rv) do
+						if tonumber(v1) == target_value_noclip or tonumber(v1) == target_val_camoff then
+							if tonumber(v1) ~= value_to_set then
+								sc(v, i, value_to_set);
+								modified = true;
+								break;
+							end;
 						end;
 					end;
 				end;
@@ -6572,32 +7173,31 @@ lightingsection:AddToggle("clip_camera", {
 	end;
 });
 
-lightingsection:AddToggle("Brightness", {
+lighting_section:AddToggle("Brightness", {
     Text = "brightness";
 	Default = false;
 });
 
-lightingsection:AddToggle("Environmental", {
+lighting_section:AddToggle("Environmental", {
     Text = "environmental";
 	Default = false;
 });
 
-lightingsection:AddToggle("Exposure", {
+lighting_section:AddToggle("Exposure", {
     Text = "exposure compensation";
 	Default = false;
 });
 
-lightingsection:AddSlider("Time", {
+lighting_section:AddSlider("Time", {
     Text = "time";
 	Default = 12;
 	Min = 1;
 	Max = 24;
 	Rounding = 0;
 	Compact = true;
-	Tooltip = "The time for Clock Time";
 });
 
-lightingsection:AddSlider("FOVLighting", {
+camera_section:AddSlider("fov_value", {
     Text = "fov value";
 	Default = 70;
 	Min = 1;
@@ -6606,7 +7206,7 @@ lightingsection:AddSlider("FOVLighting", {
 	Compact = true;
 });
 
-lightingsection:AddSlider("BrightnessValue", {
+lighting_section:AddSlider("BrightnessValue", {
     Text = "brightness";
 	Default = 2;
 	Min = 1;
@@ -6615,7 +7215,7 @@ lightingsection:AddSlider("BrightnessValue", {
 	Compact = true;
 });
 
-lightingsection:AddSlider("ExposureValue", {
+lighting_section:AddSlider("ExposureValue", {
     Text = "exposure";
 	Default = 0;
 	Min = 0;
@@ -6624,7 +7224,7 @@ lightingsection:AddSlider("ExposureValue", {
 	Compact = true;
 });
 
-lightingsection:AddSlider("EnvironmentValue", {
+lighting_section:AddSlider("EnvironmentValue", {
     Text = "diffuse % specular";
 	Default = 1;
 	Min = 0;
@@ -6633,7 +7233,7 @@ lightingsection:AddSlider("EnvironmentValue", {
 	Compact = true;
 });
 
-lightingsection:AddSlider("MaxZoomVal", {
+camera_section:AddSlider("MaxZoomVal", {
     Text = "max zoom value";
 	Default = 24;
 	Min = 1;
@@ -6643,164 +7243,264 @@ lightingsection:AddSlider("MaxZoomVal", {
 	Suffix = " studs";
 });
 
-lightingsection1:AddToggle("Fog", {
-    Text = "fog";
+atmosphere_tab:AddToggle("atmosphere", {
+    Text = "atmosphere";
 	Default = false;
-}):AddColorPicker("FogColor", {
+}):AddColorPicker("AtmosColor", {
     Default = Color3.new(1, 1, 1);
-	Title = "fog Color";
+	Title = "atmosphere color";
 	Transparency = 0;
+}):AddColorPicker("DecayColor", {
+    Default = Color3.fromRGB(120, 120, 120);
+    Title = "decay color";
+    Transparency = 0;
 });
 
-lightingsection1:AddSlider("Density", {
+atmosphere_tab:AddSlider("Density", {
     Text = "density";
-	Default = 1;
+	Default = 0.35;
 	Min = 0;
 	Max = 1;
 	Rounding = 2;
 	Compact = true;
-	Tooltip = "Fog Density";
+	Tooltip = "Atmosphere Density";
 });
 
-lightingsection1:AddSlider("Glare", {
+atmosphere_tab:AddSlider("Glare", {
     Text = "glare";
-	Default = 0;
+	Default = 10;
 	Min = 0;
 	Max = 10;
-	Rounding = 0;
+	Rounding = 2;
 	Compact = true;
-	Tooltip = "Fog Glare";
+	Tooltip = "Atmosphere Glare";
 });
 
-lightingsection1:AddSlider("Haze", {
+atmosphere_tab:AddSlider("Haze", {
     Text = "haze";
-	Default = 0;
+	Default = 1;
 	Min = 0;
 	Max = 10;
-	Rounding = 0;
+	Rounding = 2;
 	Compact = true;
-	Tooltip = "Fog Haze";
+	Tooltip = "Atmosphere Haze";
 });
 
-local FOVConnection; FOVConnection = camera:GetPropertyChangedSignal("FieldOfView"):Connect(function()
-	if not Active then
-		FOVConnection:Disconnect();
-		return;
-	end;
-	if Classes.FieldOfView.Value then
-        camera.FieldOfView = Classes.FOVLighting.Value;
-    end;
-end);
+atmosphere_tab:AddSlider("AtmosphereOffset", {
+    Text = "offset";
+    Default = 0;
+    Min = 0;
+    Max = 1;
+    Rounding = 2;
+    Compact = true;
+    Tooltip = "Atmosphere Offset";
+});
 
-local ColorCorrection = Lighting:FindFirstChildOfClass("ColorCorrectionEffect") or Instance.new("ColorCorrectionEffect");
-ColorCorrection.Parent = Lighting;
-local OldCorrection = ColorCorrection.TintColor;
-local OldAmbience = Lighting.OutdoorAmbient;
-local OldAmbience2 = Lighting.Ambient;
-local OldDiffuse = Lighting.EnvironmentDiffuseScale;
-local OldDiffuse2 = Lighting.EnvironmentSpecularScale;
-local OldBrightness = Lighting.Brightness;
-local OldExposure = Lighting.ExposureCompensation;
-local OldClock = Lighting.ClockTime;
-local OldZoom = localplayer.CameraMaxZoomDistance;
+local function update_weather()
+    local enabled = Toggles.weather_enabled.Value;
+    local weather_type = Options.Weather.Value;
+    
+    if enabled and weather_type then
+        create_weather(weather_type);
+    else
+        destroy_weather();
+    end;
+end;
+
+sky_tab:AddToggle("weather_enabled", {
+    Text = "weather";
+    Default = false;
+    Callback = update_weather;
+}):AddColorPicker("WeatherColor", {
+    Default = Color3.new(1, 1, 1);
+    Title = "weather color";
+    Callback = function(color)
+        if weather_emitter then
+            weather_emitter.Color = ColorSequence.new(color);
+        end;
+    end;
+});
+
+sky_tab:AddDropdown("Weather", {
+    Text = "weather";
+    Default = "rain";
+    Values = {"rain", "snow", "light rain"};
+    Callback = update_weather;
+});
+
+ColorCorrection = lighting:FindFirstChildOfClass("ColorCorrectionEffect") or Instance.new("ColorCorrectionEffect");
+
+ColorCorrection.Parent = lighting;
+OldCorrection = ColorCorrection.TintColor;
+OldClock = lighting.ClockTime;
+OldBrightness = lighting.Brightness;
+OldDiffuse = lighting.EnvironmentDiffuseScale;
+OldDiffuse2 = lighting.EnvironmentSpecularScale;
+OldExposure = lighting.ExposureCompensation;
+OldAmbience = lighting.OutdoorAmbient;
+OldAmbience2 = lighting.Ambient;
+OldBottom = lighting.ColorShift_Bottom;
+OldTop = lighting.ColorShift_Top;
+OldFogColor = lighting.FogColor;
+OldFogEnd = lighting.FogEnd;
+OldFogStart = lighting.FogStart;
+OldDiffuse = lighting.EnvironmentDiffuseScale;
+OldDiffuse2 = lighting.EnvironmentSpecularScale;
+OldBrightness = lighting.Brightness;
+OldExposure = lighting.ExposureCompensation;
+OldClock = lighting.ClockTime;
+OldZoom = localplayer.CameraMaxZoomDistance;
+OldTechnology = lighting.Technology;
+
+SkyObj = lighting:FindFirstChildOfClass("Sky");
+OldSky = SkyObj and {
+    SkyboxBk = SkyObj.SkyboxBk,
+    SkyboxDn = SkyObj.SkyboxDn,
+    SkyboxFt = SkyObj.SkyboxFt,
+    SkyboxLf = SkyObj.SkyboxLf,
+    SkyboxRt = SkyObj.SkyboxRt,
+    SkyboxUp = SkyObj.SkyboxUp,
+    SunTextureId = SkyObj.SunTextureId,
+    MoonTextureId = SkyObj.MoonTextureId,
+} or nil;
+
+local apply_fog, apply_skybox, apply_ambience, apply_colorshift_bottom, apply_colorshift_top, apply_legacy_fog_color, apply_fog_end, apply_fog_start, apply_clock, apply_colorcorrection, apply_brightness, apply_environmental, apply_exposure, bind_fov, disable_atmosphere_for_legacy_fog = nil;
 
 if Map then
 	Map.ChildAdded:Connect(function(map)
 		task.wait(3);
 		if map:GetAttribute("MapId") then
-			ColorCorrection = Lighting:FindFirstChildOfClass("ColorCorrectionEffect") or Instance.new("ColorCorrectionEffect");
-			ColorCorrection.Parent = Lighting;
+			ColorCorrection = lighting:FindFirstChildOfClass("ColorCorrectionEffect") or Instance.new("ColorCorrectionEffect");
+			ColorCorrection.Parent = lighting;
 			OldCorrection = ColorCorrection.TintColor;
-			OldAmbience = Lighting.OutdoorAmbient;
-			OldAmbience2 = Lighting.Ambient;
-			OldDiffuse = Lighting.EnvironmentDiffuseScale;
-			OldDiffuse2 = Lighting.EnvironmentSpecularScale;
-			OldBrightness = Lighting.Brightness;
-			OldExposure = Lighting.ExposureCompensation;
-			OldClock = Lighting.ClockTime;
+			OldAmbience = lighting.OutdoorAmbient;
+			OldAmbience2 = lighting.Ambient;
+			OldDiffuse = lighting.EnvironmentDiffuseScale;
+			OldDiffuse2 = lighting.EnvironmentSpecularScale;
+			OldBrightness = lighting.Brightness;
+			OldExposure = lighting.ExposureCompensation;
+			OldClock = lighting.ClockTime;
 			OldZoom = localplayer.CameraMaxZoomDistance;
+			OldBottom = lighting.ColorShift_Bottom;
+			OldTop = lighting.ColorShift_Top;
+			OldFogColor = lighting.FogColor;
+			OldFogEnd = lighting.FogEnd;
+			OldFogStart = lighting.FogStart;
+
+			local atmos = lighting:FindFirstChildOfClass("Atmosphere");
+			if atmos then
+				original_atmosphere.Density = atmos.Density;
+				original_atmosphere.Decay = atmos.Decay;
+				original_atmosphere.Color = atmos.Color;
+				original_atmosphere.Offset = atmos.Offset;
+				original_atmosphere.Glare = atmos.Glare;
+				original_atmosphere.Haze = atmos.Haze;
+			end;
+
+			SkyObj = lighting:FindFirstChildOfClass("Sky");
+
+			task.defer(function()
+				apply_fog();
+				apply_skybox();
+				apply_ambience();
+				apply_colorshift_bottom();
+				apply_colorshift_top();
+				apply_legacy_fog_color();
+				apply_fog_end();
+				apply_fog_start();
+				apply_clock();
+				apply_colorcorrection();
+				apply_brightness();
+				apply_environmental();
+				apply_exposure();
+				bind_fov();
+			end);
 		end;
 	end);
 end;
 
+
 OldCorrection = ColorCorrection.TintColor;
 
-local water_parts = nil;
-local part_watchers = {};
+do
+    local water_parts = nil;
+    local part_watchers = {};
 
-local function get_water_parts()
-    if water_parts then 
-        return water_parts;
-    end;
-    water_parts = {};
-    local map_object = workspace:FindFirstChild("Map")
-    if not map_object then
-        return water_parts;
-    end;
-    for _, v in ipairs(map_object:GetDescendants()) do
-        if v:IsA("BasePart") and v.Name == "WaterArea" then
-            table.insert(water_parts, v);
+    local function get_water_parts()
+        if water_parts then 
+            return water_parts;
         end;
-    end;
-    map_object.DescendantAdded:Connect(LPH_JIT(function(v)
-        if v:IsA("BasePart") and v.Name == "WaterArea" then
-            table.insert(water_parts, v);
-            if Toggles.walkonwater.Value then
-                v.CanCollide = true;
+        water_parts = {};
+        local map_object = workspace:FindFirstChild("Map")
+        if not map_object then
+            return water_parts;
+        end;
+        for _, v in ipairs(map_object:GetDescendants()) do
+            if v:IsA("BasePart") and v.Name == "WaterArea" then
+                table.insert(water_parts, v);
             end;
         end;
-    end));
-    return water_parts;
-end;
-
-local function set_water_collision(state)
-    local wp = get_water_parts();
-    for i = 1, #wp do
-        local v = wp[i];
-        if v and v.Parent then
-            v.CanCollide = state;
-        end;
-    end;
-end;
-
-local function stop_water()
-    for _, c in part_watchers do 
-        c:Disconnect();
-    end;
-    table.clear(part_watchers);
-    set_water_collision(false);
-end;
-
-local function start_water()
-    stop_water();
-    set_water_collision(true);
-    local wp = get_water_parts()
-    for i = 1, #wp do
-        local v = wp[i]
-        if v and v.Parent then
-            table.insert(part_watchers, v:GetPropertyChangedSignal("CanCollide"):Connect(function()
-                if Toggles.walkonwater.Value and not v.CanCollide then
+        map_object.DescendantAdded:Connect(LPH_JIT(function(v)
+            if v:IsA("BasePart") and v.Name == "WaterArea" then
+                table.insert(water_parts, v);
+                if Toggles.walkonwater.Value then
                     v.CanCollide = true;
                 end;
-            end));
+            end;
+        end));
+        return water_parts;
+    end;
+
+    local function set_water_collision(state)
+        local wp = get_water_parts();
+        for i = 1, #wp do
+            local v = wp[i];
+            if v and v.Parent then
+                v.CanCollide = state;
+            end;
         end;
     end;
-end;
 
-Toggles.walkonwater:OnChanged(function()
-    if Toggles.walkonwater.Value then
-        start_water();
-    else
-        stop_water();
+    local function stop_water()
+        for _, c in pairs(part_watchers) do 
+            c:Disconnect();
+        end;
+        table.clear(part_watchers);
+        set_water_collision(false);
     end;
-end);
 
-if Toggles.walkonwater.Value then 
-    start_water();
+    local function start_water()
+        stop_water();
+        set_water_collision(true);
+        local wp = get_water_parts()
+        for i = 1, #wp do
+            local v = wp[i]
+            if v and v.Parent then
+                table.insert(part_watchers, v:GetPropertyChangedSignal("CanCollide"):Connect(function()
+                    if Toggles.walkonwater.Value and not v.CanCollide then
+                        v.CanCollide = true;
+                    end;
+                end));
+            end;
+        end;
+    end;
+
+    Toggles.walkonwater:OnChanged(function()
+        if Toggles.walkonwater.Value then
+            start_water();
+        else
+            stop_water();
+        end;
+    end);
+
+    if Toggles.walkonwater.Value then 
+        start_water();
+    end;
 end;
 
-local ragdolling = false;
-framework:BindToRenderStep(LPH_JIT_MAX(function()
+ragdolling = false;
+
+framework:BindToRenderStep(LPH_NO_VIRTUALIZE(function()
     local canragdoll = Toggles.ragdoll.Value;
     if not localplayer.Character then return; end;
     local humanoid = localplayer.Character:FindFirstChild("Humanoid");
@@ -6814,53 +7514,97 @@ framework:BindToRenderStep(LPH_JIT_MAX(function()
         if not ragdolled then
             setfenv(1, getrenv());
             remote:FireServer(true);
-            setfenv(1, getfenv());
+            setfenv(1, cenv);
         end;
     else
         if ragdolling then
             setfenv(1, getrenv());
             remote:FireServer(false);
-            setfenv(1, getfenv());
+            setfenv(1, cenv);
             ragdolling = false;
         end;
     end;
-    framework:GetSessionData():getState().fallDamageClient.isDisabled = settings.nfd or settings.loopkillall;
+    
+    if weather_part and weather_part.Parent then
+        weather_part.CFrame = cframe_new(camera.CFrame.Position + Vector3.new(0, 20, 0));
+    end;
+    
+    framework:GetSessionData():getState().fallDamageClient.isDisabled = settings.nfd;
 end), nil, Enum.RenderPriority.Last);
+
 local function ensure_atmosphere()
-    if not Lighting:FindFirstChild("atmosphere") then
-        local atmosphere = Lighting:FindFirstChildOfClass("Atmosphere") or Instance.new("Atmosphere", Lighting);
+    if not lighting:FindFirstChild("atmosphere") then
+        local atmosphere = lighting:FindFirstChildOfClass("Atmosphere") or Instance.new("Atmosphere", lighting);
         atmosphere.Name = "atmosphere";
     end;
 end;
-local function apply_fog()
-    ensure_atmosphere();
-    if Classes.Fog.Value then
-        Lighting.atmosphere.Density = Classes.Density.Value;
-        Lighting.atmosphere.Decay = Classes.FogColor.Value or Color3.new(1, 1, 1);
-        Lighting.atmosphere.Color = Classes.FogColor.Value or Color3.new(1, 1, 1);
-        Lighting.atmosphere.Offset = 0;
-        Lighting.atmosphere.Glare = Classes.Glare.Value;
-        Lighting.atmosphere.Haze = Classes.Haze.Value;
+
+local visual_conns = {};
+local function manage_lighting(prop, class_name, object, default, toggle_name)
+    object = object or lighting;
+    toggle_name = toggle_name or prop;
+    local toggle = Toggles[toggle_name];
+    local value_obj = Classes[class_name] or Options[class_name];
+    
+    if visual_conns[prop .. (object ~= lighting and object.Name or "")] then
+        visual_conns[prop .. (object ~= lighting and object.Name or "")]:Disconnect();
+        visual_conns[prop .. (object ~= lighting and object.Name or "")] = nil;
+    end;
+
+    if toggle and toggle.Value then
+        local function force()
+            if toggle.Value then
+                local val = value_obj.Value;
+                if object[prop] ~= val then
+                    object[prop] = val;
+                end;
+            end;
+        end;
+        
+        force();
+        visual_conns[prop .. (object ~= lighting and object.Name or "")] = object:GetPropertyChangedSignal(prop):Connect(force);
     else
-        for i, v in pairs(original_atmosphere) do
-			Lighting.atmosphere[i] = v;
-		end;
+        object[prop] = default;
     end;
 end;
-local function apply_skybox()
-    local Sky = Lighting:FindFirstChildOfClass("Sky");
-    if not Sky then return; end;
-    local skyboxval = Classes.Skybox.Value;
-    local Skybox = Skyboxes[skyboxval];
-    if Skybox then
-		for i, v in next, Skybox do
-			Sky[i] = v;
-		end;
-	end;
-    _lastskybox = skyboxval;
+
+apply_fog = function()
+    ensure_atmosphere();
+    local atmos = lighting.atmosphere;
+    manage_lighting("Density", "Density", atmos, original_atmosphere.Density, "atmosphere");
+    manage_lighting("Decay", "DecayColor", atmos, original_atmosphere.Decay, "atmosphere");
+    manage_lighting("Color", "AtmosColor", atmos, original_atmosphere.Color, "atmosphere");
+    manage_lighting("Offset", "AtmosphereOffset", atmos, original_atmosphere.Offset, "atmosphere");
+    manage_lighting("Glare", "Glare", atmos, original_atmosphere.Glare, "atmosphere");
+    manage_lighting("Haze", "Haze", atmos, original_atmosphere.Haze, "atmosphere");
 end;
-local fov_conn;
-local function bind_fov()
+
+apply_skybox = function()
+    if visual_conns["Skybox"] then
+        visual_conns["Skybox"]:Disconnect();
+        visual_conns["Skybox"] = nil;
+    end;
+    
+    local sky = lighting:FindFirstChildOfClass("Sky");
+    if not sky then return; end;
+    
+    local function force()
+        local sky_value = Classes.Skybox.Value;
+        local preset = sky_value and Skyboxes[sky_value] or default_skybox;
+        if preset then
+            for p, v in pairs(preset) do
+                if sky[p] ~= v then sky[p] = v; end;
+            end;
+        end;
+    end;
+    
+    force();
+    visual_conns["Skybox"] = sky.Changed:Connect(force);
+end;
+
+fov_conn = nil;
+
+bind_fov = function()
     if fov_conn then fov_conn:Disconnect();
 		fov_conn = nil;
 	end;
@@ -6868,379 +7612,704 @@ local function bind_fov()
         camera.FieldOfView = 70;
         return;
     end;
-    camera.FieldOfView = Classes.FOVLighting.Value;
+    camera.FieldOfView = Classes.fov_value.Value;
     fov_conn = camera:GetPropertyChangedSignal("FieldOfView"):Connect(function()
-        if Classes.FieldOfView.Value and camera.FieldOfView ~= Classes.FOVLighting.Value then
-            camera.FieldOfView = Classes.FOVLighting.Value;
+        if Classes.FieldOfView.Value and camera.FieldOfView ~= Classes.fov_value.Value then
+            camera.FieldOfView = Classes.fov_value.Value;
         end;
     end);
 end;
 
-Classes.FieldOfView:OnChanged(bind_fov);
-Classes.FOVLighting:OnChanged(function()
-    if Classes.FieldOfView.Value then
-        camera.FieldOfView = Classes.FOVLighting.Value;
-    end;
-end);
-Classes.Fog:OnChanged(apply_fog);
-Classes.Density:OnChanged(apply_fog);
-Classes.FogColor:OnChanged(apply_fog);
-Classes.Glare:OnChanged(apply_fog);
-Classes.Haze:OnChanged(apply_fog);
-Classes.Skybox:OnChanged(apply_skybox);
-local function apply_ambience()
-    if Classes.Ambience.Value then
-        Lighting.OutdoorAmbient = Classes.AmbienceColor.Value or Color3.new(1, 1, 1);
-        Lighting.Ambient = Classes.AmbienceColor.Value or Color3.new(1, 1, 1);
+apply_ambience = function()
+    manage_lighting("OutdoorAmbient", "AmbientColor", lighting, OldAmbience, "Ambient");
+    manage_lighting("Ambient", "AmbientColor", lighting, OldAmbience2, "Ambient");
+end;
+
+apply_colorshift_bottom = function()
+    manage_lighting("ColorShift_Bottom", "ColorShift_BottomColor", lighting, OldBottom, "ColorShift_Bottom");
+end;
+
+apply_colorshift_top = function()
+    manage_lighting("ColorShift_Top", "ColorShift_TopColor", lighting, OldTop, "ColorShift_Top");
+end;
+
+disable_atmosphere_for_legacy_fog = function()
+    local atmos = lighting:FindFirstChild("atmosphere");
+    if not atmos then return; end;
+    local legacy_active = (Toggles.FogEnd and Toggles.FogEnd.Value)
+        or (Toggles.FogStart and Toggles.FogStart.Value)
+        or (Toggles.FogColor and Toggles.FogColor.Value);
+    if legacy_active then
+        if atmos.Density ~= 0 then
+            atmos.Density = 0;
+        end;
     else
-        Lighting.OutdoorAmbient = OldAmbience;
-        Lighting.Ambient = OldAmbience2;
+        if Toggles.atmosphere and Toggles.atmosphere.Value then
+            local val = (Classes.Density or Options.Density);
+            if val then atmos.Density = val.Value; end;
+        else
+            atmos.Density = original_atmosphere.Density;
+        end;
     end;
 end;
-Classes.Ambience:OnChanged(apply_ambience);
-Classes.AmbienceColor:OnChanged(apply_ambience);
+
+apply_legacy_fog_color = function()
+    manage_lighting("FogColor", "FogColorValue", lighting, OldFogColor, "FogColor");
+    disable_atmosphere_for_legacy_fog();
+end;
+
+apply_fog_end = function()
+    manage_lighting("FogEnd", "FogEndValue", lighting, OldFogEnd);
+    disable_atmosphere_for_legacy_fog();
+end;
+
+apply_fog_start = function()
+    manage_lighting("FogStart", "FogStartValue", lighting, OldFogStart);
+    disable_atmosphere_for_legacy_fog();
+end;
+
 local function apply_zoom()
     localplayer.CameraMaxZoomDistance = Classes.MaxZoom.Value and Classes.MaxZoomVal.Value or OldZoom;
 end;
-Classes.MaxZoom:OnChanged(apply_zoom);
-Classes.MaxZoomVal:OnChanged(apply_zoom);
-local function apply_clock()
-    Lighting.ClockTime = Classes.ClockTime.Value and Classes.Time.Value or OldClock;
+
+apply_clock = function()
+    manage_lighting("ClockTime", "Time", lighting, OldClock);
 end;
-Classes.ClockTime:OnChanged(apply_clock);
-Classes.Time:OnChanged(apply_clock);
-local function apply_colorcorrection()
+
+apply_colorcorrection = function()
     if Classes.ColorCorrection.Value then
         ColorCorrection.Enabled = true;
-        ColorCorrection.TintColor = Classes.ColorCorrectionColor.Value or Color3.new(1, 1, 1);
+        ColorCorrection.TintColor = Options.ColorCorrectionColor.Value or Color3.new(1, 1, 1);
     else
         ColorCorrection.Enabled = false;
         ColorCorrection.TintColor = OldCorrection;
     end;
 end;
-Classes.ColorCorrection:OnChanged(apply_colorcorrection);
-Classes.ColorCorrectionColor:OnChanged(apply_colorcorrection);
-local function apply_brightness()
-    Lighting.Brightness = Classes.Brightness.Value and Classes.BrightnessValue.Value or OldBrightness;
+
+apply_brightness = function()
+    manage_lighting("Brightness", "BrightnessValue", lighting, OldBrightness);
 end;
+
+apply_environmental = function()
+    manage_lighting("EnvironmentDiffuseScale", "EnvironmentValue", lighting, OldDiffuse, "Environmental");
+    manage_lighting("EnvironmentSpecularScale", "EnvironmentValue", lighting, OldDiffuse2, "Environmental");
+end;
+
+apply_exposure = function()
+    manage_lighting("ExposureCompensation", "ExposureValue", lighting, OldExposure, "Exposure");
+end;
+
+Classes.FieldOfView:OnChanged(bind_fov);
+
+Classes.fov_value:OnChanged(function()
+    if Classes.FieldOfView.Value then
+        camera.FieldOfView = Classes.fov_value.Value;
+    end;
+end);
+
+Classes.atmosphere:OnChanged(apply_fog);
+Classes.Density:OnChanged(apply_fog);
+Options.AtmosColor:OnChanged(apply_fog);
+Classes.DecayColor:OnChanged(apply_fog);
+Classes.Glare:OnChanged(apply_fog);
+Classes.Haze:OnChanged(apply_fog);
+Classes.AtmosphereOffset:OnChanged(apply_fog);
+Classes.Skybox:OnChanged(apply_skybox);
+Classes.Ambient:OnChanged(apply_ambience);
+Options.AmbientColor:OnChanged(apply_ambience);
+Toggles.ColorShift_Bottom:OnChanged(apply_colorshift_bottom);
+Options.ColorShift_BottomColor:OnChanged(apply_colorshift_bottom);
+Toggles.ColorShift_Top:OnChanged(apply_colorshift_top);
+Options.ColorShift_TopColor:OnChanged(apply_colorshift_top);
+Toggles.FogColor:OnChanged(apply_legacy_fog_color);
+Options.FogColorValue:OnChanged(apply_legacy_fog_color);
+Toggles.FogEnd:OnChanged(apply_fog_end);
+Options.FogEndValue:OnChanged(apply_fog_end);
+Toggles.FogStart:OnChanged(apply_fog_start);
+Options.FogStartValue:OnChanged(apply_fog_start);
+Classes.MaxZoom:OnChanged(apply_zoom);
+Classes.MaxZoomVal:OnChanged(apply_zoom);
+Classes.ClockTime:OnChanged(apply_clock);
+Classes.Time:OnChanged(apply_clock);
+Classes.ColorCorrection:OnChanged(apply_colorcorrection);
+Options.ColorCorrectionColor:OnChanged(apply_colorcorrection);
 Classes.Brightness:OnChanged(apply_brightness);
 Classes.BrightnessValue:OnChanged(apply_brightness);
-local function apply_environmental()
-    if Classes.Environmental.Value then
-        Lighting.EnvironmentDiffuseScale = Classes.EnvironmentValue.Value;
-        Lighting.EnvironmentSpecularScale = Classes.EnvironmentValue.Value;
-    else
-        Lighting.EnvironmentDiffuseScale = OldDiffuse;
-        Lighting.EnvironmentSpecularScale = OldDiffuse2;
-    end;
-end;
 Classes.Environmental:OnChanged(apply_environmental);
 Classes.EnvironmentValue:OnChanged(apply_environmental);
-local function apply_exposure()
-    Lighting.ExposureCompensation = Classes.Exposure.Value and Classes.ExposureValue.Value or OldExposure;
-end;
 Classes.Exposure:OnChanged(apply_exposure);
 Classes.ExposureValue:OnChanged(apply_exposure);
+
+lighting.ChildAdded:Connect(function(child)
+	if child:IsA("Atmosphere") then
+		child.Name = "atmosphere";
+		task.defer(function()
+			apply_fog();
+			disable_atmosphere_for_legacy_fog();
+		end);
+	elseif child:IsA("Sky") then
+		SkyObj = child;
+		task.defer(apply_skybox);
+	elseif child:IsA("ColorCorrectionEffect") then
+		ColorCorrection = child;
+		task.defer(apply_colorcorrection);
+	end;
+end);
+
 local function esp1()
     local GetService = game.GetService
     local Service = function(Name) 
         return cloneref(GetService(game, Name));
     end;
+
     local Players = Service("Players")
-    local Instance_new = Instance.new
-    local Color3_fromRGB = Color3.fromRGB
-    local Color3_new = Color3.new
-    local Color3_fromHSV = Color3.fromHSV
-    local Color3_fromHex = Color3.fromHex
+    local Instance_new = Instance.new;
+    local Color3_fromRGB = Color3.fromRGB;
+    local Color3_new = Color3.new;
+    local Color3_fromHSV = Color3.fromHSV;
+    local Color3_fromHex = Color3.fromHex;
     local table_clear = table.clear
-    local table_insert = table.insert
+    local table_insert = table.insert;
     local table_remove = table.remove
-    local table_unpack = table.unpack
-    local table_find = table.find
-    local table_sort = table.sort
-    local table_concat = table.concat
-    local string_find = string.find
-    local string_match = string.match
-    local string_format = string.format
-    local string_gsub = string.gsub
-    local string_lower = string.lower
-    local string_upper = string.upper
-    local string_sub = string.sub
-    local task_wait = task.wait
-    local task_spawn = task_spawn
-    local task_delay = task.delay
-    local task_defer = task.defer
-    local coroutine_wrap = coroutine.wrap
-    local coroutine_close = coroutine.close
-    local coroutine_create = coroutine.create
-    local coroutine_resume = coroutine.resume
-    local os_clock = os.clock
-    local os_date = os_date
-    local Vector2_new = vector2_new
-    local Vector3_new = vector3_new
-    local Vector3_one = Vector3.one
-    local Vector3_zero = Vector3.zero
-    local UDim2_new = UDim2.new
-    local UDim2_fromScale = UDim2.fromScale
-    local UDim2_fromOffset = UDim2.fromOffset
-    local UDim_new = UDim.new
-    local CFrame_Angles = cframe_angles
-    local CFrame_new = cframe_new
-    local math_clamp = math.clamp
-    local math_round = math.round
-    local math_floor = math_floor
-    local math_huge = math.huge
-    local math_sin = math_sin
-    local math_min = math.min
-    local math_max = math.max
-    local math_random = math_random
-    local Drawing_new = drawing_new
-    local Rect_new = Rect.new
-    local Font_new = Font.new
-    local ColorSequence_new = ColorSequence.new
-    local ColorSequenceKeypoint_new = ColorSequenceKeypoint.new
-    local TweenInfo_new = TweenInfo.new
-    local NumberSequence_new = NumberSequence.new
-    local NumberSequenceKeypoint_new = NumberSequenceKeypoint.new
-    local FindFirstChild = game.FindFirstChild
-    local GetChildren = game.GetChildren
-    local GetDescendants = game.GetDescendants
-    local WaitForChild = game.WaitForChild
-    local FindFirstChildWhichIsA = game.FindFirstChildWhichIsA
-    local IsA = game.IsA
+    local table_unpack = table.unpack;
+    local table_find = table.find;
+    local table_sort = table.sort;
+    local table_concat = table.concat;
+    local string_find = string.find;
+    local string_match = string.match;
+    local string_format = string.format;
+    local string_gsub = string.gsub;
+    local string_lower = string.lower;
+    local string_upper = string.upper;
+    local string_sub = string.sub;
+    local task_wait = task.wait;
+    local task_spawn = task_spawn;
+    local task_delay = task.delay;
+    local task_defer = task.defer;
+    local coroutine_wrap = coroutine.wrap;
+    local coroutine_close = coroutine.close;
+    local coroutine_create = coroutine.create;
+    local coroutine_resume = coroutine.resume;
+    local os_clock = os.clock;
+    local os_date = os_date;
+    local Vector2_new = vector2_new;
+    local Vector3_new = vector3_new;
+    local Vector3_one = Vector3.one;
+    local Vector3_zero = Vector3.zero;
+    local UDim2_new = UDim2.new;
+    local UDim2_fromScale = UDim2.fromScale;
+    local UDim2_fromOffset = UDim2.fromOffset;
+    local UDim_new = UDim.new;
+    local CFrame_Angles = cframe_angles;
+    local CFrame_new = cframe_new;
+    local math_clamp = math.clamp;
+    local math_round = math.round;
+    local math_floor = math_floor;
+    local math_huge = math.huge;
+    local math_sin = math_sin;
+    local math_min = math.min;
+    local math_max = math.max;
+    local math_random = math_random;
+    local Drawing_new = drawing_new;
+    local Rect_new = Rect.new;
+    local Font_new = Font.new;
+    local ColorSequence_new = ColorSequence.new;
+    local ColorSequenceKeypoint_new = ColorSequenceKeypoint.new;
+    local TweenInfo_new = TweenInfo.new;
+    local NumberSequence_new = NumberSequence.new;
+    local NumberSequenceKeypoint_new = NumberSequenceKeypoint.new;
+    local FindFirstChild = game.FindFirstChild;
+    local GetChildren = game.GetChildren;
+    local GetDescendants = game.GetDescendants;
+    local WaitForChild = game.WaitForChild;
+    local FindFirstChildWhichIsA = game.FindFirstChildWhichIsA;
+    local IsA = game.IsA;
+
     ESP = {
         Settings = {
-        Enabled = false, LocalPlayer = false, Font = "Tahoma", FontSize = 12, FontType = "lowercase", MaxDistance = 1000, BoundingBox = {
-        Enabled = false, DynamicBox = false, IncludeAccessories = false, Rotation = 90, Color = {Color3_fromRGB(105, 187, 245), Color3_fromRGB(105, 187, 245)}, Transparency = {0, 0}, Glow = {
-        Enabled = false, Rotation = 90, Color = {Color3_fromRGB(105, 187, 245), Color3_fromRGB(105, 187, 245)}, Transparency = {0.75, 0.75}, }, Fill = {
-        Enabled = false, Rotation = 90, Color = {Color3_fromRGB(105, 187, 245), Color3_fromRGB(105, 187, 245)}, Transparency = {1, 0.5}, }, }, Bars = {
-        HealthBar = {
-        Enabled = false, Position = "Left", Color = {Color3_fromRGB(131, 245, 78), Color3_fromRGB(255, 255, 0), Color3_fromRGB(252, 71, 77)}, Type = function(Player, TargetInfo)
-                            return TargetInfo.HealthBarValue or 1
-                        end, Text = {
-                            Enabled = false, FollowBar = true, Ending = "", Position = "Left", Color = Color3_fromRGB(255, 255, 255), Transparency = 0, Type = function(Player, TargetInfo)
-                                local health = TargetInfo.LastHealth or 100
-                                local maxHealth = TargetInfo.LastMaxHealth or 100
-                                return health, health ~= maxHealth
-                            end, }, }, ArmorBar = {
-                                Enabled = false, Position = "Bottom", Color = {Color3_fromRGB(52, 131, 235), Color3_fromRGB(52, 131, 235), Color3_fromRGB(52, 131, 235)}, Type = function(Player, TargetInfo)
-                            return TargetInfo.HealthBarValue or 1
-                        end, Text = {
-                            Enabled = false, FollowBar = true, Ending = "%", Position = "Left", Color = Color3_fromRGB(255, 255, 255), Transparency = 0, Type = function(Player, TargetInfo)
-                                local health = TargetInfo.LastHealth or 100
-                                local maxHealth = TargetInfo.LastMaxHealth or 100
-                                return health, health ~= maxHealth
-                            end, }, }, }, Name = {
-                                Enabled = false, UseDisplay = false, Position = "Top", Color = Color3_fromRGB(255, 255, 255), Transparency = 0, }, Distance = {
-                                Enabled = false, Ending = "st", Position = "Bottom", Color = Color3_fromRGB(255, 255, 255), Transparency = 0, }, Weapon = {
-                                Enabled = false, Position = "Bottom", Color = Color3_fromRGB(255, 255, 255), Transparency = 0, }, Flags = {
-                                Enabled = false, Position = "Right", Color = Color3_fromRGB(255, 255, 255), Transparency = 0, Type = function(Player, TargetInfo)
-                        local currentTick = os_clock()
-                        if currentTick - TargetInfo.FlagsDelay < 0.25 then return TargetInfo.CachedFlagsString or "" end
-                        TargetInfo.FlagsDelay = currentTick
-                        local Flags = {}
-                        if not IsA(Player, "Player") then
-                            TargetInfo.CachedFlagsString = ""
-                            return ""
-                        end
-                        local Character = Player.Character
-                        local Humanoid = Character and Character:FindFirstChild("Humanoid")
-                        if not Humanoid then
-                            TargetInfo.CachedFlagsString = ""
-                            return ""
-                        end
-                        if Humanoid.MoveDirection.Magnitude > 0 then table_insert(Flags, "moving") end
-                        if Humanoid.Jump then table_insert(Flags, "jumping") end
-                        TargetInfo.CachedFlagsString = table_concat(Flags, "\n")
-                        return TargetInfo.CachedFlagsString
-                    end }, }, Connections = {}, Errors = {}, Objects = {}, Targets = {}, Utilities = {}, Folder = "ESP", Font = nil, Holder = nil, }
-    local Client = Players.LocalPlayer
-    local Camera = FindFirstChildWhichIsA(Workspace, "Camera")
-    local Viewport = Camera.ViewportSize
-    local ConnectionsTable = ESP.Connections
-    local ObjectsTable = ESP.Objects
-    local FolderLocation = ESP.Folder
-    local ESPErrors = ESP.Errors
-    local esp_settings = ESP.Settings
-    local WorldToViewportPoint = Camera.WorldToViewportPoint
-    local math_abs = math.abs
-    local math_floor = math_floor
-    local Utility = {}
-    local FontsToDownload = {
-        ["Tahoma"] = {Link = "https://github.com/LuckyHub1/LuckyHub/raw/main/zekton_rg.ttf"}, ["Minecraftia"] = {Link = "https://github.com/LuckyHub1/LuckyHub/raw/refs/heads/main/Minecraftia.ttf"}, ["Silkscreen"] = {Link = "https://github.com/LuckyHub1/LuckyHub/raw/refs/heads/main/Silkscreen.ttf"}, }
-    do
-        if not isfolder(FolderLocation) then
-            makefolder(FolderLocation);
-        end;
-        if not isfolder(FolderLocation .. "\\Fonts") then
-            makefolder(FolderLocation .. "\\Fonts");
-        end;
-    end;
-    do
-        if not Fonts then
-            Fonts = {
-                Loaded = {};
-            };
-        end;
-        local function loadfonts()
-            for name, table in FontsToDownload do
-                if not isfile(FolderLocation .. "\\Fonts\\" .. name .. ".ttf") then
-                    local ok, data = pcall(game.HttpGet, game, table.Link);
-                    if ok and data then writefile(FolderLocation .. "\\Fonts\\" .. name .. ".ttf", data); end;
-                end;
-                if not isfile(FolderLocation .. "\\Fonts\\" .. name .. ".font") then
-                    local cfg = {
-                        name = name, faces = {{
-                        name = "Regular", weight = 9e9, style = "normal", assetId = getcustomasset(FolderLocation .. "\\Fonts\\" .. name .. ".ttf") }} };
-                    writefile(FolderLocation .. "\\Fonts\\" .. name .. ".font", HttpService:JSONEncode(cfg));
-                end;
-            end;
-            for _, fontpath in listfiles(FolderLocation .. "\\Fonts") do
-                local name = string_match(fontpath, FolderLocation .. "\\Fonts\\(.+)%.font");
-                if name and not Fonts.Loaded[name] then Fonts.Loaded[name] = Font_new(getcustomasset(fontpath), Enum.FontWeight.Regular); end;
-            end;
-        end;
-        task_spawn(loadfonts);
-    end
+            Enabled = false,
+            LocalPlayer = false,
+            Font = "Tahoma",
+            FontSize = 12,
+            FontType = "lowercase",
+            MaxDistance = math.huge,
+            BoundingBox = {
+                Enabled = false,
+                DynamicBox = false,
+                IncludeAccessories = false,
+                Rotation = 90,
+                MovingRotation = 0,
+                RotationSpeed = 0,
+                Color = {
+                    Color3_fromRGB(105, 187, 245),
+                    Color3_fromRGB(105, 187, 245)
+                },
+                Transparency = {0, 0},
+                Glow = {
+                    Enabled = false,
+                    Rotation = 90,
+                    MovingRotation = 0,
+                    RotationSpeed = 0,
+                    Color = {
+                        Color3_fromRGB(105, 187, 245),
+                        Color3_fromRGB(105, 187, 245)
+                    },
+                    Transparency = {0.75, 0.75},
+                },
+                Fill = {
+                    Enabled = false,
+                    Rotation = 90,
+                    MovingRotation = 0,
+                    RotationSpeed = 0,
+                    Color = {
+                        Color3_fromRGB(105, 187, 245),
+                        Color3_fromRGB(105, 187, 245)
+                    },
+                    Transparency = {1, 0.5},
+                },
+            },
+            Bars = {
+                HealthBar = {
+                    Enabled = false,
+                    Position = "Left",
+                    MovingRotation = 0;
+                    RotationSpeed = 0;
+                    Color = {
+                        Color3_fromRGB(131, 245, 78),
+                        Color3_fromRGB(255, 255, 0),
+                        Color3_fromRGB(252, 71, 77)
+                    },
+                    Type = function(Player, TargetInfo)
+                        return TargetInfo.HealthBarValue or 1
+                    end,
+                    Text = {
+                        Enabled = false,
+                        FollowBar = true,
+                        Ending = "",
+                        Position = "Left",
+                        Color = Color3_fromRGB(255, 255, 255),
+                        Transparency = 0,
+                        Type = function(Player, TargetInfo)
+                            local health = TargetInfo.LastHealth or 100
+                            local maxHealth = TargetInfo.LastMaxHealth or 100
+                            return health, health ~= maxHealth
+                        end,
+                    },
+                },
+                ArmorBar = {
+                    Enabled = false,
+                    Position = "Bottom",
+                    Color = {
+                        Color3_fromRGB(52, 131, 235),
+                        Color3_fromRGB(52, 131, 235),
+                        Color3_fromRGB(52, 131, 235)
+                    },
+                    Type = function(Player, TargetInfo)
+                        return TargetInfo.HealthBarValue or 1
+                    end,
+                    Text = {
+                        Enabled = false,
+                        FollowBar = true,
+                        Ending = "%",
+                        Position = "Left",
+                        Color = Color3_fromRGB(255, 255, 255),
+                        Transparency = 0,
+                        Type = function(Player, TargetInfo)
+                            local health = TargetInfo.LastHealth or 100
+                            local maxHealth = TargetInfo.LastMaxHealth or 100
+                            return health, health ~= maxHealth
+                        end,
+                    },
+                },
+            },
+            Name = {
+                Enabled = false,
+                UseDisplay = false,
+                Position = "Top",
+                Color = Color3_fromRGB(255, 255, 255),
+                Transparency = 0,
+            },
+            Distance = {
+                Enabled = false,
+                Ending = "st",
+                Position = "Bottom",
+                Color = Color3_fromRGB(255, 255, 255),
+                Transparency = 0,
+            },
+            Weapon = {
+                Enabled = false,
+                Position = "Bottom",
+                Color = Color3_fromRGB(255, 255, 255),
+                Transparency = 0,
+            },
+            Flags = {
+                Enabled = false,
+                Position = "Right",
+                Color = Color3_fromRGB(255, 255, 255),
+                Transparency = 0,
+                Type = function(Player, TargetInfo)
+                    local currentTick = os_clock()
+                    if currentTick - TargetInfo.FlagsDelay < 0.25 then
+                        return TargetInfo.CachedFlagsString or ""
+                    end
+                    TargetInfo.FlagsDelay = currentTick
+                    local Flags = {}
+                    if not IsA(Player, "Player") then
+                        TargetInfo.CachedFlagsString = ""
+                        return ""
+                    end
+                    local Character = Player.Character
+                    local Humanoid = Character and Character:FindFirstChild("Humanoid")
+                    if not Humanoid then
+                        TargetInfo.CachedFlagsString = ""
+                        return ""
+                    end
+                    if Humanoid.MoveDirection.Magnitude > 0 then
+                        table.insert(Flags, "moving")
+                    end
+                    if Humanoid.Jump then
+                        table.insert(Flags, "jumping")
+                    end
+                    TargetInfo.CachedFlagsString = table_concat(Flags, "\n")
+                    return TargetInfo.CachedFlagsString
+                end
+            },
+        },
+        Connections = {},
+        Errors = {},
+        Objects = {},
+        Targets = {},
+        Utilities = {},
+        Folder = "ESP",
+        Font = nil,
+        Holder = nil,
+    }
+
+    local Client = Players.LocalPlayer;
+    local Camera = FindFirstChildWhichIsA(Workspace, "Camera");
+    local Viewport = Camera.ViewportSize;
+    local ConnectionsTable = ESP.Connections;
+    local ObjectsTable = ESP.Objects;
+    local FolderLocation = ESP.Folder;
+    local ESPErrors = ESP.Errors;
+    local esp_settings = ESP.Settings;
+    local WorldToViewportPoint = Camera.WorldToViewportPoint;
+    local math_abs = math.abs;
+    local math_floor = math_floor;
+    local Utility = {};
+
+	local FontsToDownload = {
+		["Tahoma"] = {
+			Link = "https://github.com/xectray1/tahoma/raw/refs/heads/main/fs-tahoma-8px.otf";
+			Ext = ".otf";
+		};
+		["Minecraftia"] = {
+			Link = "https://github.com/LuckyHub1/LuckyHub/raw/refs/heads/main/Minecraftia.ttf";
+			Ext = ".ttf";
+		},
+		["Silkscreen"] = {
+			Link = "https://github.com/LuckyHub1/LuckyHub/raw/refs/heads/main/Silkscreen.ttf";
+			Ext = ".ttf";
+		};
+	};
+	
+	do
+		if not isfolder(FolderLocation) then
+			makefolder(FolderLocation);
+		end;
+		if not isfolder(FolderLocation .. "\\Fonts") then
+			makefolder(FolderLocation .. "\\Fonts");
+		end;
+	end;
+	
+	do
+		local Fonts = getgenv().Fonts;
+		if not Fonts then
+			getgenv().Fonts = {
+				Loaded = { };
+			};
+			Fonts = getgenv().Fonts;
+		end;
+
+		if not isfolder(FolderLocation .. "\\Fonts") then
+			makefolder(FolderLocation .. "\\Fonts");
+		end;
+
+		local function loadfonts()
+			for name, tbl in FontsToDownload do
+				local ext = tbl.Ext or ".ttf";
+				local fullpath = FolderLocation .. "\\Fonts\\" .. name .. ext;
+
+				if not isfile(fullpath) then
+					local ok, data = pcall(game.HttpGet, game, tbl.Link);
+					if ok and data then
+						writefile(fullpath, data);
+					end;
+				end;
+
+				if not isfile(FolderLocation .. "\\Fonts\\" .. name .. ".font") then
+					local cfg = {
+						name = name,
+						faces = {{
+							name = "Regular";
+							weight = 400;
+							style = "normal";
+							asset_id = getcustomasset(fullpath);
+						}};
+					};
+					writefile(FolderLocation .. "\\Fonts\\" .. name .. ".font", httpservice:JSONEncode(cfg));
+				end;
+			end
+
+			for _, fontpath in listfiles(FolderLocation .. "\\Fonts") do
+				local name = fontpath:match("([^\\/]+)%.font$");
+				if name and not Fonts.Loaded[name] then
+					Fonts.Loaded[name] = Font_new(getcustomasset(fontpath), Enum.FontWeight.Regular);
+				end;
+			end;
+			ESP.Font = Fonts.Loaded[esp_settings.Font] or Font.fromEnum(Enum.Font.SourceSans);
+		end;
+		loadfonts();
+	end;
+    
     do
         function Utility.AddConnection(Signal, Function)
             local Connection = Signal:Connect(function(...)
-                local Args = {...}
-                local Success, Message = pcall(function() coroutine_wrap(Function)(table_unpack(Args)) end)
+                local Args = {...};
+
+                local Success, Message = pcall(function()
+                    coroutine_wrap(Function)(table_unpack(Args));
+                end);
+
                 if not Success and not ESPErrors[Message] then
-                    local ErrorMessage = string_format("[ERROR] | An error has occured:\n%s", Message)
-                    warn(ErrorMessage)
-                    ESPErrors[Message] = Message
-                    if ConnectionsTable[Connection] then ConnectionsTable[Connection] = nil end
-                    return Connection and Connection:Disconnect()
-                end
-            end)
-            if Connection and ConnectionsTable then table_insert(ConnectionsTable, Connection) end
-            return Connection
-        end
+                    local ErrorMessage = string_format("[ERROR] | An error has occured:\n%s", Message);
+                    warn(ErrorMessage);
+                    ESPErrors[Message] = Message;
+                    if ConnectionsTable[Connection] then
+                        ConnectionsTable[Connection] = nil;
+                    end;
+                    return Connection and Connection:Disconnect();
+                end;
+            end);
+
+            if Connection and ConnectionsTable then
+                table.insert(ConnectionsTable, Connection);
+            end;
+            return Connection;
+        end;
+
         function Utility.CreateObject(Type, Properties, Hidden)
-            local isHidden = Hidden or false
-            local Object = Instance_new(Type)
-            for Index, Value in Properties do Object[Index] = Value end
-            table_insert(ObjectsTable, Object)
-            return Object
-        end
+            local isHidden = Hidden or false;
+            local Object = Instance_new(Type);
+            for Index, Value in pairs(Properties) do
+                Object[Index] = Value;
+            end;
+            table.insert(ObjectsTable, Object);
+            return Object;
+        end;
+
         function Utility.CalculateBox(Target, RootPart, Parts)
-            local MinX, MinY, MaxX, MaxY = 9000, 9000, -9000, -9000
-            local BoxWidth, BoxHeight = 0, 0
-            local Position, OnScreen = WorldToViewportPoint(Camera, RootPart.Position)
+            local MinX, MinY, MaxX, MaxY = 9000, 9000, -9000, -9000;
+            local BoxWidth, BoxHeight = 0, 0;
+            local Position, OnScreen = WorldToViewportPoint(Camera, RootPart.Position);
             if esp_settings.BoundingBox.DynamicBox then
-                for _, Part in Parts do
+                for _, Part in pairs(Parts) do
                     if Part.ClassName ~= "HumanoidRootPart" and (Part:IsA("BasePart")) then
-                        local Size = Part.Size / 2
-                        local CFrame = Part.CFrame
-                        local Top, TopOnScreen = WorldToViewportPoint(Camera, (CFrame * cframe_new(0, Size.Y, 0)).Position)
-                        local Bottom, BottomOnScreen = WorldToViewportPoint(Camera, (CFrame * cframe_new(0, -Size.Y, 0)).Position)
+                        local Size = Part.Size / 2;
+                        local CFrame = Part.CFrame;
+                        local Top, TopOnScreen = WorldToViewportPoint(Camera, (CFrame * cframe_new(0, Size.Y, 0)).Position);
+                        local Bottom, BottomOnScreen = WorldToViewportPoint(Camera, (CFrame * cframe_new(0, -Size.Y, 0)).Position);
                         if TopOnScreen or BottomOnScreen then
-                            local Height = math_abs(Top.Y - Bottom.Y)
-                            local Width = Height * (Size.X / Size.Y)
-                            local Center = (Top + Bottom) / 2
-                            MinX = math_min(MinX, Center.X - Width)
-                            MinY = math_min(MinY, Center.Y - Height)
-                            MaxX = math_max(MaxX, Center.X + Width)
-                            MaxY = math_max(MaxY, Center.Y + Height)
-                        end
-                    end
-                end
-                BoxWidth, BoxHeight = MaxX - MinX, MaxY - MinY
+                            local Height = math_abs(Top.Y - Bottom.Y);
+                            local Width = Height * (Size.X / Size.Y);
+                            local Center = (Top + Bottom) / 2;
+                            MinX = math_min(MinX, Center.X - Width);
+                            MinY = math_min(MinY, Center.Y - Height);
+                            MaxX = math_max(MaxX, Center.X + Width);
+                            MaxY = math_max(MaxY, Center.Y + Height);
+                        end;
+                    end;
+                end;
+                BoxWidth, BoxHeight = MaxX - MinX, MaxY - MinY;
             else
-                local BaseFOV = 70
-                local FOVScale = math.tan(math.rad(BaseFOV / 2)) / math.tan(math.rad(Camera.FieldOfView / 2))
-                local Scale = (RootPart.Size.Y * Camera.ViewportSize.Y) / (Position.Z * 2) * FOVScale
-                BoxWidth, BoxHeight = 3 * Scale, 4.5 * Scale
-                MinX, MinY = Position.X - (BoxWidth / 2), Position.Y - (BoxHeight / 2)
-            end
-            return BoxWidth, BoxHeight, MinX, MinY, OnScreen
-        end
+                local BaseFOV = 70;
+                local FOVScale = math.tan(math.rad(BaseFOV / 2)) / math.tan(math.rad(Camera.FieldOfView / 2));
+                local Scale = (RootPart.Size.Y * Camera.ViewportSize.Y) / (Position.Z * 2) * FOVScale;
+                BoxWidth, BoxHeight = 3 * Scale, 4.5 * Scale;
+                MinX, MinY = Position.X - (BoxWidth / 2), Position.Y - (BoxHeight / 2);
+            end;
+            return BoxWidth, BoxHeight, MinX, MinY, OnScreen;
+        end;
         function Utility.GetFontType(Text)
-            local FontType = string_lower(esp_settings.FontType)
+            local FontType = string_lower(esp_settings.FontType);
             if FontType == "uppercase" then
-                return string_upper(Text)
+                return string_upper(Text);
             elseif FontType == "lowercase" then
-                return string_lower(Text)
+                return string_lower(Text);
             else
-                return Text
-            end
-        end
-    end
-    Utility.AddConnection(Camera:GetPropertyChangedSignal("ViewportSize"), function() Viewport = Camera.ViewportSize end)
+                return Text;
+            end;
+        end;
+    end;
+
+    Utility.AddConnection(Camera:GetPropertyChangedSignal("ViewportSize"), function()
+        Viewport = Camera.ViewportSize;
+    end);
+
     do
-        ESP.Font = Fonts.Loaded[esp_settings.Font]
+        ESP.Font = ESP.Font or Font.fromEnum(Enum.Font.SourceSans);
         ESP.Holder = Utility.CreateObject("ScreenGui", {
-            Name = "\n", ScreenInsets = Enum.ScreenInsets.DeviceSafeInsets, ZIndexBehavior = Enum.ZIndexBehavior.Global, ResetOnSpawn = false, DisplayOrder = 1, IgnoreGuiInset = true, Parent = gethui() })
+            Name = "\n",
+            ScreenInsets = Enum.ScreenInsets.DeviceSafeInsets,
+            ZIndexBehavior = Enum.ZIndexBehavior.Global,
+            ResetOnSpawn = false,
+            DisplayOrder = 1,
+            IgnoreGuiInset = true,
+            Parent = gethui()
+        });
+
         function ESP.AddTarget(Target)
             if ESP.Targets[Target] then return end
             local TargetInfo = {
-                Objects = {}, CharacterObjects = {}, CharacterConnection = nil, HealthConnection = nil, ToolConnection = {Added = nil, Removed = nil}, CurrentTool = Utility.GetFontType("none"), TargetName = Utility.GetFontType(esp_settings.Name.UseDisplay and (IsA(Target, "Player") and Target.DisplayName or Target.Name) or Target.Name), DistanceEnding = Utility.GetFontType(esp_settings.Distance.Ending), HealthBarValue = 1, LastHealth = 100, LastMaxHealth = 100, FlagsDelay = 0, CachedFlagsString = "", LastTick = os_clock(), LastLazyUpdate = 0, LastDistanceText = "", LastDistanceValue = -1, }
-            local Objects = TargetInfo.Objects
-            local LastTick = TargetInfo.LastTick
-            local ToolConnection = TargetInfo.ToolConnection
-            local CharacterObjects = TargetInfo.CharacterObjects
-            local ESPFont = ESP.Font
-            local ESPFontSize = esp_settings.FontSize
-            local ESPHolder = ESP.Holder
+                Objects = {},
+                CharacterObjects = {},
+                CharacterConnection = nil,
+                HealthConnection = nil,
+                ToolConnection = {
+                    Added = nil,
+                    Removed = nil
+                },
+                CurrentTool = Utility.GetFontType("none"),
+                TargetName = Utility.GetFontType(esp_settings.Name.UseDisplay and (IsA(Target, "Player") and Target.DisplayName or Target.Name) or Target.Name),
+                DistanceEnding = Utility.GetFontType(esp_settings.Distance.Ending),
+                HealthBarValue = 1,
+                LastHealth = 100,
+                LastMaxHealth = 100,
+                FlagsDelay = 0,
+                CachedFlagsString = "",
+                LastTick = os_clock(),
+                LastLazyUpdate = 0,
+                LastDistanceText = "",
+                LastDistanceValue = -1,
+            };
+
+            local Objects = TargetInfo.Objects;
+            local LastTick = TargetInfo.LastTick;
+            local ToolConnection = TargetInfo.ToolConnection;
+            local CharacterObjects = TargetInfo.CharacterObjects;
+            local ESPFont = ESP.Font;
+            local ESPFontSize = esp_settings.FontSize;
+            local ESPHolder = ESP.Holder;
+
             local TextAlignments = {
-                ["Left"] = "Right", ["Right"] = "Left", ["Top"] = "Center", ["Bottom"] = "Center", }
+                ["Left"] = "Right",
+                ["Right"] = "Left",
+                ["Top"] = "Center",
+                ["Bottom"] = "Center",
+            }
+
             CharacterObjects.Character = IsA(Target, "Player") and Target.Character or Target
-            CharacterObjects.Children = CharacterObjects.Character and CharacterObjects.Character:GetChildren() or {}
-            CharacterObjects.Descendants = CharacterObjects.Character and CharacterObjects.Character:GetDescendants() or {}
+            CharacterObjects.Children = CharacterObjects.Character and CharacterObjects.Character:GetChildren()
+            CharacterObjects.Descendants = CharacterObjects.Character and CharacterObjects.Character:GetDescendants()
             if IsA(Target, "Player") then
                 CharacterObjects.HumanoidRootPart = CharacterObjects.Character and CharacterObjects.Character:FindFirstChild("HumanoidRootPart") or nil
                 CharacterObjects.Humanoid = CharacterObjects.Character and CharacterObjects.Character:FindFirstChildWhichIsA("Humanoid") or nil
             end
+
             do
                 function TargetInfo.Init()
                     if #Objects > 0 then return end
                     if IsA(Target, "Player") then
                         TargetInfo.CharacterConnection = Utility.AddConnection(Target.CharacterAdded, function(Character)
-                            CharacterObjects.Character = Character
-                            CharacterObjects.HumanoidRootPart = Character:WaitForChild("HumanoidRootPart", 10)
-                            local Humanoid = Character:WaitForChild("Humanoid", 10)
-                            CharacterObjects.Humanoid = Humanoid
-                            CharacterObjects.Children = Character:GetChildren()
-                            CharacterObjects.Descendants = Character:GetDescendants()
-                            if TargetInfo.HealthConnection then TargetInfo.HealthConnection:Disconnect() end
+                            CharacterObjects.Character = Character;
+                            CharacterObjects.HumanoidRootPart = Character:WaitForChild("HumanoidRootPart", 10);
+                            local Humanoid = Character:WaitForChild("Humanoid", 10);
+                            CharacterObjects.Humanoid = Humanoid;
+                            CharacterObjects.Children = Character:GetChildren();
+                            CharacterObjects.Descendants = Character:GetDescendants();
+
+                            if TargetInfo.HealthConnection then
+                                TargetInfo.HealthConnection:Disconnect();
+                            end;
+
                             if Humanoid then
-                                TargetInfo.LastHealth = Humanoid.Health
-                                TargetInfo.LastMaxHealth = Humanoid.MaxHealth
-                                TargetInfo.HealthBarValue = TargetInfo.LastHealth / TargetInfo.LastMaxHealth
+                                TargetInfo.LastHealth = Humanoid.Health;
+                                TargetInfo.LastMaxHealth = Humanoid.MaxHealth;
+                                TargetInfo.HealthBarValue = TargetInfo.LastHealth / TargetInfo.LastMaxHealth;
                                 TargetInfo.HealthConnection = Utility.AddConnection(Humanoid.HealthChanged, function(Health)
-                                    TargetInfo.LastHealth = Health
-                                    TargetInfo.LastMaxHealth = Humanoid.MaxHealth
-                                    TargetInfo.HealthBarValue = TargetInfo.LastHealth / TargetInfo.LastMaxHealth
-                                end)
-                            end
-                            if ToolConnection.Added then ToolConnection.Added:Disconnect() end
-                            if ToolConnection.Removed then ToolConnection.Removed:Disconnect() end
+                                    TargetInfo.LastHealth = Health;
+                                    TargetInfo.LastMaxHealth = Humanoid.MaxHealth;
+                                    TargetInfo.HealthBarValue = TargetInfo.LastHealth / TargetInfo.LastMaxHealth;
+                                end);
+                            end;
+
+                            if ToolConnection.Added then
+                                ToolConnection.Added:Disconnect();
+                            end;
+
+                            if ToolConnection.Removed then
+                                ToolConnection.Removed:Disconnect();
+                            end;
+
                             TargetInfo.CurrentTool = Utility.GetFontType("none")
                             local existingTool = Character:FindFirstChildWhichIsA("Tool")
-                            if existingTool then TargetInfo.CurrentTool = Utility.GetFontType(existingTool.Name) end
-                            ToolConnection.Added = Utility.AddConnection(Character.ChildAdded, function(Child) if IsA(Child, "Tool") then TargetInfo.CurrentTool = Utility.GetFontType(Child.Name) end end)
-                            ToolConnection.Removed = Utility.AddConnection(Character.ChildRemoved, function(Child) if IsA(Child, "Tool") then TargetInfo.CurrentTool = Utility.GetFontType("none") end end)
-                        end)
+
+                            if existingTool then
+                                TargetInfo.CurrentTool = Utility.GetFontType(existingTool.Name);
+                            end;
+
+                            ToolConnection.Added = Utility.AddConnection(Character.ChildAdded, function(Child)
+                                if IsA(Child, "Tool") then
+                                    TargetInfo.CurrentTool = Utility.GetFontType(Child.Name);
+                                end;
+                            end);
+
+                            ToolConnection.Removed = Utility.AddConnection(Character.ChildRemoved, function(Child)
+                                if IsA(Child, "Tool") then
+                                    TargetInfo.CurrentTool = Utility.GetFontType("none");
+                                end;
+                            end);
+                        end);
+
                         if CharacterObjects.Character then
-                            local Humanoid = CharacterObjects.Character:FindFirstChildWhichIsA("Humanoid")
+                            local Humanoid = CharacterObjects.Character:FindFirstChildWhichIsA("Humanoid");
                             if Humanoid then
-                                TargetInfo.LastHealth = Humanoid.Health
-                                TargetInfo.LastMaxHealth = Humanoid.MaxHealth
-                                TargetInfo.HealthBarValue = TargetInfo.LastHealth / TargetInfo.LastMaxHealth
-                                if TargetInfo.HealthConnection then TargetInfo.HealthConnection:Disconnect() end
+                                TargetInfo.LastHealth = Humanoid.Health;
+                                TargetInfo.LastMaxHealth = Humanoid.MaxHealth;
+                                TargetInfo.HealthBarValue = TargetInfo.LastHealth / TargetInfo.LastMaxHealth;
+
+                                if TargetInfo.HealthConnection then
+                                    TargetInfo.HealthConnection:Disconnect();
+                                end;
+
                                 TargetInfo.HealthConnection = Utility.AddConnection(Humanoid.HealthChanged, function(Health)
-                                    TargetInfo.LastHealth = Health
-                                    TargetInfo.LastMaxHealth = Humanoid.MaxHealth
-                                    TargetInfo.HealthBarValue = TargetInfo.LastHealth / TargetInfo.LastMaxHealth
-                                end)
-                            end
-                            TargetInfo.CurrentTool = Utility.GetFontType("none")
-                            local existingTool = CharacterObjects.Character:FindFirstChildWhichIsA("Tool")
-                            if existingTool then TargetInfo.CurrentTool = Utility.GetFontType(existingTool.Name) end
-                            ToolConnection.Added = Utility.AddConnection(CharacterObjects.Character.ChildAdded, function(Child) if IsA(Child, "Tool") then TargetInfo.CurrentTool = Utility.GetFontType(Child.Name) end end)
-                            ToolConnection.Removed = Utility.AddConnection(CharacterObjects.Character.ChildRemoved, function(Child) if IsA(Child, "Tool") then TargetInfo.CurrentTool = Utility.GetFontType("none") end end) end end
+                                    TargetInfo.LastHealth = Health;
+                                    TargetInfo.LastMaxHealth = Humanoid.MaxHealth;
+                                    TargetInfo.HealthBarValue = TargetInfo.LastHealth / TargetInfo.LastMaxHealth;
+                                end);
+                            end;
+
+                            TargetInfo.CurrentTool = Utility.GetFontType("none");
+                            local existingTool = CharacterObjects.Character:FindFirstChildWhichIsA("Tool");
+
+                            if existingTool then
+                                TargetInfo.CurrentTool = Utility.GetFontType(existingTool.Name);
+                            end;
+
+                            ToolConnection.Added = Utility.AddConnection(CharacterObjects.Character.ChildAdded, function(Child)
+                                if IsA(Child, "Tool") then
+                                    TargetInfo.CurrentTool = Utility.GetFontType(Child.Name);
+                                end;
+                            end);
+
+                            ToolConnection.Removed = Utility.AddConnection(CharacterObjects.Character.ChildRemoved, function(Child)
+                                if IsA(Child, "Tool") then
+                                    TargetInfo.CurrentTool = Utility.GetFontType("none");
+                                end;
+                            end);
+                        end;
+                    end;
+
                     Objects["TargetHolder"] = Utility.CreateObject("Frame", {Parent = ESPHolder, Visible = true, BackgroundTransparency = 1, Position = UDim2_new(0, 0, 0, 0), BorderColor3 = Color3_fromRGB(0, 0, 0), Size = UDim2_new(0, 0, 0, 0), BorderSizePixel = 0, BackgroundColor3 = Color3_fromRGB(255, 255, 255)})
                     Objects["TopHolder"] = Utility.CreateObject("Frame", {Parent = Objects["TargetHolder"], AutomaticSize = Enum.AutomaticSize.Y, Visible = true, BackgroundTransparency = 1, AnchorPoint = Vector2_new(0, 1), Position = UDim2_new(0, -2, 0, -5), BorderColor3 = Color3_fromRGB(0, 0, 0), Size = UDim2_new(1, 4, 0, 0), BorderSizePixel = 0, BackgroundColor3 = Color3_fromRGB(255, 255, 255)})
                     Objects["BottomHolder"] = Utility.CreateObject("Frame", {Parent = Objects["TargetHolder"], AutomaticSize = Enum.AutomaticSize.Y, Visible = true, BackgroundTransparency = 1, Position = UDim2_new(0, -2, 1, 3), BorderColor3 = Color3_fromRGB(0, 0, 0), Size = UDim2_new(1, 4, 0, 0), BorderSizePixel = 0, BackgroundColor3 = Color3_fromRGB(255, 255, 255)})
@@ -7267,10 +8336,10 @@ local function esp1()
                         Utility.CreateObject("UIListLayout", {Parent = Objects["BottomBarHolder"], HorizontalAlignment = Enum.HorizontalAlignment.Center, Padding = UDim_new(0, 1), VerticalAlignment = Enum.VerticalAlignment.Bottom, SortOrder = Enum.SortOrder.LayoutOrder})
                         Utility.CreateObject("UIPadding", {Parent = Objects["BottomBarHolder"], PaddingTop = UDim_new(0, 2)})
                         Objects["LeftBarHolder"] = Utility.CreateObject("Frame", {Visible = false, Parent = Objects["LeftHolder"], AutomaticSize = Enum.AutomaticSize.X, BackgroundTransparency = 1, Position = UDim2_new(0, 0, 0, 0), BorderColor3 = Color3_fromRGB(0, 0, 0), Size = UDim2_new(0, 0, 1, 0), BorderSizePixel = 0, BackgroundColor3 = Color3_fromRGB(255, 255, 255)})
-                        Utility.CreateObject("UIListLayout", {Parent = Objects["LeftBarHolder"], FillDirection = Enum.FillDirection.Horizontal, HorizontalAlignment = Enum.HorizontalAlignment.Right, Padding = UDim_new(0, 1), SortOrder = Enum.SortOrder.LayoutOrder})
+                        Utility.CreateObject("UIListLayout", {Parent = Objects["LeftBarHolder"], FillDirection = Enum.FillDirection.Horizontal, HorizontalAlignment = Enum.HorizontalAlignment.Right, VerticalAlignment = Enum.VerticalAlignment.Bottom, Padding = UDim_new(0, 1), SortOrder = Enum.SortOrder.LayoutOrder})
                         Utility.CreateObject("UIPadding", {Parent = Objects["LeftBarHolder"], PaddingRight = UDim_new(0, 1)})
                         Objects["RightBarHolder"] = Utility.CreateObject("Frame", {Visible = false, Parent = Objects["RightHolder"], AutomaticSize = Enum.AutomaticSize.X, BackgroundTransparency = 1, Position = UDim2_new(0, 0, 0, 0), BorderColor3 = Color3_fromRGB(0, 0, 0), Size = UDim2_new(0, 0, 1, 0), BorderSizePixel = 0, BackgroundColor3 = Color3_fromRGB(255, 255, 255)})
-                        Utility.CreateObject("UIListLayout", {Parent = Objects["RightBarHolder"], FillDirection = Enum.FillDirection.Horizontal, HorizontalAlignment = Enum.HorizontalAlignment.Left, Padding = UDim_new(0, 1), SortOrder = Enum.SortOrder.LayoutOrder})
+                        Utility.CreateObject("UIListLayout", {Parent = Objects["RightBarHolder"], FillDirection = Enum.FillDirection.Horizontal, HorizontalAlignment = Enum.HorizontalAlignment.Left, VerticalAlignment = Enum.VerticalAlignment.Bottom, Padding = UDim_new(0, 1), SortOrder = Enum.SortOrder.LayoutOrder})
                         Utility.CreateObject("UIPadding", {Parent = Objects["RightBarHolder"], PaddingLeft = UDim_new(0, -3)})
                     end
                     do
@@ -7294,8 +8363,8 @@ local function esp1()
                         Objects["BoxFillGradient"] = Utility.CreateObject("UIGradient", {Parent = Objects["BoxFill"], Rotation = 90, Color = ColorSequence_new{ColorSequenceKeypoint_new(0, Color3_fromRGB(0, 0, 0)), ColorSequenceKeypoint_new(1, Color3_fromRGB(255, 255, 255))}, Transparency = NumberSequence_new{NumberSequenceKeypoint_new(0, 1), NumberSequenceKeypoint_new(1, 1)}})
                     end
                     do
-                        for BarName, Bar in esp_settings.Bars do
-                            Objects[BarName .. "Outline"] = Utility.CreateObject("Frame", {Parent = Objects[Bar.Position .. "BarHolder"], ZIndex = 5, LayoutOrder = 0, Visible = true, BackgroundTransparency = 0, Position = UDim2_new(0, 0, 0, 0), BorderColor3 = Color3_fromRGB(0, 0, 0), Size = UDim2_new(1, 0, 0, 1), BorderSizePixel = 0, BackgroundColor3 = Color3_fromRGB(0, 0, 0)})
+                        for BarName, Bar in pairs(esp_settings.Bars) do
+                            Objects[BarName .. "Outline"] = Utility.CreateObject("Frame", {Parent = Objects[Bar.Position .. "BarHolder"], ZIndex = 5, LayoutOrder = 0, Visible = true, BackgroundTransparency = 1, Position = UDim2_new(0, 0, 0, 0), BorderColor3 = Color3_fromRGB(0, 0, 0), Size = UDim2_new(1, 0, 0, 1), BorderSizePixel = 0, BackgroundColor3 = Color3_fromRGB(0, 0, 0)})
                             Utility.CreateObject("UIStroke", {Parent = Objects[BarName .. "Outline"], Thickness = 1, LineJoinMode = Enum.LineJoinMode.Miter})
                             Objects[BarName] = Utility.CreateObject("Frame", {Parent = Objects[BarName .. "Outline"], ZIndex = 6, LayoutOrder = 0, Visible = true, BackgroundTransparency = 0, Position = UDim2_new(0, 0, 0, 0), BorderColor3 = Color3_fromRGB(0, 0, 0), Size = UDim2_new(1, 0, 0, 1), BorderSizePixel = 0, BackgroundColor3 = Color3_fromRGB(255, 255, 255)})
                             Objects[BarName .. "Gradient"] = Utility.CreateObject("UIGradient", {Parent = Objects[BarName], Rotation = 90, Color = ColorSequence_new{ColorSequenceKeypoint_new(0, Color3_fromRGB(0, 0, 0)), ColorSequenceKeypoint_new(0, Color3_fromRGB(0, 0, 0)), ColorSequenceKeypoint_new(1, Color3_fromRGB(255, 255, 255))}, Transparency = NumberSequence_new{NumberSequenceKeypoint_new(0, 0), NumberSequenceKeypoint_new(1, 0)}})
@@ -7315,322 +8384,632 @@ local function esp1()
                     end
                     ESP.Targets[Target] = TargetInfo
                 end
+
                 local lastonscreen = false;
                 local lastboxwidth = 0;
                 local lastboxheight = 0;
                 local lastboxposx = 0;
                 local lastboxposy = 0;
                 local lastupdatetick = 0;
+
                 function TargetInfo.Update()
+                    local currentTick = os_clock();
+                    local deltaTime = currentTick - lastupdatetick;
+                    lastupdatetick = currentTick;
+
                     if (not esp_settings.LocalPlayer) and Target == Client then
-                        if Objects["TargetHolder"].Visible then Objects["TargetHolder"].Visible = false; end;
+                        if Objects["TargetHolder"].Visible then
+                            Objects["TargetHolder"].Visible = false;
+                        end;
                         return;
                     end;
+
                     if not CharacterObjects.Character then
                         if Objects["TargetHolder"].Visible then Objects["TargetHolder"].Visible = false; end;
                         return;
                     end;
+
                     if IsA(Target, "Player") then
                         if not CharacterObjects.HumanoidRootPart then
                             CharacterObjects.HumanoidRootPart = FindFirstChild(CharacterObjects.Character, "HumanoidRootPart");
-                            if Objects["TargetHolder"].Visible then Objects["TargetHolder"].Visible = false; end;
+                            if Objects["TargetHolder"].Visible then
+                                Objects["TargetHolder"].Visible = false;
+                            end;
                             return;
                         end;
+
                         if not CharacterObjects.Humanoid then
                             CharacterObjects.Humanoid = FindFirstChildWhichIsA(CharacterObjects.Character, "Humanoid");
-                            if Objects["TargetHolder"].Visible then Objects["TargetHolder"].Visible = false; end;
+                            if Objects["TargetHolder"].Visible then
+                                Objects["TargetHolder"].Visible = false;
+                            end;
                             return;
                         end;
                     else
                         if not CharacterObjects.HumanoidRootPart then
                             CharacterObjects.HumanoidRootPart = IsA(Target, "BasePart") and Target or CharacterObjects.Character.PrimaryPart;
                             if not CharacterObjects.HumanoidRootPart then
-                                if Objects["TargetHolder"].Visible then Objects["TargetHolder"].Visible = false; end;
+                                if Objects["TargetHolder"].Visible then
+                                    Objects["TargetHolder"].Visible = false;
+                                end;
                                 return;
                             end;
                         end;
                     end;
+
                     local rootpos = CharacterObjects.HumanoidRootPart.Position;
                     local distance = (Camera.CFrame.Position - rootpos).Magnitude;
                     if distance > esp_settings.MaxDistance then
-                        if Objects["TargetHolder"].Visible then Objects["TargetHolder"].Visible = false; end;
+                        if Objects["TargetHolder"].Visible then
+                            Objects["TargetHolder"].Visible = false;
+                        end;
                         lastonscreen = false;
                         return;
                     end;
+
                     local bodyparts = nil;
                     if esp_settings.BoundingBox.DynamicBox then
                         bodyparts = esp_settings.BoundingBox.IncludeAccessories and CharacterObjects.Descendants or CharacterObjects.Children;
-                        if IsA(Target, "BasePart") then bodyparts = {Target}; end;
+                        if IsA(Target, "BasePart") then
+                            bodyparts = {Target};
+                        end;
                     end;
+
                     local boxwidth, boxheight, boxposx, boxposy, onscreen = Utility.CalculateBox(Target, CharacterObjects.HumanoidRootPart, bodyparts);
                     if not onscreen then
-                        if Objects["TargetHolder"].Visible then Objects["TargetHolder"].Visible = false; end;
+                        if Objects["TargetHolder"].Visible then
+                            Objects["TargetHolder"].Visible = false;
+                        end;
                         lastonscreen = false;
                         return;
                     end;
+
                     local bw = math_floor(boxwidth);
                     local bh = math_floor(boxheight);
                     local bx = math_floor(boxposx);
                     local by = math_floor(boxposy);
+                    
                     local TargetHolder = Objects["TargetHolder"];
-                    if not TargetHolder.Visible then TargetHolder.Visible = true; end;
+
+                    if not TargetHolder.Visible then
+                        TargetHolder.Visible = true;
+                    end;
+
                     if bx ~= lastboxposx or by ~= lastboxposy or bw ~= lastboxwidth or bh ~= lastboxheight then
                         local BoxSize = UDim2_fromOffset(bw, bh);
                         local BoxPosition = UDim2_fromOffset(bx, by);
-                        if TargetHolder.Position ~= BoxPosition then TargetHolder.Position = BoxPosition; end;
-                        if TargetHolder.Size ~= BoxSize then TargetHolder.Size = BoxSize; end;
+
+                        if TargetHolder.Position ~= BoxPosition then
+                            TargetHolder.Position = BoxPosition;
+                        end;
+
+                        if TargetHolder.Size ~= BoxSize then
+                            TargetHolder.Size = BoxSize;
+                        end;
+
                         lastboxwidth = bw; lastboxheight = bh; lastboxposx = bx; lastboxposy = by;
                     end;
+
                     local BoxWidth, BoxHeight, BoxPositionX, BoxPositionY = boxwidth, boxheight, boxposx, boxposy;
                     local BoxSize = UDim2_fromOffset(bw, bh);
                     local BoxOutline, BoxInline, BoxFill, BoxGlow = Objects["BoxOutline"], Objects["BoxInline"], Objects["BoxFill"], Objects["BoxGlow"]; do
-                        local BoxEnabled, BoxColor, BoxTransparency, BoxRotation = esp_settings.BoundingBox.Enabled, esp_settings.BoundingBox.Color, esp_settings.BoundingBox.Transparency, esp_settings.BoundingBox.Rotation;
+                        local BoxEnabled, BoxColor, BoxTransparency, BoxRotation = esp_settings.BoundingBox.Enabled, esp_settings.BoundingBox.Color, esp_settings.BoundingBox.Transparency, esp_settings.BoundingBox.Rotation + esp_settings.BoundingBox.MovingRotation + math.sin(os_clock() * esp_settings.BoundingBox.RotationSpeed) * 45;
                         if BoxEnabled then
-                            if not BoxOutline.Parent.Visible then BoxOutline.Parent.Visible = true end
+                            if not BoxOutline.Parent.Visible then
+                                BoxOutline.Parent.Visible = true;
+                            end;
+
                             local CachedBoxSize = UDim2_fromOffset(BoxWidth, BoxHeight)
-                            if BoxOutline.Parent.Size ~= CachedBoxSize then BoxOutline.Parent.Size = CachedBoxSize end
-                            if not BoxInline.Parent.Visible then BoxInline.Parent.Visible = true end
-                            local InlineSize = UDim2_fromOffset(BoxWidth + 2, BoxHeight + 2)
-                            if BoxInline.Parent.Size ~= InlineSize then BoxInline.Parent.Size = InlineSize end
+                            if BoxOutline.Parent.Size ~= CachedBoxSize then
+                                BoxOutline.Parent.Size = CachedBoxSize;
+                            end;
+
+                            if not BoxInline.Parent.Visible then
+                                BoxInline.Parent.Visible = true;
+                            end;
+
+                            local InlineSize = UDim2_fromOffset(BoxWidth + 2, BoxHeight + 2);
+
+                            if BoxInline.Parent.Size ~= InlineSize then
+                                BoxInline.Parent.Size = InlineSize;
+                            end
+                            
                             local BoxInlineGradient, BoxOutlineGradient = Objects["BoxInlineGradient"], Objects["BoxOutlineGradient"]; do
                                 if TargetInfo.LastBoxColor1 ~= BoxColor[1] or TargetInfo.LastBoxColor2 ~= BoxColor[2] then
-                                    TargetInfo.LastBoxColor1 = BoxColor[1]
-                                    TargetInfo.LastBoxColor2 = BoxColor[2]
-                                    BoxInlineGradient.Color = ColorSequence_new{ColorSequenceKeypoint_new(0, BoxColor[1]), ColorSequenceKeypoint_new(1, BoxColor[2])}
-                                end
+                                    TargetInfo.LastBoxColor1 = BoxColor[1];
+                                    TargetInfo.LastBoxColor2 = BoxColor[2];
+                                    BoxInlineGradient.Color = ColorSequence_new{
+                                        ColorSequenceKeypoint_new(0, BoxColor[1]), ColorSequenceKeypoint_new(1, BoxColor[2])
+                                    };
+                                end;
+
                                 if TargetInfo.LastBoxTrans1 ~= BoxTransparency[1] or TargetInfo.LastBoxTrans2 ~= BoxTransparency[2] then
-                                    TargetInfo.LastBoxTrans1 = BoxTransparency[1]
-                                    TargetInfo.LastBoxTrans2 = BoxTransparency[2]
-                                    local transSeq = NumberSequence_new{NumberSequenceKeypoint_new(0, BoxTransparency[1]), NumberSequenceKeypoint_new(1, BoxTransparency[2])}
-                                    BoxInlineGradient.Transparency = transSeq
-                                    BoxOutlineGradient.Transparency = transSeq
+                                    TargetInfo.LastBoxTrans1 = BoxTransparency[1];
+                                    TargetInfo.LastBoxTrans2 = BoxTransparency[2];
+                                    local transSeq = NumberSequence_new{
+                                        NumberSequenceKeypoint_new(0, BoxTransparency[1]), NumberSequenceKeypoint_new(1, BoxTransparency[2])
+                                    };
+                                    BoxInlineGradient.Transparency = transSeq;
+                                    BoxOutlineGradient.Transparency = transSeq;
+                                end;
+
+                                if BoxInlineGradient.Rotation ~= BoxRotation then
+                                    BoxInlineGradient.Rotation = BoxRotation;
                                 end
-                                if BoxInlineGradient.Rotation ~= BoxRotation then BoxInlineGradient.Rotation = BoxRotation end
-                                if BoxOutlineGradient.Rotation ~= BoxRotation then BoxOutlineGradient.Rotation = BoxRotation end
-                            end
-                            local BoxGlowGradient = Objects["BoxGlowGradient"]; do
-                                local BoxGlowEnabled, BoxGlowColor, BoxGlowTransparency, BoxGlowRotation = esp_settings.BoundingBox.Glow.Enabled, esp_settings.BoundingBox.Glow.Color, esp_settings.BoundingBox.Glow.Transparency, esp_settings.BoundingBox.Glow.Rotation
+
+                                if BoxOutlineGradient.Rotation ~= BoxRotation then
+                                    BoxOutlineGradient.Rotation = BoxRotation;
+                                end;
+                            end;
+
+                            local BoxGlowGradient = Objects["BoxGlowGradient"];
+                            do
+                                local BoxGlowEnabled, BoxGlowColor, BoxGlowTransparency, BoxGlowRotation = esp_settings.BoundingBox.Glow.Enabled, esp_settings.BoundingBox.Glow.Color, esp_settings.BoundingBox.Glow.Transparency, esp_settings.BoundingBox.Glow.Rotation + esp_settings.BoundingBox.Glow.MovingRotation + math.sin(os_clock() * esp_settings.BoundingBox.Glow.RotationSpeed) * 45
                                 if BoxGlowEnabled then
-                                    if BoxGlow.ImageTransparency ~= 0 then BoxGlow.ImageTransparency = 0 end
-                                    if BoxGlowGradient.Rotation ~= BoxGlowRotation then BoxGlowGradient.Rotation = BoxGlowRotation end
+                                    if BoxGlow.ImageTransparency ~= 0 then
+                                        BoxGlow.ImageTransparency = 0;
+                                    end;
+                                    if BoxGlowGradient.Rotation ~= BoxGlowRotation then
+                                        BoxGlowGradient.Rotation = BoxGlowRotation;
+                                    end;
+
                                     if TargetInfo.LastGlowColor1 ~= BoxGlowColor[1] or TargetInfo.LastGlowColor2 ~= BoxGlowColor[2] then
-                                        TargetInfo.LastGlowColor1 = BoxGlowColor[1]
-                                        TargetInfo.LastGlowColor2 = BoxGlowColor[2]
-                                        BoxGlowGradient.Color = ColorSequence_new{ColorSequenceKeypoint_new(0, BoxGlowColor[1]), ColorSequenceKeypoint_new(1, BoxGlowColor[2])}
+                                        TargetInfo.LastGlowColor1 = BoxGlowColor[1];
+                                        TargetInfo.LastGlowColor2 = BoxGlowColor[2];
+                                        BoxGlowGradient.Color = ColorSequence_new{
+                                            ColorSequenceKeypoint_new(0, BoxGlowColor[1]), ColorSequenceKeypoint_new(1, BoxGlowColor[2])
+                                        };
                                     end
+
                                     if TargetInfo.LastGlowTrans1 ~= BoxGlowTransparency[1] or TargetInfo.LastGlowTrans2 ~= BoxGlowTransparency[2] then
-                                        TargetInfo.LastGlowTrans1 = BoxGlowTransparency[1]
-                                        TargetInfo.LastGlowTrans2 = BoxGlowTransparency[2]
-                                        BoxGlowGradient.Transparency = NumberSequence_new{NumberSequenceKeypoint_new(0, BoxGlowTransparency[1]), NumberSequenceKeypoint_new(1, BoxGlowTransparency[2])}
-                                    end
+                                        TargetInfo.LastGlowTrans1 = BoxGlowTransparency[1];
+                                        TargetInfo.LastGlowTrans2 = BoxGlowTransparency[2];
+                                        BoxGlowGradient.Transparency = NumberSequence_new{
+                                            NumberSequenceKeypoint_new(0, BoxGlowTransparency[1]), NumberSequenceKeypoint_new(1, BoxGlowTransparency[2])
+                                        };
+                                    end;
                                 else
-                                    if BoxGlow.ImageTransparency ~= 1 then BoxGlow.ImageTransparency = 1 end
+                                    if BoxGlow.ImageTransparency ~= 1 then
+                                        BoxGlow.ImageTransparency = 1;
+                                    end;
+                                end;
+                            end;
+
+                            local BoxFillGradient = Objects["BoxFillGradient"];
+                            do
+                                local BoxFillColor, BoxFillTransparency, BoxFillRotation = esp_settings.BoundingBox.Fill.Color, esp_settings.BoundingBox.Fill.Transparency, esp_settings.BoundingBox.Fill.Rotation + esp_settings.BoundingBox.Fill.MovingRotation + math.sin(os_clock() * esp_settings.BoundingBox.Fill.RotationSpeed) * 45
+                                if BoxFill.Visible ~= esp_settings.BoundingBox.Fill.Enabled then
+                                    BoxFill.Visible = esp_settings.BoundingBox.Fill.Enabled;
+                                end;
+                                if BoxFill.Size ~= CachedBoxSize then
+                                    BoxFill.Size = CachedBoxSize;
                                 end
-                            end
-                            local BoxFillGradient = Objects["BoxFillGradient"]; do
-                                local BoxFillColor, BoxFillTransparency, BoxFillRotation = esp_settings.BoundingBox.Fill.Color, esp_settings.BoundingBox.Fill.Transparency, esp_settings.BoundingBox.Fill.Rotation
-                                if BoxFill.Visible ~= esp_settings.BoundingBox.Fill.Enabled then BoxFill.Visible = esp_settings.BoundingBox.Fill.Enabled end
-                                if BoxFill.Size ~= CachedBoxSize then BoxFill.Size = CachedBoxSize end
-                                if BoxFillGradient.Rotation ~= BoxFillRotation then BoxFillGradient.Rotation = BoxFillRotation end
+                                if BoxFillGradient.Rotation ~= BoxFillRotation then
+                                    BoxFillGradient.Rotation = BoxFillRotation;
+                                end
                                 if TargetInfo.LastFillColor1 ~= BoxFillColor[1] or TargetInfo.LastFillColor2 ~= BoxFillColor[2] then
-                                    TargetInfo.LastFillColor1 = BoxFillColor[1]
-                                    TargetInfo.LastFillColor2 = BoxFillColor[2]
-                                    BoxFillGradient.Color = ColorSequence_new{ColorSequenceKeypoint_new(0, BoxFillColor[1]), ColorSequenceKeypoint_new(1, BoxFillColor[2])}
-                                end
+                                    TargetInfo.LastFillColor1 = BoxFillColor[1];
+                                    TargetInfo.LastFillColor2 = BoxFillColor[2];
+                                    BoxFillGradient.Color = ColorSequence_new{
+                                        ColorSequenceKeypoint_new(0, BoxFillColor[1]), ColorSequenceKeypoint_new(1, BoxFillColor[2])
+                                    }
+                                end;
                                 if TargetInfo.LastFillTrans1 ~= BoxFillTransparency[1] or TargetInfo.LastFillTrans2 ~= BoxFillTransparency[2] then
-                                    TargetInfo.LastFillTrans1 = BoxFillTransparency[1]
-                                    TargetInfo.LastFillTrans2 = BoxFillTransparency[2]
-                                    BoxFillGradient.Transparency = NumberSequence_new{NumberSequenceKeypoint_new(0, BoxFillTransparency[1]), NumberSequenceKeypoint_new(1, BoxFillTransparency[2])}
-                                end
-                            end
+                                    TargetInfo.LastFillTrans1 = BoxFillTransparency[1];
+                                    TargetInfo.LastFillTrans2 = BoxFillTransparency[2];
+                                    BoxFillGradient.Transparency = NumberSequence_new{
+                                        NumberSequenceKeypoint_new(0, BoxFillTransparency[1]), NumberSequenceKeypoint_new(1, BoxFillTransparency[2])
+                                    };
+                                end;
+                            end;
                         else
-                            if BoxGlow.ImageTransparency ~= 1 then BoxGlow.ImageTransparency = 1 end
-                            if BoxOutline.Parent.Visible then BoxOutline.Parent.Visible = false end
-                            if BoxInline.Parent.Visible then BoxInline.Parent.Visible = false end
-                            if BoxFill.Visible then BoxFill.Visible = false end
-                        end
-                    end
-                    for BarName, BarInfo in esp_settings.Bars do
+                            if BoxGlow.ImageTransparency ~= 1 then
+                                BoxGlow.ImageTransparency = 1;
+                            end;
+
+                            if BoxOutline.Parent.Visible then
+                                BoxOutline.Parent.Visible = false;
+                            end;
+                            if BoxInline.Parent.Visible then
+                                BoxInline.Parent.Visible = false;
+                            end
+                            if BoxFill.Visible then
+                                BoxFill.Visible = false;
+                            end;
+                        end;
+                    end;
+
+                    for BarName, BarInfo in pairs(esp_settings.Bars) do
                         local Bar, BarOutline, BarGradient = Objects[BarName], Objects[BarName .. "Outline"], Objects[BarName .. "Gradient"]; do
                             local BarEnabled, BarColor, BarTransparency = BarInfo.Enabled, BarInfo.Color, BarInfo.Transparency
                             local Position = BarInfo.Position
                             local NewParent = Objects[Position .. "BarHolder"]
                             if BarEnabled and IsA(Target, "Player") then
                                 local BarValue = BarInfo.Type(Target, TargetInfo)
-                                if not NewParent.Visible then NewParent.Visible = true end
-                                local isVertical = (Position == "Left" or Position == "Right")
-                                local barSize = isVertical and UDim2_new(0, 1, BarValue, 0) or UDim2_new(BarValue, 0, 0, 1)
-                                local outlineSize = isVertical and UDim2_new(0, 1, 1, 0) or UDim2_new(1, 0, 0, 1)
-                                local gradRot = isVertical and 90 or -180
-                                local gradOff = isVertical and Vector2_new(0, BarValue - 1) or Vector2_new(1 - BarValue, 0)
-                                local barAnchor = isVertical and Vector2_new(0, 1) or Vector2_new(0, 0)
-                                local barPos = isVertical and UDim2_new(0, 0, 1, 0) or UDim2_new(0, 0, 0, 0)
-                                if Bar.AnchorPoint ~= barAnchor then Bar.AnchorPoint = barAnchor end
-                                if Bar.Position ~= barPos then Bar.Position = barPos end
-                                if Bar.Size ~= barSize then Bar.Size = barSize end
-                                if BarOutline.Parent ~= NewParent then BarOutline.Parent = NewParent end
-                                if BarOutline.Size ~= outlineSize then BarOutline.Size = outlineSize end
-                                if BarGradient.Rotation ~= gradRot then BarGradient.Rotation = gradRot end
-                                if BarGradient.Offset ~= gradOff then BarGradient.Offset = gradOff end
+                                if not NewParent.Visible then
+                                    NewParent.Visible = true;
+                                end;
+
+                                local visualBarValue = TargetInfo[BarName .. "VisualValue"] or BarValue;
+                                visualBarValue = visualBarValue + (BarValue - visualBarValue) * math.clamp(deltaTime * 5, 0, 1);
+                                TargetInfo[BarName .. "VisualValue"] = visualBarValue;
+
+                                local isVertical = (Position == "Left" or Position == "Right");
+                                local barSize = isVertical and UDim2_new(0, 1, visualBarValue, 0) or UDim2_new(visualBarValue, 0, 0, 1);
+                                local outlineSize = barSize;
+                                local gradRot = (isVertical and 90 or -180) + BarInfo.MovingRotation + math.sin(os_clock() * BarInfo.RotationSpeed) * 45;
+                                local gradOff = isVertical and Vector2_new(0, visualBarValue - 1) or Vector2_new(1 - visualBarValue, 0);
+                                local barAnchor = isVertical and Vector2_new(0, 1) or Vector2_new(0, 0);
+                                local barPos = isVertical and UDim2_new(0, 0, 1, 0) or UDim2_new(0, 0, 0, 0);
+
+                                if not BarOutline.Visible then
+                                    BarOutline.Visible = true;
+                                end;
+
+                                if Bar.AnchorPoint ~= barAnchor then
+                                    Bar.AnchorPoint = barAnchor;
+                                end;
+
+                                if Bar.Position ~= barPos then
+                                    Bar.Position = barPos;
+                                end;
+
+                                if Bar.Size ~= UDim2_new(1, 0, 1, 0) then
+                                    Bar.Size = UDim2_new(1, 0, 1, 0);
+                                end;
+
+                                if BarOutline.Parent ~= NewParent then
+                                    BarOutline.Parent = NewParent;
+                                end;
+
+                                if BarOutline.Size ~= outlineSize then
+                                    BarOutline.Size = outlineSize;
+                                end;
+
+                                if BarGradient.Rotation ~= gradRot then
+                                    BarGradient.Rotation = gradRot;
+                                end;
+
+                                if BarGradient.Offset ~= gradOff then
+                                    BarGradient.Offset = gradOff;
+                                end;
+
                                 if TargetInfo[BarName.."LastColor1"] ~= BarColor[1] or TargetInfo[BarName.."LastColor2"] ~= BarColor[2] or TargetInfo[BarName.."LastColor3"] ~= BarColor[3] then
-                                    TargetInfo[BarName.."LastColor1"] = BarColor[1]
-                                    TargetInfo[BarName.."LastColor2"] = BarColor[2]
-                                    TargetInfo[BarName.."LastColor3"] = BarColor[3]
-                                    BarGradient.Color = ColorSequence_new{
-                                        ColorSequenceKeypoint_new(0, BarColor[1]), ColorSequenceKeypoint_new(0, BarColor[2]), ColorSequenceKeypoint_new(1, BarColor[3]) }
-                                end
+                                    TargetInfo[BarName.."LastColor1"] = BarColor[1];
+                                    TargetInfo[BarName.."LastColor2"] = BarColor[2];
+                                    TargetInfo[BarName.."LastColor3"] = BarColor[3];
+                                end;
+
+                                local v = math_clamp(visualBarValue, 0.001, 0.999);
+                                local midPoint = math_clamp(v * 0.5, 0.001, 0.499);
+
+                                BarGradient.Color = ColorSequence_new{
+                                    ColorSequenceKeypoint_new(0,         BarColor[1]),
+                                    ColorSequenceKeypoint_new(midPoint,  BarColor[2]),
+                                    ColorSequenceKeypoint_new(v,         BarColor[3]),
+                                    ColorSequenceKeypoint_new(math_clamp(v + 0.001, 0.001, 1), Color3_fromRGB(40, 40, 40)),
+                                    ColorSequenceKeypoint_new(1,         Color3_fromRGB(40, 40, 40)),
+                                };
                             else
-                                if NewParent.Visible then NewParent.Visible = false end
-                            end
-                        end
-                        local BarText = Objects[BarName .. "Text"]; do
-                            local BarTextEnabled, BarTextColor, BarTextTransparency = BarInfo.Text.Enabled, BarInfo.Text.Color, BarInfo.Text.Transparency
-                            local TextPosition = BarInfo.Text.Position
+                                if NewParent.Visible then
+                                    NewParent.Visible = false;
+                                end;
+                            end;
+                        end;
+
+                        local BarText = Objects[BarName .. "Text"];
+                        do
+                            local BarTextEnabled, BarTextColor, BarTextTransparency = BarInfo.Text.Enabled, BarInfo.Text.Color, BarInfo.Text.Transparency;
+                            local TextPosition = BarInfo.Text.Position;
                             if BarTextEnabled and IsA(Target, "Player") then
-                                local TextValue, TextVisible = BarInfo.Text.Type(Target, TargetInfo)
-                                local newText = tostring(math_floor(TextValue)) .. BarInfo.Text.Ending
-                                if BarText.Text ~= newText then BarText.Text = newText end
-                                if BarText.TextColor3 ~= BarTextColor then BarText.TextColor3 = BarTextColor end
-                                if BarText.TextTransparency ~= BarTextTransparency then BarText.TextTransparency = BarTextTransparency end
-                                if BarText.UIStroke.Transparency ~= BarTextTransparency then BarText.UIStroke.Transparency = BarTextTransparency end
+                                local TextValue, TextVisible = BarInfo.Text.Type(Target, TargetInfo);
+                                local newText = tostring(math_floor(TextValue)) .. BarInfo.Text.Ending;
+                                
+                                if BarText.Text ~= newText then
+                                    BarText.Text = newText;
+                                end;
+                                
+                                if BarText.TextColor3 ~= BarTextColor then
+                                    BarText.TextColor3 = BarTextColor;
+                                end;
+                                
+                                if BarText.TextTransparency ~= BarTextTransparency then
+                                    BarText.TextTransparency = BarTextTransparency;
+                                end;
+                                
+                                if BarText.UIStroke.Transparency ~= BarTextTransparency then
+                                    BarText.UIStroke.Transparency = BarTextTransparency;
+                                end;
+                                
                                 if BarInfo.Text.FollowBar then
-                                    if BarText.Visible ~= TextVisible then BarText.Visible = TextVisible end
-                                    if BarText.Parent ~= Bar then BarText.Parent = Bar end
-                                    if BarText.ZIndex ~= 10 then BarText.ZIndex = 10 end
-                                    local align = (BarInfo.Position == "Left" or BarInfo.Position == "Right") and Enum.TextXAlignment.Center or Enum.TextXAlignment.Right
-                                    local anchor = (BarInfo.Position == "Left" or BarInfo.Position == "Right") and Vector2_new(0.5, 0) or Vector2_new(0, 0.5)
-                                    if BarText.TextXAlignment ~= align then BarText.TextXAlignment = align end
-                                    if BarText.AnchorPoint ~= anchor then BarText.AnchorPoint = anchor end
-                                end
+                                    if BarText.Visible ~= TextVisible then
+                                        BarText.Visible = TextVisible;
+                                    end;
+                                    
+                                    if BarText.Parent ~= Bar then
+                                        BarText.Parent = Bar;
+                                    end;
+                                    
+                                    if BarText.ZIndex ~= 10 then
+                                        BarText.ZIndex = 10;
+                                    end;
+                                    
+                                    local align = (BarInfo.Position == "Left" or BarInfo.Position == "Right") and Enum.TextXAlignment.Center or Enum.TextXAlignment.Right;
+                                    local anchor = (BarInfo.Position == "Left" or BarInfo.Position == "Right") and Vector2_new(0.5, 0) or Vector2_new(0, 0.5);
+                                    
+                                    if BarText.TextXAlignment ~= align then
+                                        BarText.TextXAlignment = align;
+                                    end;
+
+                                    if BarText.AnchorPoint ~= anchor then
+                                        BarText.AnchorPoint = anchor;
+                                    end;
+                                end;
+
                                 if not BarInfo.Text.FollowBar then
-                                    if not BarText.Visible then BarText.Visible = true end
-                                    local newParent = Objects[TextPosition .. "TextHolder"]
-                                    if BarText.Parent ~= newParent then BarText.Parent = newParent end
+                                    if not BarText.Visible then
+                                        BarText.Visible = true;
+                                    end;
+
+                                    local newParent = Objects[TextPosition .. "TextHolder"];
+                                    if BarText.Parent ~= newParent then
+                                        BarText.Parent = newParent;
+                                    end;
+
                                     local align = TextAlignments[TextPosition]
-                                    if BarText.TextXAlignment ~= align then BarText.TextXAlignment = align end
-                                    if BarText.AnchorPoint ~= Vector2_new(0, 0) then BarText.AnchorPoint = Vector2_new(0, 0) end
-                                end
+                                    if BarText.TextXAlignment ~= align then
+                                        BarText.TextXAlignment = align;
+                                    end;
+
+                                    if BarText.AnchorPoint ~= Vector2_new(0, 0) then
+                                        BarText.AnchorPoint = Vector2_new(0, 0);
+                                    end;
+                                end;
                             else
-                                if BarText.Visible then BarText.Visible = false end
-                            end
-                        end
-                    end
-                    local NameText = Objects["TargetName"]; do
+                                if BarText.Visible then
+                                    BarText.Visible = false;
+                                end;
+                            end;
+                        end;
+                    end;
+
+                    local NameText = Objects["TargetName"];
+                    do
+                        if NameText.FontFace ~= ESP.Font then
+                            NameText.FontFace = ESP.Font;
+                        end;
                         local NameEnabled, NameColor, NameTransparency = esp_settings.Name.Enabled, esp_settings.Name.Color, esp_settings.Name.Transparency
                         if NameEnabled then
                             TargetInfo.TargetName = Utility.GetFontType(esp_settings.Name.UseDisplay and (IsA(Target, "Player") and Target.DisplayName or Target.Name) or Target.Name)
                             local newText = TargetInfo.TargetName
                             local newParent = Objects[esp_settings.Name.Position .. "TextHolder"]
-                            if not NameText.Visible then NameText.Visible = true end
-                            if NameText.Text ~= newText then NameText.Text = newText end
-                            if NameText.TextXAlignment ~= TextAlignments[esp_settings.Name.Position] then NameText.TextXAlignment = TextAlignments[esp_settings.Name.Position] end
-                            if NameText.Parent ~= newParent then NameText.Parent = newParent end
-                            if NameText.TextColor3 ~= NameColor then NameText.TextColor3 = NameColor end
-                            if NameText.TextTransparency ~= NameTransparency then NameText.TextTransparency = NameTransparency end
-                            if NameText.UIStroke.Transparency ~= NameTransparency then NameText.UIStroke.Transparency = NameTransparency end
+                            if not NameText.Visible then
+                                NameText.Visible = true;
+                            end;
+
+                            if NameText.Text ~= newText then
+                                NameText.Text = newText;
+                            end;
+
+                            if NameText.TextXAlignment ~= TextAlignments[esp_settings.Name.Position] then
+                                NameText.TextXAlignment = TextAlignments[esp_settings.Name.Position];
+                            end;
+
+                            if NameText.Parent ~= newParent then
+                                NameText.Parent = newParent;
+                            end;
+
+                            if NameText.TextColor3 ~= NameColor then
+                                NameText.TextColor3 = NameColor;
+                            end;
+
+                            if NameText.TextTransparency ~= NameTransparency then
+                                NameText.TextTransparency = NameTransparency;
+                            end;
+                            
+                            if NameText.UIStroke.Transparency ~= NameTransparency then
+                                NameText.UIStroke.Transparency = NameTransparency;
+                            end;
                         else
-                            if NameText.Visible then NameText.Visible = false end
-                        end
-                    end
+                            if NameText.Visible then
+                                NameText.Visible = false;
+                            end;
+                        end;
+                    end;
+
                     local DistanceText = Objects["Distance"]; do
+                        if DistanceText.FontFace ~= ESP.Font then
+                            DistanceText.FontFace = ESP.Font;
+                        end;
                         local DistanceEnabled, DistanceColor, DistanceTransparency = esp_settings.Distance.Enabled, esp_settings.Distance.Color, esp_settings.Distance.Transparency;
                         if DistanceEnabled then
                             local roundeddistance = math_floor(distance);
+
                             if TargetInfo.LastDistanceValue ~= roundeddistance then
                                 TargetInfo.LastDistanceValue = roundeddistance;
                                 TargetInfo.LastDistanceText = tostring(roundeddistance) .. TargetInfo.DistanceEnding;
-                            end
-                            local newText = TargetInfo.LastDistanceText
-                            local newParent = Objects[esp_settings.Distance.Position .. "TextHolder"]
-                            if not DistanceText.Visible then DistanceText.Visible = true end
-                            if DistanceText.TextXAlignment ~= TextAlignments[esp_settings.Distance.Position] then DistanceText.TextXAlignment = TextAlignments[esp_settings.Distance.Position] end
-                            if DistanceText.Parent ~= newParent then DistanceText.Parent = newParent end
-                            if DistanceText.TextColor3 ~= DistanceColor then DistanceText.TextColor3 = DistanceColor end
-                            if DistanceText.TextTransparency ~= DistanceTransparency then DistanceText.TextTransparency = DistanceTransparency end
-                            if DistanceText.UIStroke.Transparency ~= DistanceTransparency then DistanceText.UIStroke.Transparency = DistanceTransparency end
-                            if DistanceText.Text ~= newText then DistanceText.Text = newText end
+                            end;
+
+                            local newText = TargetInfo.LastDistanceText;
+                            local newParent = Objects[esp_settings.Distance.Position .. "TextHolder"];
+                            
+                            if not DistanceText.Visible then
+                                DistanceText.Visible = true;
+                            end;
+
+                            if DistanceText.TextXAlignment ~= TextAlignments[esp_settings.Distance.Position] then
+                                DistanceText.TextXAlignment = TextAlignments[esp_settings.Distance.Position];
+                            end;
+
+                            if DistanceText.Parent ~= newParent then
+                                DistanceText.Parent = newParent;
+                            end;
+
+                            if DistanceText.TextColor3 ~= DistanceColor then
+                                DistanceText.TextColor3 = DistanceColor;
+                            end;
+
+                            if DistanceText.TextTransparency ~= DistanceTransparency then
+                                DistanceText.TextTransparency = DistanceTransparency;
+                            end;
+
+                            if DistanceText.UIStroke.Transparency ~= DistanceTransparency then
+                                DistanceText.UIStroke.Transparency = DistanceTransparency;
+                            end;
+
+                            if DistanceText.Text ~= newText then
+                                DistanceText.Text = newText;
+                            end;
                         else
-                            if DistanceText.Visible then DistanceText.Visible = false end
-                        end
-                    end
-                    local WeaponText = Objects["Weapon"]; do
+                            if DistanceText.Visible then
+                                DistanceText.Visible = false;
+                            end;
+                        end;
+                    end;
+
+                    local WeaponText = Objects["Weapon"];
+                    do
                         local WeaponEnabled, WeaponColor, WeaponTransparency = esp_settings.Weapon.Enabled, esp_settings.Weapon.Color, esp_settings.Weapon.Transparency
                         if IsA(Target, "Player") and WeaponEnabled then
                             local newText = TargetInfo.CurrentTool
-                            local newParent = Objects[esp_settings.Weapon.Position .. "TextHolder"]
-                            if not WeaponText.Visible then WeaponText.Visible = true end
-                            if WeaponText.TextXAlignment ~= TextAlignments[esp_settings.Weapon.Position] then WeaponText.TextXAlignment = TextAlignments[esp_settings.Weapon.Position] end
-                            if WeaponText.Parent ~= newParent then WeaponText.Parent = newParent end
-                            if WeaponText.TextColor3 ~= WeaponColor then WeaponText.TextColor3 = WeaponColor end
-                            if WeaponText.TextTransparency ~= WeaponTransparency then WeaponText.TextTransparency = WeaponTransparency end
-                            if WeaponText.UIStroke.Transparency ~= WeaponTransparency then WeaponText.UIStroke.Transparency = WeaponTransparency end
-                            if WeaponText.Text ~= newText then WeaponText.Text = newText end
+                            local newParent = Objects[esp_settings.Weapon.Position .. "TextHolder"];
+                            if not WeaponText.Visible then
+                                WeaponText.Visible = true;
+                            end;
+
+                            if WeaponText.TextXAlignment ~= TextAlignments[esp_settings.Weapon.Position] then
+                                WeaponText.TextXAlignment = TextAlignments[esp_settings.Weapon.Position];
+                            end;
+
+                            if WeaponText.Parent ~= newParent then
+                                WeaponText.Parent = newParent;
+                            end;
+                            
+                            if WeaponText.TextColor3 ~= WeaponColor then
+                                WeaponText.TextColor3 = WeaponColor;
+                            end;
+
+                            if WeaponText.TextTransparency ~= WeaponTransparency then
+                                WeaponText.TextTransparency = WeaponTransparency;
+                            end;
+
+                            if WeaponText.UIStroke.Transparency ~= WeaponTransparency then
+                                WeaponText.UIStroke.Transparency = WeaponTransparency;
+                            end;
+
+                            if WeaponText.Text ~= newText then
+                                WeaponText.Text = newText;
+                            end;
                         else
-                            if WeaponText.Visible then WeaponText.Visible = false end
-                        end
-                    end
-                    local FlagsText = Objects["Flags"]; do
+                            if WeaponText.Visible then
+                                WeaponText.Visible = false;
+                            end;
+                        end;
+                    end;
+
+                    local FlagsText = Objects["Flags"];
+                    do
                         local FlagsEnabled, FlagsColor, FlagsTransparency = esp_settings.Flags.Enabled, esp_settings.Flags.Color, esp_settings.Flags.Transparency
                         if FlagsEnabled then
                             local newText = esp_settings.Flags.Type(Target, TargetInfo)
                             local newParent = Objects[esp_settings.Flags.Position .. "TextHolder"]
-                            if not FlagsText.Visible then FlagsText.Visible = true end
-                            if FlagsText.TextXAlignment ~= TextAlignments[esp_settings.Flags.Position] then FlagsText.TextXAlignment = TextAlignments[esp_settings.Flags.Position] end
-                            if FlagsText.Parent ~= newParent then FlagsText.Parent = newParent end
-                            if FlagsText.TextColor3 ~= FlagsColor then FlagsText.TextColor3 = FlagsColor end
-                            if FlagsText.TextTransparency ~= FlagsTransparency then FlagsText.TextTransparency = FlagsTransparency end
-                            if FlagsText.UIStroke.Transparency ~= FlagsTransparency then FlagsText.UIStroke.Transparency = FlagsTransparency end
-                            if FlagsText.Text ~= newText then FlagsText.Text = newText end
+                            
+                            if not FlagsText.Visible then
+                                FlagsText.Visible = true;
+                            end;
+
+                            if FlagsText.TextXAlignment ~= TextAlignments[esp_settings.Flags.Position] then
+                                FlagsText.TextXAlignment = TextAlignments[esp_settings.Flags.Position];
+                            end;
+
+                            if FlagsText.Parent ~= newParent then
+                                FlagsText.Parent = newParent;
+                            end;
+
+                            if FlagsText.TextColor3 ~= FlagsColor then
+                                FlagsText.TextColor3 = FlagsColor;
+                            end;
+
+                            if FlagsText.TextTransparency ~= FlagsTransparency then
+                                FlagsText.TextTransparency = FlagsTransparency;
+                            end;
+
+                            if FlagsText.UIStroke.Transparency ~= FlagsTransparency then
+                                FlagsText.UIStroke.Transparency = FlagsTransparency;
+                            end;
+
+                            if FlagsText.Text ~= newText then
+                                FlagsText.Text = newText;
+                            end;
                         else
-                            if FlagsText.Visible then FlagsText.Visible = false end
-                        end
-                    end
-                end
+                            if FlagsText.Visible then
+                                FlagsText.Visible = false;
+                            end;
+                        end;
+                    end;
+                end;
+
                 function TargetInfo.Remove()
-                    for _, Object in Objects do Object:Destroy() end
+                    for _, Object in pairs(Objects) do
+                        Object:Destroy();
+                    end;
                     if TargetInfo.CharacterConnection then
-                        TargetInfo.CharacterConnection:Disconnect()
-                        TargetInfo.CharacterConnection = nil
-                    end
+                        TargetInfo.CharacterConnection:Disconnect();
+                        TargetInfo.CharacterConnection = nil;
+                    end;
                     if ToolConnection.Added then
-                        ToolConnection.Added:Disconnect()
-                        ToolConnection.Added = nil
-                    end
+                        ToolConnection.Added:Disconnect();
+                        ToolConnection.Added = nil;
+                    end;
                     if ToolConnection.Removed then
-                        ToolConnection.Removed:Disconnect()
-                        ToolConnection.Removed = nil
-                    end
-                    ESP.Targets[Target] = nil
-                end
-            end
-            TargetInfo.Init()
-        end
-        function ESP.RemoveTarget(NewTarget) for Target, TargetInfo in ESP.Targets do if Target == NewTarget then TargetInfo.Remove() end end end
+                        ToolConnection.Removed:Disconnect();
+                        ToolConnection.Removed = nil;
+                    end;
+                    ESP.Targets[Target] = nil;
+                end;
+            end;
+            TargetInfo.Init();
+        end;
+
+        function ESP.RemoveTarget(NewTarget)
+            for Target, TargetInfo in pairs(ESP.Targets) do
+                if Target == NewTarget then
+                    TargetInfo.Remove();
+                end;
+            end;
+        end;
+
         function ESP.AddUtility(Target, UtilityName, OptionName)
-            if ESP.Utilities[Target] then return end
+            if ESP.Utilities[Target] then return; end;
             local Info = {
-                Objects = {}, Option = OptionName; Name = UtilityName; }
-            local Objects = Info.Objects
-            local ESPFont = ESP.Font
-            local ESPFontSize = esp_settings.FontSize
-            local ESPHolder = ESP.Holder
+                Objects = {};
+                Option = OptionName;
+                Name = UtilityName;
+            };
+
+            local Objects = Info.Objects;
+            local ESPFont = ESP.Font;
+            local ESPFontSize = esp_settings.FontSize;
+            local ESPHolder = ESP.Holder;
+
             function Info.Init()
                 Objects["TargetHolder"] = Utility.CreateObject("Frame", {Parent = ESPHolder, Visible = false, BackgroundTransparency = 1, Size = UDim2_new(0, 0, 0, 0)})
                 Objects["BoxOutline"] = Utility.CreateObject("UIStroke", {Parent = Objects["TargetHolder"], Thickness = 2, LineJoinMode = Enum.LineJoinMode.Miter})
-                Objects["TargetName"] = Utility.CreateObject("TextLabel", {
-                    Parent = Objects["TargetHolder"], FontFace = ESPFont, TextSize = ESPFontSize, TextColor3 = Color3.new(1,1,1), Text = UtilityName, AnchorPoint = Vector2_new(0.5, 1), Position = UDim2_fromScale(0.5, 0), Visible = true, BackgroundTransparency = 1, ZIndex = 5, AutomaticSize = Enum.AutomaticSize.XY }); 
+                Objects["BoxFill"] = Utility.CreateObject("Frame", {Parent = Objects["TargetHolder"], Visible = false, BackgroundColor3 = Color3.new(1,1,1), BackgroundTransparency = 0.5, Size = UDim2_fromScale(1, 1), BorderSizePixel = 0})
+                Objects["TargetName"] = Utility.CreateObject("TextLabel", {Parent = Objects["TargetHolder"], FontFace = ESPFont, TextSize = ESPFontSize, TextColor3 = Color3.new(1,1,1), Text = UtilityName, AnchorPoint = Vector2_new(0.5, 1), Position = UDim2_fromScale(0.5, 0), Visible = true, BackgroundTransparency = 1, ZIndex = 5, AutomaticSize = Enum.AutomaticSize.XY }); 
                 Utility.CreateObject("UIStroke", {Parent = Objects["TargetName"], Color = Color3_fromRGB(0, 0, 0)})
-                Objects["Distance"] = Utility.CreateObject("TextLabel", {
-                    Parent = Objects["TargetHolder"], FontFace = ESPFont, TextSize = ESPFontSize, TextColor3 = Color3.new(1,1,1), Text = "", AnchorPoint = Vector2_new(0.5, 0), Position = UDim2_fromScale(0.5, 1), Visible = true, BackgroundTransparency = 1, ZIndex = 5, AutomaticSize = Enum.AutomaticSize.XY }); 
+                Objects["Distance"] = Utility.CreateObject("TextLabel", {Parent = Objects["TargetHolder"], FontFace = ESPFont, TextSize = ESPFontSize, TextColor3 = Color3.new(1,1,1), Text = "", AnchorPoint = Vector2_new(0.5, 0), Position = UDim2_fromScale(0.5, 1), Visible = true, BackgroundTransparency = 1, ZIndex = 5, AutomaticSize = Enum.AutomaticSize.XY }); 
                 Utility.CreateObject("UIStroke", {Parent = Objects["Distance"], Color = Color3_fromRGB(0, 0, 0)})
-                ESP.Utilities[Target] = Info
-            end
+                ESP.Utilities[Target] = Info;
+            end;
+
             function Info.Update()
                 local toggle = Classes[Info.Option];
                 if not toggle or not toggle.Value then 
                     Objects["TargetHolder"].Visible = false;
                     return;
                 end;
+                
                 local colorOption = Classes[Info.Option .. "Color"];
                 local color = colorOption and colorOption.Value or Color3.new(1,1,1);
                 local rootpos = Target:IsA("Model") and (Target.PrimaryPart and Target.PrimaryPart.Position or Target:GetPivot().Position) or (Target:IsA("BasePart") and Target.Position or nil)
@@ -7638,57 +9017,109 @@ local function esp1()
                     Info.Remove();
                     return;
                 end;
+
                 local distance = (Camera.CFrame.Position - rootpos).Magnitude;
-                if distance > esp_settings.MaxDistance then Objects["TargetHolder"].Visible = false; return; end;
+                if distance > esp_settings.MaxDistance then
+                    Objects["TargetHolder"].Visible = false;
+                    return;
+                end;
+
                 local pos, onscreen = WorldToViewportPoint(Camera, rootpos);
                 if onscreen then
                     local size = (WorldToViewportPoint(Camera, rootpos - vector3_new(0, 2, 0)).Y - WorldToViewportPoint(Camera, rootpos + vector3_new(0, 2, 0)).Y) / 2
                     size = math_abs(size);
-                    if size < 5 then size = 5 end;
+                    if size < 5 then
+                        size = 5;
+                    end;
                     Objects["TargetHolder"].Visible = true;
                     Objects["TargetHolder"].Position = UDim2_fromOffset(pos.X - size/2, pos.Y - size/2);
                     Objects["TargetHolder"].Size = UDim2_fromOffset(size, size);
                     Objects["BoxOutline"].Color = color;
                     Objects["TargetName"].TextColor3 = color;
-                    Objects["Distance"].TextColor3 = color;
+
+                    local features = Classes[Info.Option .. "Features"];
+                    local fillEnabled = features and features.Value["Box Fill"];
+                    local distanceEnabled = features and features.Value["Distance"];
+
+                    local fillColorOption = Classes[Info.Option .. "FillColor"];
+                    Objects["BoxFill"].Visible = fillEnabled or false;
+                    Objects["BoxFill"].BackgroundColor3 = fillColorOption and fillColorOption.Value or color;
+
+                    local distanceColorOption = Classes[Info.Option .. "DistanceColor"];
+                    Objects["Distance"].Visible = distanceEnabled or false;
+                    Objects["Distance"].TextColor3 = distanceColorOption and distanceColorOption.Value or color;
                     Objects["Distance"].Text = math_floor(distance) .. "st";
                 else
                     Objects["TargetHolder"].Visible = false;
                 end;
             end
+
             function Info.Remove()
-                for _, obj in pairs(Objects) do pcall(function() obj:Destroy() end) end
-                ESP.Utilities[Target] = nil
-            end
-            Info.Init()
-        end
-        function ESP.RemoveUtility(Target) if ESP.Utilities[Target] then ESP.Utilities[Target].Remove() end end
+                for _, obj in pairs(Objects) do
+                    pcall(function()
+                        obj:Destroy();
+                    end);
+                end;
+                ESP.Utilities[Target] = nil;
+            end;
+            Info.Init();
+        end;
+
+        function ESP.RemoveUtility(Target)
+            if ESP.Utilities[Target] then
+                ESP.Utilities[Target].Remove();
+            end;
+        end;
+
         function ESP.Unload()
-            for _, Connection in ESP.Connections do Connection:Disconnect() end
-            for _, Object in ESP.Objects do Object:Destroy() end
-            Fonts = nil
-        end
-    end
+            for _, Connection in pairs(ESP.Connections) do
+                Connection:Disconnect();
+            end;
+            for _, Object in pairs(ESP.Objects) do
+                Object:Destroy();
+            end;
+            Fonts = nil;
+        end;
+    end;
+
     do
-        for _, Player in Players:GetPlayers() do ESP.AddTarget(Player) end
-        Utility.AddConnection(Players.PlayerAdded, LPH_JIT(function(Player) ESP.AddTarget(Player) end))
-        Utility.AddConnection(Players.PlayerRemoving, LPH_JIT(function(Player) ESP.RemoveTarget(Player) end))
+        for _, Player in pairs(Players:GetPlayers()) do
+            ESP.AddTarget(Player);
+        end;
+
+        Utility.AddConnection(Players.PlayerAdded, LPH_JIT(function(Player)
+            ESP.AddTarget(Player);
+        end));
+
+        Utility.AddConnection(Players.PlayerRemoving, LPH_JIT(function(Player)
+            ESP.RemoveTarget(Player);
+        end));
         
         local function check_util(util)
-            if util.Name == "PlacedClaymore" then ESP.AddUtility(util, "Claymore", "Claymore")
-            elseif util.Name == "utility7Proxy" then ESP.AddUtility(util, "C4", "C4")
-            elseif util.Name == "utility5Proxy" then ESP.AddUtility(util, "Grenade", "Grenade")
-            elseif util.Name == "OpenBearTrap" then ESP.AddUtility(util, "Bear Trap", "Beartrap") end
-        end
-        local Map = workspace:FindFirstChild("Map")
-        local EffectsJunk = workspace:FindFirstChild("EffectsJunk")
+            if util.Name == "PlacedClaymore" then
+                ESP.AddUtility(util, "Claymore", "Claymore");
+            elseif util.Name == "utility7Proxy" then
+                ESP.AddUtility(util, "C4", "C4");
+            elseif util.Name == "utility5Proxy" then
+                ESP.AddUtility(util, "Grenade", "Grenade");
+            elseif util.Name == "OpenBearTrap" then
+                ESP.AddUtility(util, "Bear Trap", "Beartrap");
+            end;
+        end;
+
+        local Map = workspace:FindFirstChild("Map");
+        local EffectsJunk = workspace:FindFirstChild("EffectsJunk");
+
         if Map then
-            for i, v in pairs(Map:GetChildren()) do check_util(v) end
+            for i, v in pairs(Map:GetChildren()) do
+                check_util(v);
+            end;
             Utility.AddConnection(Map.ChildAdded, check_util)
             Utility.AddConnection(Map.ChildRemoved, function(v)
                 ESP.RemoveUtility(v);
             end);
         end;
+
         if EffectsJunk then
             for i, v in pairs(EffectsJunk:GetChildren()) do
                 check_util(v);
@@ -7701,13 +9132,13 @@ local function esp1()
             end);
         end;
 
-        runservice.RenderStepped:Connect(LPH_JIT(function()
-            for t, ti in ESP.Targets do
+        runservice.RenderStepped:Connect(LPH_NO_VIRTUALIZE(function()
+            for t, ti in pairs(ESP.Targets) do
                 if ti and ti.Update then
                     ti.Update();
                 end;
             end;
-            for t, ti in ESP.Utilities do
+            for t, ti in pairs(ESP.Utilities) do
                 if ti and ti.Update then
                     ti.Update();
                 end;
@@ -7718,7 +9149,7 @@ end;
 
 esp1();
 
-espsection:AddToggle("esp_box", {
+esp_section:AddToggle("esp_box", {
     Text = "bounding box";
     Default = ESP.Settings.BoundingBox.Enabled;
     Callback = function(v)
@@ -7740,7 +9171,38 @@ espsection:AddToggle("esp_box", {
     end;
 });
 
-espsection:AddToggle("esp_box_glow", {
+esp_box_dep = esp_section:AddDependencyBox();
+
+esp_box_dep:AddSlider("esp_box_moving_rotation", {
+    Text = "moving rotation";
+    Default = 0;
+    Min = 0;
+    Max = 360;
+    Rounding = 0;
+    Compact = true;
+    Suffix = "°";
+    Callback = function(v)
+        ESP.Settings.BoundingBox.MovingRotation = v;
+    end;
+});
+
+esp_box_dep:AddSlider("esp_box_rotation_speed", {
+    Text = "rotation speed";
+    Default = 0;
+    Min = 0;
+    Max = 10;
+    Rounding = 0;
+    Compact = true;
+    Callback = function(v)
+        ESP.Settings.BoundingBox.RotationSpeed = v;
+    end;
+});
+
+esp_box_dep:SetupDependencies({
+    { Toggles.esp_box, true }
+});
+
+esp_section:AddToggle("esp_box_glow", {
     Text = "box glow";
     Default = ESP.Settings.BoundingBox.Glow.Enabled;
     Callback = function(v)
@@ -7762,7 +9224,7 @@ espsection:AddToggle("esp_box_glow", {
     end;
 });
 
-espsection:AddToggle("esp_box_fill", {
+esp_section:AddToggle("esp_box_fill", {
     Text = "box fill";
     Default = ESP.Settings.BoundingBox.Fill.Enabled;
     Callback = function(v)
@@ -7784,7 +9246,38 @@ espsection:AddToggle("esp_box_fill", {
     end;
 });
 
-espsection:AddToggle("esp_healthbar", {
+esp_fill_dep = esp_section:AddDependencyBox();
+
+esp_fill_dep:AddSlider("esp_fill_moving_rotation", {
+    Text = "moving rotation";
+    Default = 0;
+    Min = 0;
+    Max = 360;
+    Rounding = 0;
+    Compact = true;
+    Suffix = "°";
+    Callback = function(v)
+        ESP.Settings.BoundingBox.Fill.MovingRotation = v;
+    end;
+});
+
+esp_fill_dep:AddSlider("esp_fill_rotation_speed", {
+    Text = "rotation speed";
+    Default = 0;
+    Min = 0;
+    Max = 10;
+    Rounding = 0;
+    Compact = true;
+    Callback = function(v)
+        ESP.Settings.BoundingBox.Fill.RotationSpeed = v;
+    end;
+});
+
+esp_fill_dep:SetupDependencies({
+    { Toggles.esp_box_fill, true }
+});
+
+esp_section:AddToggle("esp_healthbar", {
     Text = "health bar";
     Default = ESP.Settings.Bars.HealthBar.Enabled;
     Callback = function(v)
@@ -7810,7 +9303,7 @@ espsection:AddToggle("esp_healthbar", {
     end;
 });
 
-espsection:AddToggle("esp_name", {
+esp_section:AddToggle("esp_name", {
     Text = "name";
     Default = ESP.Settings.Name.Enabled;
     Callback = function(v)
@@ -7825,7 +9318,7 @@ espsection:AddToggle("esp_name", {
     end;
 });
 
-espsection:AddToggle("esp_distance", {
+esp_section:AddToggle("esp_distance", {
     Text = "distance";
     Default = ESP.Settings.Distance.Enabled;
     Callback = function(v)
@@ -7840,7 +9333,7 @@ espsection:AddToggle("esp_distance", {
     end;
 });
 
-espsection:AddToggle("esp_weapon", {
+esp_section:AddToggle("esp_weapon", {
     Text = "weapon";
     Default = ESP.Settings.Weapon.Enabled;
     Callback = function(v)
@@ -7855,7 +9348,7 @@ espsection:AddToggle("esp_weapon", {
     end;
 });
 
-espsection:AddToggle("esp_flags", {
+esp_section:AddToggle("esp_flags", {
     Text = "flags";
     Default = ESP.Settings.Flags.Enabled;
     Callback = function(v)
@@ -7870,7 +9363,7 @@ espsection:AddToggle("esp_flags", {
     end;
 });
 
-espsection:AddDropdown("name_type", {
+esp_section:AddDropdown("name_type", {
     Values = {"display name", "name"};
 	Default = "display name";
 	Multi = false;
@@ -7884,19 +9377,7 @@ espsection:AddDropdown("name_type", {
 	end;
 });
 
-espsection:AddSlider("max_distance", {
-    Text = "max distance";
-    Default = ESP.Settings.MaxDistance;
-	Min = 100;
-	Max = 100000;
-	Compact = true;
-	Rounding = 0;
-    Callback = function(v)
-        ESP.Settings.MaxDistance = v;
-    end;
-});
-
-espsection:AddToggle("Tracer", {
+tracer_tab:AddToggle("Tracer", {
     Text = "tracer";
 	Default = false;
 }):AddColorPicker("TracerColor", {
@@ -7905,7 +9386,7 @@ espsection:AddToggle("Tracer", {
 	Transparency = 0;
 });
 
-espsection:AddSlider("TracerMaxDist", {
+tracer_tab:AddSlider("TracerMaxDist", {
     Text = "tracer length";
 	Default = 1000;
 	Min = 100;
@@ -7915,18 +9396,18 @@ espsection:AddSlider("TracerMaxDist", {
 	Suffix = " studs";
 });
 
-espsection:AddDropdown("TracerOrigin", {
+tracer_tab:AddDropdown("TracerOrigin", {
     Text = "tracer origin";
 	Default = "Bottom";
 	Values = {"Bottom", "Cursor"};
 });
 
-espsection:AddToggle("TracerAutoSelect", {
+tracer_tab:AddToggle("TracerAutoSelect", {
     Text = "tracer autoselect";
 	Default = false;
 });
 
-espsection:AddSlider("TracerAutoSelectDistance", {
+tracer_tab:AddSlider("TracerAutoSelectDistance", {
     Text = "autoselect distance";
 	Default = 1000;
 	Min = 100;
@@ -7936,12 +9417,12 @@ espsection:AddSlider("TracerAutoSelectDistance", {
 	Suffix = " studs";
 });
 
-espsection:AddToggle("OutOfFOV", {
+tracer_tab:AddToggle("OutOfFOV", {
     Text = "enabled";
 	Default = false;
 });
 
-espsection:AddSlider("OutFOVSize", {
+esp_section:AddSlider("OutFOVSize", {
     Text = "size";
 	Default = 15;
 	Min = 10;
@@ -7950,7 +9431,7 @@ espsection:AddSlider("OutFOVSize", {
 	Compact = true;
 });
 
-espsection:AddSlider("OutFOVOffset", {
+esp_section:AddSlider("OutFOVOffset", {
     Text = "offset";
 	Default = 400;
 	Min = 100;
@@ -7959,17 +9440,18 @@ espsection:AddSlider("OutFOVOffset", {
 	Compact = true;
 });
 
-espsection:AddDropdown("OFFSettings", {
+esp_section:AddDropdown("OFFSettings", {
     Text = "settings";
 	Default = "None";
 	Values = {"None", "Outline", "Blinking", "Both"};
 });
 
-espsection:AddToggle("UtilityESP", {
+utility_section:AddToggle("UtilityESP", {
     Text = "enabled";
 	Default = false;
 });
-espsection:AddSlider("UtilityESPMaxDistance", {
+
+utility_section:AddSlider("UtilityESPMaxDistance", {
     Text = "max distance";
 	Default = 5000;
 	Min = 250;
@@ -7979,78 +9461,159 @@ espsection:AddSlider("UtilityESPMaxDistance", {
 	Suffix = " studs";
 });
 
-espsection:AddToggle("C4", {
+utility_section:AddToggle("C4", {
     Text = "c4";
 	Default = false;
-	Tooltip = "Show C4";
 }):AddColorPicker("C4Color", {
     Default = Color3.new(1, 0, 0); 
     Title = "c4 color";
+}):AddColorPicker("C4FillColor", {
+    Default = Color3.new(1, 0, 0);
+    Title = "fill color";
+}):AddColorPicker("C4DistanceColor", {
+    Default = Color3.new(1, 0, 0);
+    Title = "distance color";
 });
 
-espsection:AddToggle("Grenade", {
+c4_dep = utility_section:AddDependencyBox();
+
+c4_dep:SetupDependencies({{
+    Toggles.C4, true;
+}});
+
+c4_dep:AddDropdown("C4Features", {
+    Text = "features";
+    Values = {"Box Fill", "Distance"};
+    Multi = true;
+    AllowNull = true;
+});
+
+utility_section:AddToggle("Grenade", {
     Text = "grenade";
 	Default = false;
 }):AddColorPicker("GrenadeColor", {
     Default = Color3.new(0, 1, 0);
     Title = "grenade color";
+}):AddColorPicker("GrenadeFillColor", {
+    Default = Color3.new(0, 1, 0);
+    Title = "fill color";
+}):AddColorPicker("GrenadeDistanceColor", {
+    Default = Color3.new(0, 1, 0);
+    Title = "distance color";
 });
 
-espsection:AddToggle("Claymore", {
+grenade_dep = utility_section:AddDependencyBox();
+
+grenade_dep:SetupDependencies({{
+    Toggles.Grenade, true;
+}});
+
+grenade_dep:AddDropdown("GrenadeFeatures", {
+    Text = "features";
+    Values = {"Box Fill", "Distance"};
+    Multi = true;
+    AllowNull = true;
+});
+
+utility_section:AddToggle("Claymore", {
     Text = "claymore";
 	Default = false;
 }):AddColorPicker("ClaymoreColor", {
     Default = Color3.new(1, 1, 0);
     Title = "claymore color";
+}):AddColorPicker("ClaymoreFillColor", {
+    Default = Color3.new(1, 1, 0);
+    Title = "fill color";
+}):AddColorPicker("ClaymoreDistanceColor", {
+    Default = Color3.new(1, 1, 0);
+    Title = "distance color";
 });
 
-espsection:AddToggle("Beartrap", {
+claymore_dep = utility_section:AddDependencyBox();
+
+claymore_dep:SetupDependencies({{
+    Toggles.Claymore, true;
+}});
+
+claymore_dep:AddDropdown("ClaymoreFeatures", {
+    Text = "features";
+    Values = {"Box Fill", "Distance"};
+    Multi = true;
+    AllowNull = true;
+});
+
+utility_section:AddToggle("Beartrap", {
     Text = "bear trap";
 	Default = false;
-	Tooltip = "Show Bear Trap";
 }):AddColorPicker("BeartrapColor", {
     Default = Color3.new(1, 0.5, 0);
     Title = "bear trap color";
+}):AddColorPicker("BeartrapFillColor", {
+    Default = Color3.new(1, 0.5, 0);
+    Title = "fill color";
+}):AddColorPicker("BeartrapDistanceColor", {
+    Default = Color3.new(1, 0.5, 0);
+    Title = "distance color";
 });
 
-local charactersection = tabs.visuals:AddLeftGroupbox("character visuals");
-charactersection:AddToggle("RainbowCharacter", {
+beartrap_dep = utility_section:AddDependencyBox();
+
+beartrap_dep:SetupDependencies({{
+    Toggles.Beartrap, true;
+}});
+
+beartrap_dep:AddDropdown("BeartrapFeatures", {
+    Text = "features";
+    Values = {"Box Fill", "Distance"};
+    Multi = true;
+    AllowNull = true;
+});
+
+self_tab:AddToggle("rainbow_character", {
     Text = "rainbow character";
     Default = false;
 });
 
-charactersection:AddToggle("OutlineGlow", {
+self_tab:AddToggle("outline_glow", {
     Text = "outline glow";
     Default = false;
-}):AddColorPicker("OutlineGlowColor", {
+}):AddColorPicker("outline_glow_color", {
     Default = Color3.new(1, 1, 1);
     Title = "glow color";
 });
 
-charactersection:AddDropdown("CharacterMaterial", {
+self_tab:AddToggle("character_material_enabled", {
+    Text = "material";
+    Default = false;
+}):AddColorPicker("character_material_color", {
+    Default = Color3.new(1, 1, 1);
+    Title = "material color";
+    Transparency = 0;
+});
+
+char_mat_dep = self_tab:AddDependencyBox();
+
+char_mat_dep:AddDropdown("character_material", {
     Text = "material";
     Default = "Plastic";
     Values = {"ForceField", "Plastic"};
+    AllowNull = true;
 });
 
-charactersection:AddToggle("CustomMaterialColor", {
-    Text = "material color";
-    Default = false;
-}):AddColorPicker("CharacterMaterialColor", {
-    Default = Color3.new(1, 1, 1);
-    Title = "material color";
+char_mat_dep:AddSlider("character_material_transparency", {
+    Text = "transparency",
+    Default = 0,
+    Min = 0,
+    Max = 1,
+    Rounding = 2,
+    Compact = true
 });
 
-charactersection:AddSlider("CharacterTransparency", {
-    Text = "transparency";
-    Default = 0;
-    Min = 0;
-    Max = 1;
-    Rounding = 1;
-    Compact = true;
+char_mat_dep:SetupDependencies({
+    { Toggles.character_material_enabled, true }
 });
 
-charactersection:AddToggle("RemoveAccessories", {
+self_tab:AddToggle("remove_acessories", {
     Text = "remove accessories";
     Default = false;
 });
@@ -8058,15 +9621,18 @@ charactersection:AddToggle("RemoveAccessories", {
 do
 	currently_spoofing = false;
 	lastservercframe = nil;
-	retrieve_position(LPH_JIT(function(cf, is_spoofing)
+	retrieve_position(function(cf, is_spoofing)
 		currently_spoofing = is_spoofing;
 		lastservercframe = cf;
-	end));
-	local dv_clone, dvconnection, parts_map, tool_conn_added, tool_conn_removed, dv_char;
-	local function get_material()
+    end);
+	
+    local dv_clone, dvconnection, parts_map, tool_conn_added, tool_conn_removed, dv_char;
+	
+    local function get_material()
 		local material_name = Options.desyncvisualisermaterial and Options.desyncvisualisermaterial.Value or "ForceField";
 		return Enum.Material[material_name] or Enum.Material.ForceField;
 	end;
+
 	local function apply_clone_part_settings(part, color, material)
 		part.CanCollide = false;
 		part.CanTouch = false;
@@ -8086,7 +9652,8 @@ do
 			part.TextureID = "";
 		end;
 	end;
-	local function strip_clone_descendants(container)
+	
+    local function strip_clone_descendants(container)
 		local to_destroy = {};
 		for _, v in ipairs(container:GetDescendants()) do
 			if (v:IsA("BasePart")) then
@@ -8100,7 +9667,8 @@ do
             end;
 		end;
 	end;
-	local function refresh_tool_parts()
+	
+    local function refresh_tool_parts()
 		local char = localplayer.Character;
 		if (not char or not dv_clone) then return; end;
 		local color = (Options.desyncvisualisercolor and Options.desyncvisualisercolor.Value) or Color3.fromRGB(128, 0, 255);
@@ -8155,7 +9723,8 @@ do
 			end;
 		end;
 	end;
-	local function bind_tool_connections()
+	
+    local function bind_tool_connections()
 		if (tool_conn_added) then
             tool_conn_added:Disconnect();
         end;
@@ -8164,13 +9733,15 @@ do
         end;
 		local char = localplayer.Character;
 		if (not char) then return; end;
-		tool_conn_added = char.ChildAdded:Connect(function(child)
+		
+        tool_conn_added = char.ChildAdded:Connect(function(child)
 			if (child:IsA("Tool")) then
 				task.wait();
 				refresh_tool_parts();
 			end;
 		end);
-		tool_conn_removed = char.ChildRemoved:Connect(function(child)
+		
+        tool_conn_removed = char.ChildRemoved:Connect(function(child)
 			if (child:IsA("Tool")) then
 				if (dv_clone) then
 					local stale_tool = dv_clone:FindFirstChild(child.Name);
@@ -8188,8 +9759,12 @@ do
 			end;
 		end);
 	end;
-	local function create_clone(color)
-		if (dv_clone) then dv_clone:Destroy(); dv_clone = nil; end;
+	
+    local function create_clone(color)
+		if (dv_clone) then
+            dv_clone:Destroy();
+            dv_clone = nil;
+        end;
 		parts_map = {};
 		local char = localplayer.Character;
 		if (not char or not char:FindFirstChild("HumanoidRootPart")) then
@@ -8214,6 +9789,20 @@ do
 				apply_clone_part_settings(v, color, selected_material);
 			end;
 		end;
+		local old_head = clone:FindFirstChild("Head");
+		if old_head then
+			old_head:Destroy();
+		end;
+		local original_head = char:FindFirstChild("Head");
+		if original_head then
+			local new_head = Instance.new("MeshPart");
+			new_head.MeshId = "rbxassetid://12905992570";
+			new_head.Size = vector3_new(1.196195125579834, 1.2029438018798828, 1.2002544403076172);
+			new_head.Name = "Head";
+			apply_clone_part_settings(new_head, color, selected_material);
+			new_head.Parent = clone;
+			parts_map[original_head] = new_head;
+		end;
 		if (parts_added == 0) then
             dv_char = nil;
             clone:Destroy();
@@ -8224,7 +9813,8 @@ do
 		refresh_tool_parts();
 		return dv_clone;
 	end;
-	charactersection:AddToggle("desyncvisualiser", {
+	
+    desync_visualizer:AddToggle("desyncvisualiser", {
 		Text = "desync visualizer";
 		Default = false;
 		Callback = function(enabled)
@@ -8249,7 +9839,7 @@ do
 				return;
 			end;
 			bind_tool_connections();
-			dvconnection = runservice.RenderStepped:Connect(LPH_JIT(function(dt)
+			dvconnection = runservice.RenderStepped:Connect(LPH_NO_VIRTUALIZE(function(dt)
 				local char = localplayer.Character;
 				local hrp = char and char:FindFirstChild("HumanoidRootPart");
 				if (not hrp or not lastservercframe) then
@@ -8265,7 +9855,7 @@ do
 						create_clone(color);
 					end;
 					if (dv_clone) then
-						dv_clone.Parent = workspace.Terrain;
+						dv_clone.Parent = localplayer.Character.Parent;
 						local color = (Options.desyncvisualisercolor and Options.desyncvisualisercolor.Value) or Color3.fromRGB(128, 0, 255);
 						local hrp_cframe = hrp.CFrame;
 						local selected_material = get_material();
@@ -8296,12 +9886,14 @@ do
 		Title = "visualiser color";
 		Transparency = 0;
 	});
-	charactersection:AddDropdown("desyncvisualisermaterial", {
+	
+    desync_visualizer:AddDropdown("desyncvisualisermaterial", {
         Text = "visualiser material";
         Default = "ForceField";
         Values = {"ForceField", "Neon"};
     });
-	localplayer.CharacterAdded:Connect(function(char)
+	
+    localplayer.CharacterAdded:Connect(function(char)
 		if (Toggles.desyncvisualiser and Toggles.desyncvisualiser.Value) then
 			task.wait(0.5);
 			bind_tool_connections();
@@ -8542,7 +10134,7 @@ local function init_esp()
 					end;
 				end;
 			end;
-			if player_connections[Player] and next(player_connections[Player]) then
+			if player_connections[Player] and nx(player_connections[Player]) then
                 for i, v in pairs(player_connections[Player]) do
                     v:Disconnect();
                 end;
@@ -8609,11 +10201,14 @@ local function init_esp()
     end;
 
     nfov_circle = fov_circles
-		local lastrainbowtick = 0;
-		local lastespdrawtick = 0;
 
-		runservice.Heartbeat:Connect(LPH_JIT(function()
+    local lastrainbowtick = 0;
+    local lastespdrawtick = 0;
+
+    runservice.Heartbeat:Connect(LPH_NO_VIRTUALIZE(function()
+
         local now_tick = tick();
+
         if now_tick - lastrainbowtick >= 0.1 then
             lastrainbowtick = now_tick;
             nil_global_rainbow_color = Color3.fromHSV(now_tick % 5 / 5, 1, 1);
@@ -8621,8 +10216,8 @@ local function init_esp()
 
         local mouse_position = userinputservice:GetMouseLocation();
         local smooth_amount = math.max(1, Classes.FOVCircleSmoothing.Value);
-        if settings.stick and stick_target then
-            local sticky_character = stick_target.Character;
+        if settings.stick and current_target then
+            local sticky_character = current_target.Character;
             local stick_primarypart = sticky_character and sticky_character:FindFirstChild("HumanoidRootPart");
             if stick_primarypart then
                 local screen_position, on_screen = camera:WorldToViewportPoint(stick_primarypart.Position);
@@ -8741,6 +10336,7 @@ local function init_esp()
 
             local isragetarget = (ragetarget == player);
             local issatarget = (satarget == player);
+            
             if playerdrawing.Highlight then
                 if (isragetarget and Classes.ShowRageBotTarget.Value) or (issatarget and Classes.ShowTargetSA and Classes.ShowTargetSA.Value) then
                     playerdrawing.Highlight.Enabled = true;
@@ -8754,6 +10350,7 @@ local function init_esp()
             local campos = camera.CFrame.Position;
             local rootpos = rootpart.Position;
             local distfromchar = (campos - rootpos).Magnitude;
+            
             if distfromchar > maxdist then
                 playerdrawing.Offscreen.Visible = false;
                 playerdrawing.Name.Visible = false;
@@ -8769,6 +10366,7 @@ local function init_esp()
             end;
 
             local pos, onscreen = camera:WorldToViewportPoint(rootpos);
+            
             if not onscreen then
                 playerdrawing.Box.Visible = false;
                 playerdrawing.BoxOutline.Visible = false;
@@ -8810,7 +10408,6 @@ local function init_esp()
                 else
                     playerdrawing.Offscreen.Visible = false;
                 end;
-
             else
                 playerdrawing.Offscreen.Visible = false;
                 local size = (camera:WorldToViewportPoint(rootpos - vector3_new(0, 3, 0)).Y - camera:WorldToViewportPoint(rootpos + vector3_new(0, 2.6, 0)).Y) / 2;
@@ -8830,16 +10427,17 @@ local function init_esp()
                 boxoutline.ZIndex = 1;
                 health.ZIndex = 2;
                 healthoutline.ZIndex = 1;
+                
                 if tracerenabled and not whitelisted(player) then
                     local autoselect = Classes.TracerAutoSelect.Value;
                     local autodist = Classes.TracerAutoSelectDistance.Value;
                     local shoulddraw = false;
-                    if autoselect then
+                    if settings.stick then
+                        shoulddraw = (player == current_target);
+                    elseif autoselect then
                         local drawtarget = nil;
                         if settings.ragebot and (serenium_ragebot_target or locked_target) then
                             drawtarget = serenium_ragebot_target or locked_target;
-                        elseif settings.stick and stick_target then
-                            drawtarget = stick_target;
                         elseif distfromchar <= autodist then
                             drawtarget = closest_to_mousecursor;
                         end;
@@ -8903,7 +10501,7 @@ local function initialize_visuals()
 
     local character_vis_data = {
         original_properties = {},
-        OutlineGlow = nil,
+        outline_glow = nil,
         RainbowConnection = nil;
     };
 
@@ -8914,6 +10512,7 @@ local function initialize_visuals()
             end);
             weaponchams_data.WeaponHighlight = nil;
         end;
+        
         for part, props in pairs(weaponchams_data.original_properties) do
             if part and part.Parent then
                 pcall(function()
@@ -8932,6 +10531,7 @@ local function initialize_visuals()
         weaponchams_data.AppliedParts = {};
         weaponchams_data.CurrentWeapon = nil;
     end;
+    
     local last_weapon_chams = {
         Material = nil;
         Color = nil;
@@ -8941,14 +10541,14 @@ local function initialize_visuals()
 
     apply_weapon_chams = function(tool)
         if not tool or not tool:IsA("Tool") then return; end;
-        if not Classes.WeaponChamsEnabled or not Classes.WeaponChamsEnabled.Value then
+        if not Classes.weapon_chams_enabled or not Classes.weapon_chams_enabled.Value then
             clean_weapon_chams();
             return;
         end;
-        local chams_material = Classes.WeaponChamsMaterial and Classes.WeaponChamsMaterial.Value or "Plastic";
-        local chams_color = Classes.WeaponChamsColor and Classes.WeaponChamsColor.Value or Color3.new(1, 0, 0);
-        local highlight_enabled = Classes.WeaponChamsHighlight and Classes.WeaponChamsHighlight.Value or false;
-        local highlight_color = Classes.WeaponChamsHighlightColor and Classes.WeaponChamsHighlightColor.Value or Color3.new(1, 0, 0);
+        local chams_material = Classes.weapon_chams_material and Classes.weapon_chams_material.Value or "Plastic";
+        local chams_color = Classes.weapon_chams_color and Classes.weapon_chams_color.Value or Color3.new(1, 0, 0);
+        local highlight_enabled = Classes.weapon_chams_highlight and Classes.weapon_chams_highlight.Value or false;
+        local highlight_color = Classes.weaponchams_highlight_color and Classes.weaponchams_highlight_color.Value or Color3.new(1, 0, 0);
         local settings_changed = (last_weapon_chams.Material ~= chams_material) or (last_weapon_chams.Color ~= chams_color) or (last_weapon_chams.Highlight ~= highlight_enabled) or (last_weapon_chams.HighlightColor ~= highlight_color);
 
         if weaponchams_data.CurrentWeapon ~= tool or settings_changed then
@@ -8987,7 +10587,7 @@ local function initialize_visuals()
             end;
         end;
 
-        if Classes.WeaponChamsHighlight and Classes.WeaponChamsHighlight.Value then
+        if Classes.weapon_chams_highlight and Classes.weapon_chams_highlight.Value then
             if not weaponchams_data.WeaponHighlight or not weaponchams_data.WeaponHighlight.Parent then
                 weaponchams_data.WeaponHighlight = Instance.new("Highlight");
                 weaponchams_data.WeaponHighlight.Name = "highlight";
@@ -8996,7 +10596,7 @@ local function initialize_visuals()
                 weaponchams_data.WeaponHighlight.Adornee = tool;
                 weaponchams_data.WeaponHighlight.Parent = tool;
             end;
-            local highlight_color = Classes.WeaponChamsHighlightColor and Classes.WeaponChamsHighlightColor.Value or Color3.new(1, 0, 0);
+            local highlight_color = Classes.weaponchams_highlight_color and Classes.weaponchams_highlight_color.Value or Color3.new(1, 0, 0);
             weaponchams_data.WeaponHighlight.FillColor = highlight_color;
             weaponchams_data.WeaponHighlight.OutlineColor = highlight_color;
         else
@@ -9010,11 +10610,11 @@ local function initialize_visuals()
     end;
 
     local function clean_character_vis()
-        if character_vis_data.OutlineGlow then
+        if character_vis_data.outline_glow then
             pcall(function() 
-                character_vis_data.OutlineGlow:Destroy();
+                character_vis_data.outline_glow:Destroy();
             end);
-            character_vis_data.OutlineGlow = nil;
+            character_vis_data.outline_glow = nil;
         end;
 
         if character_vis_data.RainbowConnection then
@@ -9039,7 +10639,7 @@ local function initialize_visuals()
 
 	on_tool_equipped = function(child)
 		if not child:IsA("Tool") then return; end;
-		if not (Classes.WeaponChamsEnabled and Classes.WeaponChamsEnabled.Value) then return; end;
+		if not (Classes.weapon_chams_enabled and Classes.weapon_chams_enabled.Value) then return; end;
 		last_chams_tool = child;
 		weapon_chams_active = true;
 		apply_weapon_chams(child);
@@ -9055,7 +10655,7 @@ local function initialize_visuals()
 
 	local chams_char_conn = {};
 	local function bind_weapon_chams(char)
-		for _, c in chams_char_conn do c:Disconnect(); end;
+		for _, c in pairs(chams_char_conn) do c:Disconnect(); end;
 		table.clear(chams_char_conn);
 		if not char then return; end;
 		table.insert(chams_char_conn, char.ChildAdded:Connect(on_tool_equipped));
@@ -9208,22 +10808,21 @@ function KalmanFilter:update(measured_pos, measured_vel, dt)
 	return self.x, self.v;
 end;
 
-function PredictTargetPosition(origin, destination, weapon_speed, ping, gravity)
-	local filter = destination.KalmanFilter or KalmanFilter.new();
-	destination.KalmanFilter = filter;
+function PredictTargetPosition(origin, destination, weapon_speed, ping_ms, gravity)
 	local measured_pos = destination.Position;
 	local measured_vel = destination.Velocity or Vector3.zero;
-	local dt = runservice.Heartbeat:Wait();
-	local estimated_pos, estimated_vel = filter:update(measured_pos, measured_vel, dt);
-	local network_delay = ping / 1000;
-	local future_pos = estimated_pos + estimated_vel * network_delay;
-	local travel_time = (future_pos - origin).magnitude / weapon_speed;
-	if measured_vel.Y <= -15 or measured_vel.Y >= 15 then
-        measured_vel = vector3_new(measured_vel.X, measured_vel.Y * travel_time, measured_vel.Z);
-    end;
-	future_pos = future_pos + estimated_vel * travel_time;
-	future_pos = future_pos + vector3_new(0, -0.5 * gravity * travel_time ^ 2, 0);
-	return future_pos;
+	local network_delay = (ping_ms or 0) / 1000;
+	local estimated_pos = measured_pos + (measured_vel * network_delay);
+	local travel_time = (estimated_pos - origin).Magnitude / weapon_speed;
+	local final_pos = estimated_pos + (measured_vel * travel_time);
+	if gravity then
+		local g_val = typeof(gravity) == "Vector3" and gravity.Y or gravity;
+		if g_val ~= 0 then
+			final_pos = final_pos + Vector3.new(0, -0.5 * g_val * travel_time^2, 0);
+		end;
+	end;
+	
+	return final_pos;
 end;
 
 local hit_detection = {
@@ -9236,6 +10835,9 @@ function hit_detection:ConnectToCaster(caster)
     if not caster or self.ConnectedCasters[caster] then return; end;
     self.ConnectedCasters[caster] = true;
     caster.RayHit:Connect(function(cast, result)
+        if hit_detection.UpdateTracer then
+            pcall(hit_detection.UpdateTracer, cast, result.Position);
+        end;
         if not Classes.HitDetectionEnabled.Value then return; end;
         if self.ProcessedCasts[cast] then return; end;
         if not cast.UserData then return; end;
@@ -9297,7 +10899,7 @@ function hit_detection:ConnectToCaster(caster)
 end;
 
 local Camera = workspace.CurrentCamera;
-framework:BindToRenderStep(LPH_JIT(function()
+framework:BindToRenderStep(LPH_NO_VIRTUALIZE(function()
     local char = localplayer.Character;
     if not char then return; end;
     local tool = char:FindFirstChildOfClass("Tool");
@@ -9324,230 +10926,429 @@ hit_detection.Active = true;
 
 do
 	setthreadidentity(2);
+	local LocalPlayer = game:GetService("Players").LocalPlayer;
 	local ActiveCast = require(game:GetService("ReplicatedStorage").Shared.Vendor.FastCast.ActiveCast);
 	setthreadidentity(7);
 
 	local cache = {};
 	local chance_cache = {};
 	local silentaim_target = nil;
+	local tracer_data = {};
 	local old_simulate_cast = getupvalue(ActiveCast.new, 6);
 	local old_calculate_fire = modules.Name["RangedWeaponHandler"].calculateFireDirection;
 
-	function new_simulate(...)
-		local args = {... };
-		local caster = args[1];
-		local terminated = false;
-		newcclosure(function()
-			local weapon, metadata = framework:get_ranged();
-			local Chance = framework:Chance(Classes.HitChance.Value);
-			if not Chance then
-                table.insert(chance_cache, caster);
-            end;
+	local function create_tracer(caster, origin)
+		if not (Toggles.BulletTracers and Toggles.BulletTracers.Value) then return; end;
+		local color = Options.BulletTracerColor and Options.BulletTracerColor.Value or Color3.fromRGB(170, 85, 255);
+		local holder = Instance.new("Part");
+		holder.Anchored = true;
+		holder.CanCollide = false;
+		holder.CanTouch = false;
+		holder.CanQuery = false;
+		holder.Transparency = 1;
+		holder.Size = Vector3.new(0.05, 0.05, 0.05);
+		holder.CFrame = CFrame.new(origin);
+		holder.Name = "\0tracer";
+		holder.Parent = workspace;
 
-			if Toggles.avoidprojectiles.Value and caster and caster.UserData and caster.UserData.tool ~= weapon then
-				local root_part = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart");
-				if not root_part then return; end;
-				local pos = caster:GetPosition();
-				if not pos then return; end;
-				local projectile_speed = metadata._itemConfig.speed;
-				if not projectile_speed or projectile_speed <= 0 then return; end;
-				local distance = (root_part.Position - pos).Magnitude;
-				local stats = game:GetService("Stats");
-				local ping_value = stats.Network.ServerStatsItem["Data Ping"]:GetValue();
-				local ping_seconds = ping_value / 1000;
-				local caster_velocity = Vector3.zero;
-				if caster.GetVelocity then
-                    caster_velocity = caster:GetVelocity();
-                end;
-				local predicted_pos = pos + (caster_velocity * ping_seconds);
-				local predicted_distance = (root_part.Position - predicted_pos).Magnitude;
-				local predicted_travel_time = predicted_distance / projectile_speed;
-				local saftey_bugger = 0.05;
-				local adjusted_time = predicted_travel_time - ping_seconds - saftey_bugger;
-				if adjusted_time <= 0.15 then
-					setrunning("AvoidProjectiles", true)
-					task.delay(0.5, function()
-                        setrunning("AvoidProjectiles", false);
-                    end);
-                end;
-            end;
+		local a0 = Instance.new("Attachment");
+		a0.Position = Vector3.zero;
+		a0.Parent = holder;
 
-			if not table.find(chance_cache, caster) and Chance and caster and caster.UserData and caster.StateInfo and caster.UserData.tool == weapon and (Classes.SilentAim.Value or settings.ragebot) and weapon and metadata then
-				local Player = framework:closest_characters_origin(caster:GetPosition(), 19);
-				if Classes.ClosestType.Value == "Only Redirect To Target" then
-					Player = nil;
-					local Characters = framework:closest_characters_to_origin(caster:GetPosition(), 19)
-					if table.find(Characters, silentaim_target) then
-                        Player = silentaim_target;
-                    end;
+		local a1 = Instance.new("Attachment");
+		a1.Position = Vector3.zero;
+		a1.Parent = holder;
+
+		local beam = Instance.new("Beam");
+		beam.Attachment0 = a0;
+		beam.Attachment1 = a1;
+		beam.Width0 = 0.15;
+		beam.Width1 = 0.15;
+		beam.FaceCamera = true;
+		beam.LightEmission = 1;
+		beam.LightInfluence = 0;
+		beam.Brightness = 2;
+		beam.Color = ColorSequence.new(color);
+		beam.Transparency = NumberSequence.new(0);
+		beam.Parent = holder;
+
+		tracer_data[caster] = {
+			holder = holder;
+			a0 = a0;
+			a1 = a1;
+			beam = beam;
+			origin = origin;
+			target_pos = origin;
+			current_pos = origin;
+			alpha = 0;
+			losing = false;
+			dead_time = nil;
+		};
+	end;
+
+	local function mark_tracer_losing(caster)
+		local data = tracer_data[caster];
+		if data and not data.dead_time then
+			data.dead_time = tick();
+		end;
+	end;
+
+	runservice.RenderStepped:Connect(function(dt)
+		for caster, data in pairs(tracer_data) do
+			if not data.holder or not data.holder.Parent then
+				tracer_data[caster] = nil;
+				continue;
+			end;
+
+			if not data.dead_time then
+				local caster_dead = false;
+				if typeof(caster) ~= "table" then
+					caster_dead = true;
+				elseif not caster.StateInfo then
+					caster_dead = true;
+				elseif caster._silent_handled then
+					caster_dead = true;
+				else
+					local trajs = caster.StateInfo and caster.StateInfo.Trajectories;
+					if not trajs or typeof(trajs) ~= "table" or #trajs == 0 then
+						caster_dead = true;
+					end;
 				end;
+				if caster_dead then
+					data.dead_time = tick();
+				end;
+			end;
 
-				local mouse_closest = framework:closest_to_mouse(Classes.FOVSize.Value);
+			if data.dead_time and not data.losing then
+				local lifetime = Options.TracerLifetime and Options.TracerLifetime.Value or 1;
+				if tick() - data.dead_time >= lifetime then
+					data.losing = true;
+				end;
+			end;
 
-				if Player then
-					local Head = Player:FindFirstChild("Head");
-					local Character = localplayer.Character;
-					local HumanoidRootPart = Character and Character:FindFirstChild("HumanoidRootPart");
-					if settings.ragebot and Head and HumanoidRootPart then
-						if Toggles.ShowLine.Value then
-							local part = Instance.new("Part");
-							part.Anchored = true;
-							part.CanCollide = false;
-							part.Material = Enum.Material.Neon;
-							part.Color = Options.LineColor.Value;
-							part.Size = vector3_new(0.1, 0.1, (Head.Position - HumanoidRootPart.Position).Magnitude);
-							part.CFrame = cframe_new(HumanoidRootPart.Position, Head.Position) * cframe_new(0, 0, -part.Size.Z / 2);
-							part.Transparency = 0;
-							part.Parent = workspace;
-							task_spawn(LPH_JIT(function()
-								local fade_time = 2;
-								local steps = 30
-								for i = 1, steps do
-									part.Transparency = i / steps;
-									task.wait(fade_time / steps);
-								end;
-								part:Destroy();
-							end));
+			local color = Options.BulletTracerColor and Options.BulletTracerColor.Value or Color3.fromRGB(170, 85, 255);
+			data.beam.Color = ColorSequence.new(color);
+
+			local lerp_speed = Options.TracerLerp and Options.TracerLerp.Value or 3;
+			local loss_speed = lerp_speed;
+
+			local t = math.min(dt * lerp_speed, 1);
+			data.current_pos = data.current_pos:Lerp(data.target_pos, t);
+
+			if data.losing then
+				local loss_t = math.min(dt * loss_speed, 1);
+				data.origin = data.origin:Lerp(data.current_pos, loss_t);
+				if (data.origin - data.current_pos).Magnitude < 0.1 then
+					data.holder:Destroy();
+					tracer_data[caster] = nil;
+					continue;
+				end;
+			end;
+
+			data.holder.CFrame = CFrame.new(data.origin);
+			data.a0.Position = Vector3.zero;
+			data.a1.Position = data.holder.CFrame:PointToObjectSpace(data.current_pos);
+		end;
+	end);
+
+	local function update_tracer(caster, current_pos)
+		local data = tracer_data[caster];
+		if not data then return; end;
+		data.target_pos = current_pos;
+	end;
+	hit_detection.UpdateTracer = update_tracer;
+
+	local function destroy_tracer(caster)
+		local data = tracer_data[caster];
+		if not data then return; end;
+		if not data.dead_time then
+			data.dead_time = tick();
+		end;
+	end;
+
+	local function get_pos(caster)
+		if not caster then return Vector3.zero end;
+		if caster.GetPosition then
+			local s, r = pcall(caster.GetPosition, caster);
+			if s then return r end;
+		end;
+		
+		local state = caster.StateInfo;
+		local trajectories = state and state.Trajectories;
+		if trajectories and #trajectories > 0 then
+			local v2 = trajectories[#trajectories];
+			local v3 = state.TotalRuntime - v2.StartTime;
+			local Acceleration = v2.Acceleration;
+			return v2.Origin + v2.InitialVelocity * v3 + Vector3.new(Acceleration.X * v3^2 / 2, Acceleration.Y * v3^2 / 2, Acceleration.Z * v3^2 / 2);
+		end;
+		
+		if caster.RayInfo and caster.RayInfo.CosmeticBulletObject then
+			local obj = caster.RayInfo.CosmeticBulletObject;
+			if obj:IsA("BasePart") then return obj.Position; end;
+		end;
+		
+		return Vector3.zero;
+	end;
+
+	function new_simulate(...)
+		local args = {...};
+		local caster = args[1];
+		
+        if not (caster and typeof(caster) == "table" and caster.StateInfo) then
+            return;
+        end;
+
+        if caster._silent_handled then
+            return;
+        end;
+
+		local success, err = pcall(function()
+
+			if not caster._tracer_created then
+				caster._tracer_created = true;
+				local is_ours = caster.UserData and caster.UserData.tool and caster.UserData.player == LocalPlayer;
+				if is_ours then
+					local origin = get_pos(caster);
+					if origin.Magnitude > 0 then
+						create_tracer(caster, origin);
+					end;
+				end;
+			else
+				update_tracer(caster, get_pos(caster));
+			end;
+
+			if not caster.UserData.pierce_hooked then
+				caster.UserData.pierce_hooked = true;
+				local old_pierce = caster.RayInfo.CanPierceCallback;
+				caster.RayInfo.CanPierceCallback = function(cast, result, ...)
+					local hit = result.Instance;
+					if hit then
+						local my_char = LocalPlayer.Character;
+						if my_char and hit:IsDescendantOf(my_char) then
+							return true;
 						end;
-						if caster.Caster and caster.Caster.RayHit then
-							local fake_result = {
-								Instance = Head,
-								Position = Head.Position,
-								Normal = Vector3.yAxis,
-								Material = Enum.Material.SmoothPlastic,
-								Distance = 1,
-							}
-							local fake_velocity = (Head.Position - caster:GetPosition()).Unit * 3000
-							caster.Caster.RayHit:Fire(
-								caster,
-								fake_result,
-								fake_velocity,
-								caster.RayInfo and caster.RayInfo.CosmeticBulletObject
-							);
+						if hit.Name == "hitbox" then
+							return not Config.HitboxExpand;
 						end;
-						caster:Terminate();
-						terminated = true;
+					end;
+					return old_pierce and old_pierce(cast, result, ...) or false;
+				end;
+			end;
+
+			if Classes.Wallbang.Value and caster.RayInfo then
+				local params = caster.RayInfo.Parameters;
+				if params then
+					params.FilterType = Enum.RaycastFilterType.Exclude;
+					params.FilterDescendantsInstances = {LocalPlayer.Character, Map, workspace.Terrain, workspace:FindFirstChild("EffectsJunk")};
+				end;
+			end;
+
+            if not Classes.SilentAim.Value then return; end;
+
+			local weapon, metadata = framework:get_ranged();
+			if not (weapon and metadata and caster.UserData.tool == weapon) then return end;
+
+			local Chance = framework:Chance(Classes.hit_chance.Value);
+			if not Chance and not table.find(chance_cache, caster) then
+				table.insert(chance_cache, caster);
+			end;
+
+			if not table.find(chance_cache, caster) and Chance then
+				local target_player = nil;
+				if settings.stick and stick_target and stick_target.Character and stick_target.Character:FindFirstChildOfClass("Humanoid") and stick_target.Character:FindFirstChildOfClass("Humanoid").Health > 0 then
+					target_player = stick_target.Character;
+				elseif silentaim_target and silentaim_target.Parent and silentaim_target:FindFirstChildOfClass("Humanoid") then
+					target_player = silentaim_target;
+				else
+					local check_type = Classes.closest_type and Classes.closest_type.Value or "Closest To Mouse";
+					if check_type == "Only Redirect To Target" then
 						return;
+					elseif check_type == "Closest To Mouse" then
+						local plr = framework:closest_to_mouse(Options.FOVSize.Value);
+						target_player = plr and plr.Character;
+					else
+						target_player = framework:closest_characters_origin(get_pos(caster), 19);
 					end;
 				end;
 
-				if Classes.SilentAim.Value then
-					if Classes.ClosestType.Value == "Closest To Mouse" then
-						if mouse_closest then
-							local player_character = mouse_closest.Character;
-							if player_character then
-								local HitPart = player_character:FindFirstChild( Classes.SilentHitPart.Value == "Random" and R6BodyParts[math_random(1, #R6BodyParts)] or Classes.SilentHitPart.Value);
-								if HitPart and (HitPart.Position - caster:GetPosition()).Magnitude <= Classes.SilentAimRange.Value then
-									local target_position = HitPart.Position;
-									local origin = caster:GetPosition();
-									local direction = (target_position - origin);
-									local distance = direction.Magnitude;
-									local speed = 3000;
-									local Vel = direction.Unit * speed;
-									caster:SetVelocity(Vel);
-									caster.RayInfo.Direction = Vel.Unit;
-								end;
+				if target_player then
+					local hit_part_name = Classes.silent_hitpart.Value == "Random" and R6BodyParts[math_random(1, #R6BodyParts)] or Classes.silent_hitpart.Value;
+					local hit_part = target_player:FindFirstChild(hit_part_name);
+					local humanoid = target_player:FindFirstChildOfClass("Humanoid");
+					
+					if hit_part and humanoid then
+						local pos = get_pos(caster);
+						local projectile_speed = metadata._itemConfig and metadata._itemConfig.speed or 200;
+						local projectile_gravity = metadata._itemConfig and (metadata._itemConfig.gravity or metadata._itemConfig.Acceleration) or vector3_new(0, 0, 0);
+
+						local aim_position = PredictTargetPosition(pos, {
+							Position = hit_part.Position,
+							Velocity = (Classes.Resolver.Value and humanoid.MoveDirection or hit_part.Velocity),
+						}, projectile_speed, localplayer:GetNetworkPing() * 1000, projectile_gravity);
+
+						if aim_position and (aim_position - pos).Magnitude <= Classes.silentaim_velocity.Value then
+                            local distance = (aim_position - pos).Magnitude;
+                            local t_flight = math.max(distance / projectile_speed, 0.001);
+                            local G = projectile_gravity;
+                            local new_vel = (aim_position - pos) / t_flight - 0.5 * G * t_flight;
+                            local impact_velocity = new_vel;
+                            if caster.StateInfo and caster.StateInfo.Trajectories then
+                                local trajs = caster.StateInfo.Trajectories;
+                                local latest = trajs[#trajs];
+                                if latest then
+                                    local elapsed = caster.StateInfo.TotalRuntime - latest.StartTime;
+                                    impact_velocity = latest.InitialVelocity + latest.Acceleration * elapsed;
+                                end;
+                            end;
+
+							if caster.SetVelocity then
+								caster:SetVelocity(new_vel);
 							end;
+
+                            local actual_hit_part = (Config.HitboxExpand and target_player:FindFirstChild("hitbox")) or hit_part;
+                            if actual_hit_part and actual_hit_part.Parent then
+                                local hit_result = {
+                                    Distance = distance;
+                                    Instance = actual_hit_part;
+                                    Material = actual_hit_part.Material;
+                                    Position = actual_hit_part.Position;
+                                    Normal = (pos - actual_hit_part.Position).Unit;
+                                };
+
+                                metadata._mainCaster.RayHit:Fire(caster, hit_result, impact_velocity, caster.RayInfo.CosmeticBulletObject);
+
+                                caster._silent_handled = true;
+                                destroy_tracer(caster);
+                                task.defer(function()
+                                    if caster and typeof(caster) == "table" and caster.Terminate then
+                                        pcall(caster.Terminate, caster);
+                                    end;
+                                end);
+                                return true;
+                            end;
 						end;
-					elseif Classes.ClosestType.Value == "Closest To Arrow" or Classes.ClosestType.Value == "Only Redirect To Target" then
-						if Player then
-							local HitPart = Player:FindFirstChild( Classes.SilentHitPart.Value == "Random" and R6BodyParts[math_random(1, #R6BodyParts)] or Classes.SilentHitPart.Value )
-							if HitPart and (HitPart.Position - caster:GetPosition()).Magnitude <= Classes.SilentAimRange.Value then
-								local target_position = HitPart.Position;
-								local Vel = (target_position - caster:GetPosition()).Unit * 3000;
-								caster:SetVelocity(Vel);
-							end;
-						end;
+
 					end;
 				end;
 			end;
 		end);
 
-		if terminated then 
-            return; 
-        end;
-
-		if caster and caster.UserData and caster.StateInfo then
-            return old_simulate_cast(...);
-        end;
+        if success and err == true then destroy_tracer(caster); return end;
+        if caster._silent_handled then destroy_tracer(caster); return end;
+        if not (caster and typeof(caster) == "table" and caster.StateInfo) then destroy_tracer(caster); return end;
+        local trajs = caster.StateInfo.Trajectories;
+        if not trajs or typeof(trajs) ~= "table" then destroy_tracer(caster); return end;
+		return old_simulate_cast(...);
 	end;
 
 	function new_calculate_fire(...)
 		local args = {...};
-		local target = framework:closest_to_mouse(Options.FOVSize.Value)
-		if settings.stick and stick_target then 
-            target = stick_target;
-        end;
-		local ranged, metadata = framework:get_ranged();
-		if Classes.SilentAim.Value and target and ranged and metadata and framework:Chance(Classes.HitChance.Value) and not framework:in_menu(target) then
-			local hit_part = target.Character:FindFirstChild(Classes.SilentHitPart.Value);
-			local humanoid = target.Character:FindFirstChildOfClass("Humanoid");
+		local target = framework:closest_to_mouse(Options.FOVSize.Value);
+		if settings.stick then
+			if stick_target and stick_target.Character and stick_target.Character:FindFirstChildOfClass("Humanoid") and stick_target.Character:FindFirstChildOfClass("Humanoid").Health > 0 then
+				target = stick_target;
+			elseif target then
+				stick_target = target;
+			end;
+		end;
+		
+		if not target and Classes.Wallbang.Value then
+			target = framework:get_closest_2(Options.FOVSize.Value);
+		end;
+
+		local weapon, metadata = framework:get_ranged();
+
+		if Classes.Wallbang.Value and metadata and metadata._mainCasterBehavior then
+			local old_params = metadata._mainCasterBehavior.RaycastParams;
+			local wallbang_params = RaycastParams.new();
+			wallbang_params.IgnoreWater = old_params.IgnoreWater;
+			wallbang_params.FilterType = Enum.RaycastFilterType.Exclude;
+			wallbang_params.FilterDescendantsInstances = {LocalPlayer.Character, Map, workspace.Terrain, workspace:FindFirstChild("EffectsJunk")};
+			
+			metadata._mainCasterBehavior.RaycastParams = wallbang_params;
+			task.defer(function()
+				metadata._mainCasterBehavior.RaycastParams = old_params;
+			end);
+		end;
+
+		if Classes.SilentAim.Value and target and weapon and metadata and framework:Chance(Classes.hit_chance.Value) and not framework:in_menu(target) then
+			local hit_part = target.Character and target.Character:FindFirstChild(Classes.silent_hitpart.Value);
+			local humanoid = target.Character and target.Character:FindFirstChildOfClass("Humanoid");
+
 			if hit_part and humanoid then
-				local cheated_origin = metadata:getCheatedBackOriginIfInObject( metadata._mainCasterBehavior.RaycastParams);
+				local cheated_origin = metadata:getCheatedBackOriginIfInObject(metadata._mainCasterBehavior.RaycastParams) or (Classes.Wallbang.Value and args[1].Position);
+
 				if cheated_origin then
 					silentaim_target = target.Character;
 					local projectile_speed = metadata._itemConfig.speed;
-					local projectile_gravity = metadata._itemConfig.gravity or vector3_new(0, 0, 0);
+					local projectile_gravity = metadata._itemConfig.gravity or Vector3.new(0, 0, 0);
+					
+					local ping_ms = LocalPlayer:GetNetworkPing() * 1000;
+					
 					local aim_position = PredictTargetPosition(cheated_origin, {
-                        Position = hit_part.Position,
-                        Velocity = (Classes.Resolver.Value and humanoid.MoveDirection or hit_part.Velocity),
-                    },
-                    projectile_speed, localplayer:GetNetworkPing() * 1000, projectile_gravity);
-					args[1] = CFrame.lookAt(vector3_new(), (aim_position - cheated_origin).Unit);
-					local old_params = metadata._mainCasterBehavior.RaycastParams;
-					local new_params = RaycastParams.new();
-					new_params.FilterType = Enum.RaycastFilterType.Blacklist;
-					new_params.IgnoreWater = old_params.IgnoreWater;
-					local ignore_list = {};
-					if old_params.FilterDescendantsInstances then
-                        for _, v in ipairs(old_params.FilterDescendantsInstances) do
-                            table.insert(ignore_list, v);
-                        end;
-                    end;
-					for _, plr in pairs(game.Players:GetPlayers()) do
-						local player_character = plr.Character;
-						if player_character and player_character ~= target.Character then table.insert(ignore_list, player_character);
-                        end;
+						Position = hit_part.Position,
+						Velocity = (Classes.Resolver.Value and humanoid.MoveDirection or hit_part.Velocity),
+					}, projectile_speed, ping_ms, projectile_gravity);
+
+					args[1] = CFrame.lookAt(cheated_origin, aim_position);
+
+					if not Classes.Wallbang.Value then
+						local old_params = metadata._mainCasterBehavior.RaycastParams;
+						local new_params = RaycastParams.new();
+						new_params.IgnoreWater = old_params.IgnoreWater;
+						new_params.FilterType = Enum.RaycastFilterType.Exclude;
+						local ignore_list = {workspace.Terrain, LocalPlayer.Character};
+						if old_params.FilterDescendantsInstances then
+							for _, v in ipairs(old_params.FilterDescendantsInstances) do
+                                if not table.find(ignore_list, v) then
+								    table.insert(ignore_list, v);
+                                end;
+							end;
+						end;
+						for _, plr in pairs(game.Players:GetPlayers()) do
+							if plr.Character and plr.Character ~= target.Character and not table.find(ignore_list, plr.Character) then 
+								table.insert(ignore_list, plr.Character);
+							end;
+						end;
+						new_params.FilterDescendantsInstances = ignore_list;
+
+						metadata._mainCasterBehavior.RaycastParams = new_params;
+						task.defer(function()
+							metadata._mainCasterBehavior.RaycastParams = old_params;
+						end);
 					end;
-					if not table.find(ignore_list, workspace.Terrain) then
-                        table.insert(ignore_list, workspace.Terrain);
-                    end;
-					new_params.FilterDescendantsInstances = ignore_list;
-					metadata._mainCasterBehavior.RaycastParams = new_params
-					task.defer(function()
-                        metadata._mainCasterBehavior.RaycastParams = old_params;
-                    end);
-                end;
-            end;
+				end;
+			end;
 		end;
 		return old_calculate_fire(unpack(args));
-	end;
+	end; 
 
 	setupvalue(ActiveCast.new, 6, newcclosure(function(...) 
-        return new_simulate(...);
-    end));
+		return new_simulate(...);
+	end));
 
 	modules.Name["RangedWeaponHandler"].calculateFireDirection = new_calculate_fire;
 
-    local visualizer_folder = Instance.new("Folder", game.Workspace.Terrain);
-    visualizer_folder.Name = "FastCastVisualizationObjects"
-    visualizer_folder.ChildAdded:Connect(function(child)
-        task.wait();
-        local Debris = game:GetService("Debris");
-        Debris:AddItem(child, 0.7);
-    end);
+	local visualizer_folder = workspace.Terrain:FindFirstChild("FastCastVisualizationObjects") or Instance.new("Folder", workspace.Terrain);
+	visualizer_folder.Name = "FastCastVisualizationObjects";
+	visualizer_folder.ChildAdded:Connect(function(child)
+		task.wait();
+		game:GetService("Debris"):AddItem(child, 0.7);
+	end);
 
 	local activeragebot = true;
 	task_spawn(LPH_JIT(function()
-		while task.wait() do
-			if not activeragebot then
-				break;
-			end;
+		while true do
+			local s, r = pcall(function()
+				while task.wait() do
+					if not activeragebot then
+						return;
+					end;
 
-			if not settings.ragebot then
-				task.wait(0.2);
-				continue;
-			end;
+					if not settings.ragebot then
+						task.wait(0.2);
+						continue;
+					end;
 
 			local Character = localplayer.Character;
 			if not Character then
@@ -9566,16 +11367,18 @@ do
 
 			local player = locked_target or framework:get_closest_2(Classes.RagebotDist.Value);
 
-			if locked_target and not next(locked_target) then
+			if locked_target and not nx(locked_target) then
 				locked_target = nil;
 				continue;
 			end;
 
-			if not player or not next(player) then
+			if not player or not nx(player) then
 				continue;
 			end;
 
-            local target_player = players:FindFirstChild(next(player))
+            local target_player_name = nx(player);
+            local target_player = target_player_name and players:FindFirstChild(target_player_name);
+
             if target_player and (should_skip_by_whitelist(target_player, "ragebot")) then
                 locked_target = nil;
                 continue;
@@ -9601,7 +11404,7 @@ do
 				continue;
 			end;
 
-			local target_player = players:FindFirstChild(next(player));
+			local target_player = players:FindFirstChild(nx(player));
 			if not target_player or not target_player.Character then
 				continue;
 			end;
@@ -9627,16 +11430,33 @@ do
 			end;
 
 			metadata.canShootBulletssss = false;
-			locked_target = player
+			locked_target = player;
 
-			metadata._mainCasterBehavior.RaycastParams.FilterDescendantsInstances = {
-				metadata._mainCasterBehavior.RaycastParams.FilterDescendantsInstances;
-				PlayerCharacters;
-				Map;
-				Workspace.Terrain;
-			};
+			local rp_original = metadata._mainCasterBehavior.RaycastParams;
+			local rp_clone = RaycastParams.new();
+			
+			rp_clone.FilterType = Enum.RaycastFilterType.Exclude;
+			rp_clone.IgnoreWater = true;
+			rp_clone.RespectCanCollide = false;
+			
+			local new_filter = {Character, Map, workspace.Terrain, workspace:FindFirstChild("EffectsJunk")};
+			if rp_original and rp_original.FilterDescendantsInstances then
+				for _, v in pairs(rp_original.FilterDescendantsInstances) do
+					if typeof(v) == "Instance" and not table.find(new_filter, v) then
+						table.insert(new_filter, v);
+					elseif typeof(v) == "table" then
+						for _, sub in pairs(v) do 
+							if typeof(sub) == "Instance" and not table.find(new_filter, sub) then
+								table.insert(new_filter, sub) 
+							end
+						end
+					end
+				end
+			end
+			
+			rp_clone.FilterDescendantsInstances = new_filter;
 
-			local origin = metadata:getCheatedBackOriginIfInObject(metadata._mainCasterBehavior.RaycastParams);
+			local origin = metadata:getCheatedBackOriginIfInObject(rp_clone) or Head.Position;
 			local projectile_speed = metadata._itemConfig.speed or 200;
 			local projectile_gravity = metadata._itemConfig.gravity or vector3_new(0, 0, 0);
 
@@ -9650,19 +11470,34 @@ do
 				projectile_gravity
 			);
 
-			local CF = cframe_new(vector3_new(), (final_posiiton - origin).Unit);
+            if not Classes.Wallbang.Value then
+                local ray_params = RaycastParams.new();
+                ray_params.FilterType = Enum.RaycastFilterType.Exclude;
+                ray_params.FilterDescendantsInstances = {Character, workspace:FindFirstChild("EffectsJunk")};
+                local ray_dir = final_posiiton - origin;
+                if ray_dir.Magnitude < 0.001 then ray_dir = vector3_new(0, 1, 0) end;
+                local ray_result = workspace:Raycast(origin, ray_dir, ray_params);
+                if ray_result and not ray_result.Instance:IsDescendantOf(target_player.Character) then
+                    locked_target = nil;
+                    metadata.canShootBulletssss = true;
+                    continue;
+                end;
+            end;
+
+			local dir_vec = (final_posiiton - origin);
+			if dir_vec.Magnitude < 0.001 then dir_vec = vector3_new(0, 1, 0) end
+			local CF = cframe_new(vector3_new(), dir_vec.Unit);
 			local dir = old_calculate_fire(CF, 0, 0, 5000);
-            local EffectsJunk = workspace:WaitForChild("EffectsJunk");
 
 			local fake_behaviour = {
-				RaycastParams = metadata._mainCasterBehavior.RaycastParams;
+				RaycastParams = rp_clone;
 				Acceleration = vector3_new();
 				MaxDistance = 5000;
 				HighFidelityBehavior = 1;
 				HighFidelitySegmentSize = 0.5;
-				CosmeticBulletContainer = EffectsJunk;
-				AutoIgnoreContainer = true;
-            };
+				CosmeticBulletContainer = workspace:FindFirstChild("EffectsJunk");
+				AutoIgnoreContainer = false;
+			};
 
 			local template = metadata._cosmeticProjectileTemplate;
 			if typeof(fake_behaviour) == "Instance" then
@@ -9684,6 +11519,8 @@ do
 				["chargePercentage"] = metadata._chargeProgressVO.Value;
 			};
 
+			create_tracer(cast, origin);
+
 			fire_server("RangedFire", ranged, origin, {
 				[tostring(metadata._cheatId)] = dir.Unit;
 			}, {
@@ -9697,8 +11534,10 @@ do
 			local time_to_hit = distance / projectile_speed;
 
 			if not (ranged.Name == "Longbow" or ranged.Name == "Crossbow" or ranged.Name == "Heavy Bow") then
+				local ragebot_velocity = dir.Unit * projectile_speed;
 				task.delay(time_to_hit + 0.08, function()
-					if cast.UserData and cast.StateInfo and cast.StateInfo.UpdateConnection then
+					if cast.UserData and cast.StateInfo then
+						if not Head or not Head.Parent then return; end;
 						if Toggles.ShowLine.Value then
 							local part = Instance.new("Part");
 							part.Anchored = true;
@@ -9725,8 +11564,9 @@ do
 							Material = Enum.Material.SmoothPlastic;
 							Position = Head.Position;
 							Normal = Vector3.yAxis;
-						}, nil, cast.RayInfo.CosmeticBulletObject);
-						cast:Terminate();
+						}, ragebot_velocity, cast.RayInfo.CosmeticBulletObject);
+						destroy_tracer(cast);
+						pcall(cast.Terminate, cast);
 					end;
 				end);
 			end;
@@ -9734,12 +11574,28 @@ do
 			if metadata._clientAmmoVO.Value ~= 0 then
 				local cooldown = metadata._itemConfig.cooldown;
 				if Toggles.safe_mode_ragebot.Value then
-					cooldown = cooldown + Options.safe_mode_slider1.Value
+					cooldown = cooldown + Options.safe_mode_slider1.Value;
 				end;
 				task.wait(cooldown);
 			end;
 			metadata.canShootBulletssss = true;
-		end
+				end
+			end)
+			if not activeragebot then break; end;
+			if not s then
+				warn("Ragebot loop crashed: ", r);
+				task.wait(1);
+				if locked_target then
+                    locked_target = nil;
+                end;
+				pcall(function() 
+					local r, m = framework:get_ranged();
+					if m then
+                        m.canShootBulletssss = true;
+                    end;
+				end);
+			end;
+		end;
 	end));
 end;
 
@@ -9872,7 +11728,7 @@ do
     local frame_timer = tick();
     local frame_counter = 0;
     local FPS = 60;
-    runservice.RenderStepped:Connect(LPH_JIT(function()
+    runservice.RenderStepped:Connect(LPH_NO_VIRTUALIZE(function()
         frame_counter = frame_counter + 1;
         if (tick() - frame_timer) >= 1 then
             FPS = frame_counter;
@@ -9956,43 +11812,46 @@ local function create_character_vis()
 
     local function apply_visuals()
         local char = localplayer.Character;
-        if not char or not next(original_data.Parts) then return; end;
-        local is_rainbow = Toggles.RainbowCharacter and Toggles.RainbowCharacter.Value;
-        local custom_color = Toggles.CustomMaterialColor and Toggles.CustomMaterialColor.Value;
-        local mat = Classes.CharacterMaterial and Classes.CharacterMaterial.Value;
-        local material_color = Classes.CharacterMaterialColor and Classes.CharacterMaterialColor.Value;
-        local transparency = Classes.CharacterTransparency and Classes.CharacterTransparency.Value or 0;
-        local remove_accessories = Toggles.RemoveAccessories and Toggles.RemoveAccessories.Value;
-        local outline_glow = Classes.OutlineGlow and Classes.OutlineGlow.Value;
-        local glow_color = Classes.OutlineGlowColor and Classes.OutlineGlowColor.Value;
+        if not char or not nx(original_data.Parts) then return; end;
+        local is_rainbow = Toggles.rainbow_character and Toggles.rainbow_character.Value;
+        local mat_enabled = Toggles.character_material_enabled and Toggles.character_material_enabled.Value;
+        local mat = Classes.character_material and Classes.character_material.Value;
+        local material_color = Classes.character_material_color and Classes.character_material_color.Value;
+        local transparency = Options.character_material_transparency and Options.character_material_transparency.Value or (Options.character_material_color and Options.character_material_color.Transparency or 0);
+        local remove_accessories = Toggles.remove_acessories and Toggles.remove_acessories.Value;
+        local outline_glow = Classes.outline_glow and Classes.outline_glow.Value;
+        local glow_color = Classes.outline_glow_color and Classes.outline_glow_color.Value;
         local is_forcefield = (mat == "ForceField");
         local is_neon = (mat == "Neon");
         for part, data in pairs(original_data.Parts) do
             if not part or not part.Parent then continue; end;
-            if mat == "ForceField" then
-                part.Material = Enum.Material.ForceField;
-            elseif mat == "Neon" then
-                part.Material = Enum.Material.Neon;
-            elseif mat == "Plastic" then
-                part.Material = Enum.Material.Plastic;
+            if mat_enabled then
+                if mat == "ForceField" then
+                    part.Material = Enum.Material.ForceField;
+                elseif mat == "Neon" then
+                    part.Material = Enum.Material.Neon;
+                elseif mat == "Plastic" then
+                    part.Material = Enum.Material.Plastic;
+                else
+                    part.Material = data.Material;
+                end;
+                if not is_rainbow then
+                    part.Color = material_color;
+                end;
             else
                 part.Material = data.Material;
-            end;
-            if not is_rainbow then
-                if custom_color or is_forcefield or is_neon then
-                    part.Color = material_color;
-                else
+                if not is_rainbow then
                     part.Color = data.Color;
                 end;
             end;
-            if transparency > 0 and data.Transparency < 0.95 then
+            if mat_enabled and transparency > 0 and data.Transparency < 0.95 then
                 part.Transparency = transparency;
             else
                 part.Transparency = data.Transparency;
             end;
             if part:IsA("MeshPart") then
                 local is_head = (part.Name == "Head")
-                if (is_rainbow or is_forcefield) and not is_head then
+                if mat_enabled and (is_rainbow or is_forcefield) and not is_head then
                     part.TextureID = "";
                 else
                     part.TextureID = data.TextureID or "";
@@ -10003,7 +11862,7 @@ local function create_character_vis()
         for mesh, data in pairs(original_data.Meshes) do
             if not mesh or not mesh.Parent then continue; end;
             local is_head = (mesh.Parent.Name == "Head");
-            if (is_rainbow or is_forcefield) and not is_head then
+            if mat_enabled and (is_rainbow or is_forcefield) and not is_head then
                 mesh.TextureId = "";
             else
                 mesh.TextureId = data.TextureId;
@@ -10012,12 +11871,12 @@ local function create_character_vis()
         for decal, data in pairs(original_data.Decals) do
             if not decal or not decal.Parent then continue; end;
             local is_face = decal.Name:lower():find("face") or (decal.Parent and decal.Parent.Name == "Head");
-            if (is_rainbow or is_forcefield) and not is_face then
+            if mat_enabled and (is_rainbow or is_forcefield) and not is_face then
                 decal.Texture = ""
             else
                 decal.Texture = data.Texture;
             end;
-            if transparency > 0 and not is_face then
+            if mat_enabled and transparency > 0 and not is_face then
                 decal.Transparency = math.max(data.Transparency, transparency);
             else
                 decal.Transparency = data.Transparency;
@@ -10070,7 +11929,7 @@ local function create_character_vis()
     local lastnochar = 0;
     local lastcharcheck = 0;
 
-    runservice.Heartbeat:Connect(LPH_JIT(function(dt)
+    runservice.Heartbeat:Connect(LPH_NO_VIRTUALIZE(function(dt)
         local now2 = tick();
         local char = localplayer.Character;
         if not char or not char:FindFirstChild("HumanoidRootPart") then
@@ -10107,7 +11966,7 @@ local function create_character_vis()
                 table.insert(character_connection, char.ChildAdded:Connect(function(child)
                     if child:IsA("Accessory") then
                         task.wait();
-                        local removeacc = Toggles.RemoveAccessories and Toggles.RemoveAccessories.Value;
+                        local removeacc = Toggles.remove_acessories and Toggles.remove_acessories.Value;
                         local isface = child.Name:lower():find("face") or child.Name:lower():find("facial") or child.Name:lower():find("head");
                         if not table.find(original_data.Accessories, child) then
                             table.insert(original_data.Accessories, child);
@@ -10124,23 +11983,23 @@ local function create_character_vis()
             end;
         end;
 
-        local israinbow = Toggles.RainbowCharacter and Toggles.RainbowCharacter.Value;
-        local newmat = Classes.CharacterMaterial and Classes.CharacterMaterial.Value;
-        local newcolor = Classes.CharacterMaterialColor and Classes.CharacterMaterialColor.Value;
-        local newtrans = Classes.CharacterTransparency and Classes.CharacterTransparency.Value;
-        local newcustom = Toggles.CustomMaterialColor and Toggles.CustomMaterialColor.Value;
-        local newremoveacc = Toggles.RemoveAccessories and Toggles.RemoveAccessories.Value;
-        local newglow = Classes.OutlineGlow and Classes.OutlineGlow.Value;
-        local newglowcolor = Classes.OutlineGlowColor and Classes.OutlineGlowColor.Value;
+        local israinbow = Toggles.rainbow_character and Toggles.rainbow_character.Value;
+        local mat_enabled = Toggles.character_material_enabled and Toggles.character_material_enabled.Value;
+        local newmat = Classes.character_material and Classes.character_material.Value;
+        local newcolor = Classes.character_material_color and Classes.character_material_color.Value;
+        local newtrans = Options.character_material_color and Options.character_material_color.Transparency;
+        local newremoveacc = Toggles.remove_acessories and Toggles.remove_acessories.Value;
+        local newglow = Classes.outline_glow and Classes.outline_glow.Value;
+        local newglowcolor = Classes.outline_glow_color and Classes.outline_glow_color.Value;
 
-        if applied_to_character ~= char or last_settings.Material ~= newmat or last_settings.Color ~= newcolor or last_settings.Transparency ~= newtrans or last_settings.Rainbow ~= israinbow or last_settings.CustomColor ~= newcustom or last_settings.RemoveAcc ~= newremoveacc or last_settings.OutlineGlow ~= newglow or last_settings.OutlineColor ~= newglowcolor then
+        if applied_to_character ~= char or last_settings.MaterialEnabled ~= mat_enabled or last_settings.Material ~= newmat or last_settings.Color ~= newcolor or last_settings.Transparency ~= newtrans or last_settings.Rainbow ~= israinbow or last_settings.RemoveAcc ~= newremoveacc or last_settings.outline_glow ~= newglow or last_settings.OutlineColor ~= newglowcolor then
+            last_settings.MaterialEnabled = mat_enabled;
             last_settings.Material = newmat;
             last_settings.Color = newcolor;
             last_settings.Transparency = newtrans;
             last_settings.Rainbow = israinbow;
-            last_settings.CustomColor = newcustom;
             last_settings.RemoveAcc = newremoveacc;
-            last_settings.OutlineGlow = newglow;
+            last_settings.outline_glow = newglow;
             last_settings.OutlineColor = newglowcolor;
             applied_to_character = char;
             apply_visuals();
@@ -10195,7 +12054,7 @@ local function create_visuals()
         HighlightColor = nil;
     };
 
-    runservice.Heartbeat:Connect(LPH_JIT(function(dt)
+    runservice.Heartbeat:Connect(LPH_NO_VIRTUALIZE(function(dt)
         if Classes.CrosshairEnabled and Classes.CrosshairEnabled.Value then
             local mouse_location = userinputservice:GetMouseLocation();
             local smooth_amount = math.max(1, Classes.CrosshairSmoothing.Value);
