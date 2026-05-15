@@ -3682,12 +3682,48 @@ end;
 
 framework:BindToRenderStep(LPH_NO_VIRTUALIZE(function()
 	if not settings.autoequip and not settings.BeartrapEnemy and not settings.AutoAttachC4 and not settings.AutoDetonateC4 then return; end;
-	if not weapon and settings.autoequip then
+	if settings.autoequip then
 		local Character = localplayer.Character;
-		for _, v in pairs(localplayer.Backpack:GetChildren()) do
-			if v:IsA("Tool") and (v:FindFirstChild("Hitboxes") or v:GetAttribute("IsRangedWeapon")) then
-				Character.Humanoid:EquipTool(v);
-				break;
+		if Character and Character:FindFirstChild("Humanoid") then
+			local currentTool = Character:FindFirstChildOfClass("Tool");
+			local hasValidWeapon = false;
+			if currentTool and (currentTool:FindFirstChild("Hitboxes") or currentTool:GetAttribute("IsRangedWeapon")) then
+				hasValidWeapon = true;
+			end;
+			
+			if not hasValidWeapon then
+				local melee_weapons = {};
+				local ranged_weapons = {};
+				for _, v in pairs(localplayer.Backpack:GetChildren()) do
+					if v:IsA("Tool") then
+						if v:FindFirstChild("Hitboxes") then
+							table.insert(melee_weapons, v);
+						elseif v:GetAttribute("IsRangedWeapon") then
+							table.insert(ranged_weapons, v);
+						end;
+					end;
+				end;
+				
+				local to_equip = nil;
+				local priority = Options.AutoEquipPriority and Options.AutoEquipPriority.Value or "melee";
+				
+				if priority == "melee" then
+					if #melee_weapons > 0 then
+						to_equip = melee_weapons[math_random(1, #melee_weapons)];
+					elseif #ranged_weapons > 0 then
+						to_equip = ranged_weapons[math_random(1, #ranged_weapons)];
+					end;
+				else
+					if #ranged_weapons > 0 then
+						to_equip = ranged_weapons[math_random(1, #ranged_weapons)];
+					elseif #melee_weapons > 0 then
+						to_equip = melee_weapons[math_random(1, #melee_weapons)];
+					end;
+				end;
+				
+				if to_equip then
+					Character.Humanoid:EquipTool(to_equip);
+				end;
 			end;
 		end;
 	end;
@@ -4451,6 +4487,16 @@ do
         Callback = function(v)
             settings.autoequip = v;
         end;
+    });
+
+    local auto_equip_dep = parrysection:AddDependencyBox();
+    auto_equip_dep:AddDropdown("AutoEquipPriority", {
+        Text = "priority";
+        Default = "melee";
+        Values = {"melee", "ranged"};
+    });
+    auto_equip_dep:SetupDependencies({
+        {Toggles.AutoEquip, true};
     });
 
     parrysection:AddToggle("VoidOnParry", {
@@ -7039,7 +7085,7 @@ bullet_tracers_section:AddSlider("TracerLifetime", {
 });
 
 bullet_tracers_section:AddToggle("HitDetectionEnabled", {
-    Text = "hit sounds";
+    Text = "hit detection";
     Default = false;
 }):AddColorPicker("HitEffectColor", {
     Default = Color3.new(1, 1, 1);
